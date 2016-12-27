@@ -53,3 +53,4 @@ aws-serverless-prototype.iml
 .idea
 
 ### serverless framework settings
+.serverless
