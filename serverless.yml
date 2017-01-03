@@ -18,24 +18,24 @@ provider:
       Resource: "arn:aws:dynamodb:ap-northeast-1:*:*"
 
 functions:
-  create:
-    handler: src/handler.create
+  clientCreate:
+    handler: src/functions/client/handler.create
     events:
       - http:
-          path: todos
+          path: clients
           method: post
           cors: true
-  readOne:
-    handler: src/handler.readOne
+  clientFind:
+    handler: src/functions/client/handler.find
     events:
       - http:
-          path: todos/{id}
+          path: clients/{id}
           method: get
           cors: true
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    ClientsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
@@ -50,4 +50,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: 'todos'
+        TableName: 'Clients'

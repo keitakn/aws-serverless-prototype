@@ -1,12 +1,12 @@
 'use strict';
 
-const todosCreate = require('./todos-create.js');
-const todosReadOne = require('./todos-read-one.js');
+const clientCreate = require('./client-create.js');
+const clientFind = require('./client-find.js');
 
 module.exports.create = (event, context, callback) => {
-  todosCreate(event, (error, result) => {
+  clientCreate(event, (error, result) => {
     const response = {
-      statusCode: 200,
+      statusCode: 201,
       headers: {
         "Access-Control-Allow-Origin" : "*"
       },
@@ -17,8 +17,8 @@ module.exports.create = (event, context, callback) => {
   });
 };
 
-module.exports.readOne = (event, context, callback) => {
-  todosReadOne(event, (error, result) => {
+module.exports.find = (event, context, callback) => {
+  clientFind(event, (error, result) => {
     const response = {
       statusCode: 200,
       headers: {

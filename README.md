@@ -1,52 +1,40 @@
 # aws-serverless-prototype
 Serverless Frameworkを使ったAWS Lambdaプロジェクトの試作品
 
-# Serverless CRUD
+## 事前準備
 
-Serverless service which provides a basic CRUD scaffold.
+serverlessの管理を行う為のIAMユーザーの作成が必要です。
 
-## Installation
+[公式ドキュメント](https://serverless.com/framework/docs/providers/aws/guide/credentials/) に載っているように「AdministratorAccess」権限を持つユーザーを作成しておきます。
 
-Make sure that you use Serverless v1.
+次にAccess key IDとSecret access keyをcredentialとして登録します。
 
-1. Run `serverless install --url https://github.com/pmuens/serverless-crud` to install the service in your current working directory
-2. Next up cd into the service with `cd serverless-crud`
-3. Run `npm install`
-4. Deploy with `serverless deploy`
+[github](https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/credentials.md) に載っているようにコマンドを使う方法が簡単です。
 
-## How to use
-
-Simply perform requests against the exposed endpoints:
+```bash
+serverless config credentials --provider aws --key <your-key-here> --secret <your-secret-key-here>
+```
 
 ### Create
 
 ```bash
-curl -X POST https://XXXX.execute-api.region.amazonaws.com/dev/todos --data '{ "body" : "Learn Serverless" }'
+curl -X POST -kv \
+-d \
+'
+{
+  "body": {
+    "name":"neko",
+    "redirectUri":"https://example.com"
+  }
+}
+' \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
 ```
 
-### Read all
-
-
-```bash
-curl https://XXXX.execute-api.region.amazonaws.com/dev/todos
-```
-
-### Read one
+### Find
 
 ```bash
-curl https://XXXX.execute-api.region.amazonaws.com/dev/todos/<id>
-```
-
-### Update
-
-```bash
-curl -X PUT https://XXXX.execute-api.region.amazonaws.com/dev/todos/<id> --data '{ "body" : "Understand Serverless" }'
-```
-
-### DELETE
-
-```bash
-curl -X DELETE https://XXXX.execute-api.region.amazonaws.com/dev/todos/<id>
+curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/<id>
 ```
 
 ## AWS services used
