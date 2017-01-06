@@ -16,17 +16,19 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:ap-northeast-1:*:*"
+plugins:
+- serverless-webpack
 
 functions:
   clientCreate:
-    handler: src/functions/client/handler.create
+    handler: create.default
     events:
       - http:
           path: clients
           method: post
           cors: true
   clientFind:
-    handler: src/functions/client/handler.find
+    handler: find.default
     events:
       - http:
           path: clients/{id}
