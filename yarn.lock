@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/aws-lambda@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-0.0.5.tgz#4bac092de6b4c0d500a1e5596551844bd4dc5335"
+
 "@types/aws-sdk@^0.0.42":
   version "0.0.42"
   resolved "https://registry.yarnpkg.com/@types/aws-sdk/-/aws-sdk-0.0.42.tgz#a9feca87cdee5e40647f8f51577cbd15d3789423"
@@ -11,6 +15,16 @@
 "@types/node@*":
   version "6.0.58"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.58.tgz#7b3b7065f3cdf24e2349d35b68d2795cfa874553"
+
+"@types/source-map-support@^0.2.28":
+  version "0.2.28"
+  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.2.28.tgz#ce6497dfa9c9fbd21a753955b4a51d8993d759dd"
+  dependencies:
+    "@types/node" "*"
+
+"@types/source-map@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/source-map/-/source-map-0.5.0.tgz#dd34bbd8e32fe4e74f2e3d8ac07f8aa5b45a47ac"
 
 "@types/uuid@^2.0.29":
   version "2.0.29"
@@ -1710,15 +1724,21 @@ source-list-map@~0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-0.1.7.tgz#d4b5ce2a46535c72c7e8527c71a77d250618172e"
 
+source-map-support@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.8.tgz#4871918d8a3af07289182e974e32844327b2e98b"
+  dependencies:
+    source-map "^0.5.3"
+
+source-map@^0.5.3, source-map@~0.5.1:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
+
 source-map@~0.4.1:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.4.4.tgz#eba4f5da9c0dc999de68032d8b4f76173652036b"
   dependencies:
     amdefine ">=0.0.4"
-
-source-map@~0.5.1:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
 sprintf-js@^1.0.3:
   version "1.0.3"
