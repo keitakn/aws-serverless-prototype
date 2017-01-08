@@ -1,5 +1,8 @@
 service: prototype
 
+plugins:
+  - serverless-webpack
+
 provider:
   name: aws
   runtime: nodejs4.3
@@ -16,19 +19,17 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:ap-northeast-1:*:*"
-plugins:
-- serverless-webpack
 
 functions:
   clientCreate:
-    handler: create.default
+    handler: create.create
     events:
       - http:
           path: clients
           method: post
           cors: true
   clientFind:
-    handler: find.default
+    handler: find.find
     events:
       - http:
           path: clients/{id}

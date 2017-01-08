@@ -1,10 +1,14 @@
-import * as AWS from 'aws-sdk';
-import * as uuid from 'uuid';
-import {LambdaExecutionContext} from '../../../types';
+import * as sourceMapSupport from "source-map-support";
+import * as lambda from "aws-lambda";
+import * as AWS from "aws-sdk";
+import * as uuid from "uuid";
+import {LambdaExecutionEvent} from "../../../types";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export default function(event, context: LambdaExecutionContext, callback) {
+sourceMapSupport.install();
+
+export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const data = JSON.parse(event.body);
   const nowDate = new Date().getTime();
 
@@ -18,14 +22,13 @@ export default function(event, context: LambdaExecutionContext, callback) {
   };
 
   const params = {
-    TableName: 'Clients',
+    TableName: "Clients",
     Item: clientCreateParams
   };
 
-  dynamoDb.put(params, (error: any, data: any) => {
+  dynamoDb.put(params, (error: any) => {
     if (error) {
       callback(error);
-      return;
     }
 
     const response = {
@@ -33,7 +36,7 @@ export default function(event, context: LambdaExecutionContext, callback) {
       headers: {
         "Access-Control-Allow-Origin" : "*"
       },
-      body: JSON.stringify(data.Item),
+      body: JSON.stringify(clientCreateParams),
     };
 
     callback(null, response);

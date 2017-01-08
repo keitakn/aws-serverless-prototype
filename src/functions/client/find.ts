@@ -1,19 +1,23 @@
-import * as AWS from 'aws-sdk';
-import {LambdaExecutionContext} from '../../../types';
+import * as sourceMapSupport from "source-map-support";
+import * as lambda from "aws-lambda"
+import * as AWS from "aws-sdk";
+import {LambdaExecutionEvent} from "../../../types";
+
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export default function(event, context: LambdaExecutionContext, callback) {
-  const params: any = {
-    TableName: 'Clients',
+sourceMapSupport.install();
+
+export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+  const params = {
+    TableName: "Clients",
     Key: {
       id: event.pathParameters.id
     }
   };
 
-  dynamoDb.scan(params, (error: any, data: any) => {
+  dynamoDb.get(params, (error: any, data: any) => {
     if (error) {
       callback(error);
-      return;
     }
 
     const response = {
