@@ -2,8 +2,8 @@ const path = require("path");
 const glob = require("glob");
 
 module.exports = {
-  entry: glob.sync("./src/functions/*/*.ts").reduce(function(acc, item) {
-    var obj = {};
+  entry: glob.sync("./src/functions/*.ts").reduce(function(acc, item) {
+    const obj = {};
     obj[path.basename(item, ".ts")] = item;
     return Object.assign(acc, obj);
   }, {}),
@@ -37,7 +37,7 @@ module.exports = {
 
   output: {
     libraryTarget: "commonjs",
-    path:          path.join(__dirname, ".built"),
+    path:          path.join(__dirname, ".build"),
     filename:      "[name].js",
   },
 };

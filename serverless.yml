@@ -21,15 +21,15 @@ provider:
       Resource: "arn:aws:dynamodb:ap-northeast-1:*:*"
 
 functions:
-  clientCreate:
-    handler: create.create
+  createClient:
+    handler: clients.create
     events:
       - http:
           path: clients
           method: post
           cors: true
-  clientFind:
-    handler: find.find
+  findClient:
+    handler: clients.find
     events:
       - http:
           path: clients/{id}
