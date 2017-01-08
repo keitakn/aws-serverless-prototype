@@ -1,4 +1,4 @@
-# Yarn Integrity file
+### Yarn Integrity file
 .yarn-integrity
 
 ### idea settings
@@ -23,3 +23,4 @@ node_modules
 admin.env
 .env
 tmp
+.build
