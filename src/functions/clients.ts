@@ -8,25 +8,32 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 sourceMapSupport.install();
 
+/**
+ * クライアントを作成する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const data = JSON.parse(event.body);
+  const requestBody = JSON.parse(event.body);
   const nowDate = new Date().getTime();
 
   const clientCreateParams = {
     id: uuid.v1(),
     secret: uuid.v4(),
-    name: data.body.name,
-    redirectUri: data.body.redirectUri,
-    createdAt: nowDate,
-    updatedAt: nowDate
+    name: requestBody.name,
+    redirect_uri: requestBody.redirect_uri,
+    created_at: nowDate,
+    updated_at: nowDate
   };
 
-  const params = {
+  const putParam = {
     TableName: "Clients",
     Item: clientCreateParams
   };
 
-  dynamoDb.put(params, (error: any) => {
+  dynamoDb.put(putParam, (error: any) => {
     if (error) {
       callback(error);
     }
@@ -43,15 +50,22 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   });
 };
 
+/**
+ * クライアントを1件取得する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const params = {
+  const getParam = {
     TableName: "Clients",
     Key: {
       id: event.pathParameters.id
     }
   };
 
-  dynamoDb.get(params, (error: any, data: any) => {
+  dynamoDb.get(getParam, (error: any, data: any) => {
     if (error) {
       callback(error);
     }

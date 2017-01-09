@@ -22,10 +22,8 @@ curl -X POST -kv \
 -d \
 '
 {
-  "body": {
-    "name":"neko",
-    "redirectUri":"https://example.com"
-  }
+  "name":"neko",
+  "redirectUri":"https://example.com"
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
