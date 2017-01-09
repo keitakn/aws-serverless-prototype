@@ -42,6 +42,13 @@ functions:
           path: users
           method: post
           cors: true
+  findUser:
+    handler: users.find
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
 
 resources:
   Resources:

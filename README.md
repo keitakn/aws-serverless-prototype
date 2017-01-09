@@ -15,6 +15,10 @@ serverlessの管理を行う為のIAMユーザーの作成が必要です。
 serverless config credentials --provider aws --key <your-key-here> --secret <your-secret-key-here>
 ```
 
+## How to use
+
+サンプル用の各APIの呼び出し方法です。
+
 ### createClient
 
 ```bash
@@ -32,7 +36,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
 ### findClient
 
 ```bash
-curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/<id>
+curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
 ```
 
 ### userCreate
@@ -49,6 +53,11 @@ curl -X POST -kv \
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
+```
+
+### findUser
+```bash
+curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
 ```
 
 ## AWS services used

@@ -52,3 +52,35 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     callback(null, response);
   });
 };
+
+/**
+ * ユーザーを1件取得する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
+export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+  const getParam = {
+    TableName: "Users",
+    Key: {
+      id: event.pathParameters.id
+    }
+  };
+
+  dynamoDb.get(getParam, (error: any, data: any) => {
+    if (error) {
+      callback(error);
+    }
+
+    const response = {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin" : "*"
+      },
+      body: JSON.stringify(data.Item),
+    };
+
+    callback(null, response);
+  });
+};
