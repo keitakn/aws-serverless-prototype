@@ -35,6 +35,13 @@ functions:
           path: clients/{id}
           method: get
           cors: true
+  createUser:
+    handler: users.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
 
 resources:
   Resources:
