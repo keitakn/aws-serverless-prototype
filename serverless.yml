@@ -35,6 +35,20 @@ functions:
           path: clients/{id}
           method: get
           cors: true
+  createUser:
+    handler: users.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+  findUser:
+    handler: users.find
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
 
 resources:
   Resources:
@@ -54,3 +68,34 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: 'Clients'
+    UsersDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          -
+            IndexName: globalIndex1
+            KeySchema:
+              -
+                AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: 'Users'

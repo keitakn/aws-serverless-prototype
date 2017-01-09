@@ -9,7 +9,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 sourceMapSupport.install();
 
 /**
- * クライアントを作成する
+ * ユーザーを作成する
  *
  * @param event
  * @param context
@@ -19,21 +19,24 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   const requestBody = JSON.parse(event.body);
   const nowDate = new Date().getTime();
 
-  const clientCreateParams = {
-    id: uuid.v1(),
-    secret: uuid.v4(),
+  const userCreateParams = {
+    id: uuid.v4(),
+    email: requestBody.email,
+    email_verified: 0,
     name: requestBody.name,
-    redirect_uri: requestBody.redirect_uri,
+    gender: requestBody.gender,
+    birthdate: requestBody.birthdate,
     created_at: nowDate,
     updated_at: nowDate
   };
 
   const putParam = {
-    TableName: "Clients",
-    Item: clientCreateParams
+    TableName: "Users",
+    Item: userCreateParams
   };
 
   dynamoDb.put(putParam, (error: any) => {
+
     if (error) {
       callback(error);
     }
@@ -43,7 +46,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       headers: {
         "Access-Control-Allow-Origin" : "*"
       },
-      body: JSON.stringify(clientCreateParams),
+      body: JSON.stringify(userCreateParams)
     };
 
     callback(null, response);
@@ -51,7 +54,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 };
 
 /**
- * クライアントを1件取得する
+ * ユーザーを1件取得する
  *
  * @param event
  * @param context
@@ -59,7 +62,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const getParam = {
-    TableName: "Clients",
+    TableName: "Users",
     Key: {
       id: event.pathParameters.id
     }
@@ -81,4 +84,3 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
     callback(null, response);
   });
 };
-
