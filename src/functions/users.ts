@@ -8,6 +8,13 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 sourceMapSupport.install();
 
+/**
+ * ユーザーを作成する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const requestBody = JSON.parse(event.body);
   const nowDate = new Date().getTime();
@@ -19,8 +26,8 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     name: requestBody.name,
     gender: requestBody.gender,
     birthdate: requestBody.birthdate,
-    createdAt: nowDate,
-    updatedAt: nowDate
+    created_at: nowDate,
+    updated_at: nowDate
   };
 
   const putParam = {
