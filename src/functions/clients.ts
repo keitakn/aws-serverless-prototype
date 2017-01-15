@@ -4,6 +4,7 @@ import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import {ClientEntity} from "../domain/client/client-entity";
+import {ClientRepository} from "../repositories/client-repository";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -27,34 +28,22 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   clientEntity.redirectUri = requestBody.redirect_uri;
   clientEntity.updatedAt = nowDateTime;
 
-  const clientCreateParams = {
-    id: clientEntity.id,
-    secret: clientEntity.secret,
-    name: clientEntity.name,
-    redirect_uri: clientEntity.redirectUri,
-    created_at: clientEntity.createdAt,
-    updated_at: nowDateTime
-  };
+  const clientRepository = new ClientRepository();
 
-  const putParam = {
-    TableName: "Clients",
-    Item: clientCreateParams
-  };
+  clientRepository.save(clientEntity)
+    .then((clientEntity) => {
+      const response = {
+        statusCode: 201,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(clientEntity),
+      };
 
-  dynamoDb.put(putParam, (error: any) => {
-    if (error) {
+      callback(null, response);
+    }).catch((error) => {
+      console.error("error", error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 201,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(clientCreateParams),
-    };
-
-    callback(null, response);
   });
 };
 
