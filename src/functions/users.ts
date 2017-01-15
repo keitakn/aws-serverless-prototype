@@ -17,7 +17,7 @@ sourceMapSupport.install();
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const requestBody = JSON.parse(event.body);
-  const nowDate = new Date().getTime();
+  const nowDateTime = new Date().getTime();
 
   const userCreateParams = {
     id: uuid.v4(),
@@ -26,8 +26,8 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     name: requestBody.name,
     gender: requestBody.gender,
     birthdate: requestBody.birthdate,
-    created_at: nowDate,
-    updated_at: nowDate
+    created_at: nowDateTime,
+    updated_at: nowDateTime
   };
 
   const putParam = {
