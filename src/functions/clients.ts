@@ -3,6 +3,7 @@ import * as lambda from "aws-lambda";
 import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
+import {ClientEntity} from "../domain/client/client-entity";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -17,15 +18,22 @@ sourceMapSupport.install();
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const requestBody = JSON.parse(event.body);
-  const nowDate = new Date().getTime();
+  const nowDateTime = new Date().getTime();
+
+  const clientEntity = new ClientEntity(uuid.v1(), nowDateTime);
+
+  clientEntity.secret = uuid.v4();
+  clientEntity.name = requestBody.name;
+  clientEntity.redirectUri = requestBody.redirect_uri;
+  clientEntity.updatedAt = nowDateTime;
 
   const clientCreateParams = {
-    id: uuid.v1(),
-    secret: uuid.v4(),
-    name: requestBody.name,
-    redirect_uri: requestBody.redirect_uri,
-    created_at: nowDate,
-    updated_at: nowDate
+    id: clientEntity.id,
+    secret: clientEntity.secret,
+    name: clientEntity.name,
+    redirect_uri: clientEntity.redirectUri,
+    created_at: clientEntity.createdAt,
+    updated_at: nowDateTime
   };
 
   const putParam = {
