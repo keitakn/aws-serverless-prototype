@@ -1,6 +1,7 @@
 import {ClientEntity} from "../domain/client/client-entity";
 import * as AWS from "aws-sdk";
 import {ClientRepositoryInterface} from "../domain/client/client-repository-interface";
+import {NotFoundError} from "../errors/not-found-error";
 
 /**
  * ClientRepository
@@ -26,11 +27,14 @@ export class ClientRepository implements ClientRepositoryInterface {
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-
-      try {
-        dynamoDb.get(params, (error: any, data: any) => {
+      dynamoDb.get(params, (error: any, data: any) => {
+        try {
           if (error) {
             reject(error);
+          }
+
+          if (Object.keys(data).length === 0) {
+            throw new NotFoundError();
           }
 
           const clientEntity = new ClientEntity(data.Item.id, data.Item.created_at);
@@ -41,10 +45,10 @@ export class ClientRepository implements ClientRepositoryInterface {
           clientEntity.updatedAt = data.Item.updated_at;
 
           resolve(clientEntity);
-        });
-      } catch (error) {
-        reject(error);
-      }
+        } catch (error) {
+          reject(error);
+        }
+      });
     });
   }
 

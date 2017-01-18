@@ -88,8 +88,16 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      console.error("findClientError", error);
-      callback(error);
+      // TODO 未完成 Errorを元にErrorResponseを生成する
+      const response = {
+        statusCode: 404,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify({"message": "404 Not found"}),
+      };
+
+      callback(null, response);
     });
 };
 
