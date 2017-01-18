@@ -8,7 +8,7 @@ import {UserRepositoryInterface} from "../domain/user/user-repository-interface"
  * @author keita-nishimoto
  * @since 2016-01-18
  */
-class UserRepository implements UserRepositoryInterface {
+export class UserRepository implements UserRepositoryInterface {
 
   /**
    * ユーザーを取得する

@@ -3,6 +3,8 @@ import * as lambda from "aws-lambda";
 import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
+import {UserEntity} from "../domain/user/user-entity";
+import {UserRepository} from "../repositories/user-repository";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -19,38 +21,42 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   const requestBody = JSON.parse(event.body);
   const nowDateTime = new Date().getTime();
 
-  const userCreateParams = {
-    id: uuid.v4(),
-    email: requestBody.email,
-    email_verified: 0,
-    name: requestBody.name,
-    gender: requestBody.gender,
-    birthdate: requestBody.birthdate,
-    created_at: nowDateTime,
-    updated_at: nowDateTime
-  };
+  const userEntity = new UserEntity(uuid.v4(), nowDateTime);
+  userEntity.email = requestBody.email;
+  userEntity.emailVerified = 0;
+  userEntity.name = requestBody.name;
+  userEntity.gender = requestBody.gender;
+  userEntity.birthdate = requestBody.birthdate;
+  userEntity.updatedAt = nowDateTime;
 
-  const putParam = {
-    TableName: "Users",
-    Item: userCreateParams
-  };
+  const userRepository = new UserRepository();
+  userRepository.save(userEntity)
+    .then((userEntity) => {
 
-  dynamoDb.put(putParam, (error: any) => {
+      const responseBody = {
+        id: userEntity.id,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        name: userEntity.name,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate,
+        created_at: userEntity.createdAt,
+        updated_at: userEntity.updatedAt
+      };
 
-    if (error) {
+      const response = {
+        statusCode: 201,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody)
+      };
+
+      callback(null, response);
+    })
+    .catch((error) => {
       callback(error);
-    }
-
-    const response = {
-      statusCode: 201,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(userCreateParams)
-    };
-
-    callback(null, response);
-  });
+    });
 };
 
 /**

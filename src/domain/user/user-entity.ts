@@ -7,10 +7,11 @@
 interface UserEntityInterface {
   id: string
   email: string
-  emailVerified: string
+  emailVerified: number
   name: string
   gender: string
   birthdate: string
+  updatedAt: number
 }
 
 /**
@@ -29,7 +30,7 @@ export class UserEntity implements UserEntityInterface {
   /**
    * メールアドレス検証済ステータス
    */
-  private _emailVerified: string;
+  private _emailVerified: number;
 
   /**
    * 名前
@@ -49,7 +50,7 @@ export class UserEntity implements UserEntityInterface {
   /**
    * 更新日時
    */
-  private _updatedAt: string;
+  private _updatedAt: number;
 
   /**
    * constructor
@@ -89,16 +90,16 @@ export class UserEntity implements UserEntityInterface {
   }
 
   /**
-   * @returns {string}
+   * @returns {number}
    */
-  get emailVerified(): string {
+  get emailVerified(): number {
     return this._emailVerified;
   }
 
   /**
    * @param value
    */
-  set emailVerified(value: string) {
+  set emailVerified(value: number) {
     this._emailVerified = value;
   }
 
@@ -147,14 +148,14 @@ export class UserEntity implements UserEntityInterface {
   /**
    * @returns {string}
    */
-  get updatedAt(): string {
+  get updatedAt(): number {
     return this._updatedAt;
   }
 
   /**
    * @param value
    */
-  set updatedAt(value: string) {
+  set updatedAt(value: number) {
     this._updatedAt = value;
   }
 }
