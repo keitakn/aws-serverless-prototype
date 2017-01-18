@@ -66,14 +66,14 @@ export class ClientRepository implements ClientRepositoryInterface {
       updated_at: clientEntity.updatedAt
     };
 
-    const putParam = {
+    const params = {
       TableName: "Clients",
       Item: clientCreateParams
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
       try {
-        dynamoDb.put(putParam, (error: any) => {
+        dynamoDb.put(params, (error: any) => {
           if (error) {
             reject(error);
           }
