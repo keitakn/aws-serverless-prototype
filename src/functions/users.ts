@@ -55,38 +55,47 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       callback(null, response);
     })
     .catch((error) => {
+      console.error('userCreateError', error);
       callback(error);
     });
 };
 
 /**
- * ユーザーを1件取得する
+ * ユーザーを取得する
  *
  * @param event
  * @param context
  * @param callback
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const getParam = {
-    TableName: "Users",
-    Key: {
-      id: event.pathParameters.id
-    }
-  };
+  const userId = event.pathParameters.id;
 
-  dynamoDb.get(getParam, (error: any, data: any) => {
-    if (error) {
+  const userRepository = new UserRepository();
+  userRepository.find(userId)
+    .then((userEntity) => {
+      const responseBody = {
+        id: userEntity.id,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        name: userEntity.name,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate,
+        created_at: userEntity.createdAt,
+        updated_at: userEntity.updatedAt
+      };
+
+      const response = {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody),
+      };
+
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error('userFindError', error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(data.Item),
-    };
-
-    callback(null, response);
-  });
+    });
 };
