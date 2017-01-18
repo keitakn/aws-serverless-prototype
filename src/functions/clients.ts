@@ -4,6 +4,7 @@ import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import {ClientEntity} from "../domain/client/client-entity";
 import {ClientRepository} from "../repositories/client-repository";
+import {ErrorResponse} from "../domain/error-response";
 
 sourceMapSupport.install();
 
@@ -88,14 +89,11 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      // TODO 未完成 Errorを元にErrorResponseを生成する
-      const response = {
-        statusCode: 404,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify({"message": "404 Not found"}),
-      };
+      // TODO ログにStackTraceを出力させる対応が必要 @keita-nishimoto
+      console.error("findClient", error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
 
       callback(null, response);
     });
