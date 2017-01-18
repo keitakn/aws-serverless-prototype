@@ -1,10 +1,9 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+import {ClientEntity} from "../domain/client/client-entity";
+import {ClientRepository} from "../repositories/client-repository";
 
 sourceMapSupport.install();
 
@@ -17,36 +16,40 @@ sourceMapSupport.install();
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const requestBody = JSON.parse(event.body);
-  const nowDate = new Date().getTime();
+  const nowDateTime = new Date().getTime();
 
-  const clientCreateParams = {
-    id: uuid.v1(),
-    secret: uuid.v4(),
-    name: requestBody.name,
-    redirect_uri: requestBody.redirect_uri,
-    created_at: nowDate,
-    updated_at: nowDate
-  };
+  const clientEntity = new ClientEntity(uuid.v1(), nowDateTime);
 
-  const putParam = {
-    TableName: "Clients",
-    Item: clientCreateParams
-  };
+  clientEntity.secret = uuid.v4();
+  clientEntity.name = requestBody.name;
+  clientEntity.redirectUri = requestBody.redirect_uri;
+  clientEntity.updatedAt = nowDateTime;
 
-  dynamoDb.put(putParam, (error: any) => {
-    if (error) {
+  const clientRepository = new ClientRepository();
+
+  clientRepository.save(clientEntity)
+    .then((clientEntity) => {
+      const responseBody = {
+        id: clientEntity.id,
+        secret: clientEntity.secret,
+        name: clientEntity.name,
+        redirect_uri: clientEntity.redirectUri,
+        created_at: clientEntity.createdAt,
+        updated_at: clientEntity.updatedAt
+      };
+
+      const response = {
+        statusCode: 201,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody),
+      };
+
+      callback(null, response);
+    }).catch((error) => {
+      console.error("createClientError", error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 201,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(clientCreateParams),
-    };
-
-    callback(null, response);
   });
 };
 
@@ -58,27 +61,35 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
  * @param callback
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const getParam = {
-    TableName: "Clients",
-    Key: {
-      id: event.pathParameters.id
-    }
-  };
 
-  dynamoDb.get(getParam, (error: any, data: any) => {
-    if (error) {
+  const clientId = event.pathParameters.id;
+  const clientRepository = new ClientRepository();
+
+  clientRepository.find(clientId)
+    .then((clientEntity) => {
+
+      const responseBody = {
+        id: clientEntity.id,
+        secret: clientEntity.secret,
+        name: clientEntity.name,
+        redirect_uri: clientEntity.redirectUri,
+        created_at: clientEntity.createdAt,
+        updated_at: clientEntity.updatedAt
+      };
+
+      const response = {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody),
+      };
+
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error("findClientError", error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(data.Item),
-    };
-
-    callback(null, response);
-  });
+    });
 };
 

@@ -1,10 +1,9 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+import {UserEntity} from "../domain/user/user-entity";
+import {UserRepository} from "../repositories/user-repository";
 
 sourceMapSupport.install();
 
@@ -17,70 +16,83 @@ sourceMapSupport.install();
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const requestBody = JSON.parse(event.body);
-  const nowDate = new Date().getTime();
+  const nowDateTime = new Date().getTime();
 
-  const userCreateParams = {
-    id: uuid.v4(),
-    email: requestBody.email,
-    email_verified: 0,
-    name: requestBody.name,
-    gender: requestBody.gender,
-    birthdate: requestBody.birthdate,
-    created_at: nowDate,
-    updated_at: nowDate
-  };
+  const userEntity = new UserEntity(uuid.v4(), nowDateTime);
+  userEntity.email = requestBody.email;
+  userEntity.emailVerified = 0;
+  userEntity.name = requestBody.name;
+  userEntity.gender = requestBody.gender;
+  userEntity.birthdate = requestBody.birthdate;
+  userEntity.updatedAt = nowDateTime;
 
-  const putParam = {
-    TableName: "Users",
-    Item: userCreateParams
-  };
+  const userRepository = new UserRepository();
+  userRepository.save(userEntity)
+    .then((userEntity) => {
 
-  dynamoDb.put(putParam, (error: any) => {
+      const responseBody = {
+        id: userEntity.id,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        name: userEntity.name,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate,
+        created_at: userEntity.createdAt,
+        updated_at: userEntity.updatedAt
+      };
 
-    if (error) {
+      const response = {
+        statusCode: 201,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody)
+      };
+
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error("createUserError", error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 201,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(userCreateParams)
-    };
-
-    callback(null, response);
-  });
+    });
 };
 
 /**
- * ユーザーを1件取得する
+ * ユーザーを取得する
  *
  * @param event
  * @param context
  * @param callback
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const getParam = {
-    TableName: "Users",
-    Key: {
-      id: event.pathParameters.id
-    }
-  };
+  const userId = event.pathParameters.id;
 
-  dynamoDb.get(getParam, (error: any, data: any) => {
-    if (error) {
+  const userRepository = new UserRepository();
+  userRepository.find(userId)
+    .then((userEntity) => {
+      const responseBody = {
+        id: userEntity.id,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        name: userEntity.name,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate,
+        created_at: userEntity.createdAt,
+        updated_at: userEntity.updatedAt
+      };
+
+      const response = {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody),
+      };
+
+      callback(null, response);
+    })
+    .catch((error) => {
+      console.error("findUserError", error);
       callback(error);
-    }
-
-    const response = {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(data.Item),
-    };
-
-    callback(null, response);
-  });
+    });
 };
