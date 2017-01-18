@@ -7,6 +7,7 @@
 interface UserEntityInterface {
   id: string
   email: string
+  emailVerified: string
   name: string
   gender: string
   birthdate: string
@@ -26,6 +27,11 @@ export class UserEntity implements UserEntityInterface {
   private _email: string;
 
   /**
+   * メールアドレス検証済ステータス
+   */
+  private _emailVerified: string;
+
+  /**
    * 名前
    */
   private _name: string;
@@ -39,6 +45,11 @@ export class UserEntity implements UserEntityInterface {
    * 誕生日
    */
   private _birthdate: string;
+
+  /**
+   * 更新日時
+   */
+  private _updatedAt: string;
 
   /**
    * constructor
@@ -75,6 +86,20 @@ export class UserEntity implements UserEntityInterface {
    */
   set email(value: string) {
     this._email = value;
+  }
+
+  /**
+   * @returns {string}
+   */
+  get emailVerified(): string {
+    return this._emailVerified;
+  }
+
+  /**
+   * @param value
+   */
+  set emailVerified(value: string) {
+    this._emailVerified = value;
   }
 
   /**
@@ -117,5 +142,19 @@ export class UserEntity implements UserEntityInterface {
    */
   set birthdate(value: string) {
     this._birthdate = value;
+  }
+
+  /**
+   * @returns {string}
+   */
+  get updatedAt(): string {
+    return this._updatedAt;
+  }
+
+  /**
+   * @param value
+   */
+  set updatedAt(value: string) {
+    this._updatedAt = value;
   }
 }
