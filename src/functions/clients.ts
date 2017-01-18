@@ -48,7 +48,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 
       callback(null, response);
     }).catch((error) => {
-      console.error("error", error);
+      console.error("createClientError", error);
       callback(error);
   });
 };
@@ -88,7 +88,7 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      console.error("error", error);
+      console.error("findClientError", error);
       callback(error);
     });
 };

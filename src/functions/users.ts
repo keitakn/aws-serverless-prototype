@@ -1,12 +1,9 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import * as AWS from "aws-sdk";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import {UserEntity} from "../domain/user/user-entity";
 import {UserRepository} from "../repositories/user-repository";
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 sourceMapSupport.install();
 
@@ -55,7 +52,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       callback(null, response);
     })
     .catch((error) => {
-      console.error('userCreateError', error);
+      console.error("createUserError", error);
       callback(error);
     });
 };
@@ -95,7 +92,7 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      console.error('userFindError', error);
+      console.error("findUserError", error);
       callback(error);
     });
 };
