@@ -4,6 +4,7 @@ import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import {UserEntity} from "../domain/user/user-entity";
 import {UserRepository} from "../repositories/user-repository";
+import {ErrorResponse} from "../domain/error-response";
 
 sourceMapSupport.install();
 
@@ -92,7 +93,12 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
+      // TODO ログにStackTraceを出力させる対応が必要 @keita-nishimoto
       console.error("findUserError", error);
-      callback(error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
+
+      callback(null, response);
     });
 };

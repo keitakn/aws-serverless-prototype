@@ -1,0 +1,18 @@
+/**
+ * 404 Not Found Error
+ * 対象のリソースが見つからない場合に利用する
+ *
+ * @author keita-nishimoto
+ * @since 2016-01-18
+ */
+export class NotFoundError extends Error {
+  /**
+   * constructor
+   *
+   * @param message
+   */
+  constructor(message: string = "Not Found") {
+    super(message);
+    this.name = "NotFoundError";
+  }
+}

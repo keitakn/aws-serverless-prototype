@@ -27,7 +27,7 @@ curl -X POST -kv \
 '
 {
   "name":"neko",
-  "redirectUri":"https://example.com"
+  "redirect_uri":"https://example.com"
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
