@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import {UserEntity} from "../domain/user/user-entity";
 import {UserRepositoryInterface} from "../domain/user/user-repository-interface";
+import {NotFoundError} from "../errors/not-found-error";
 
 /**
  * UserRepository
@@ -31,6 +32,10 @@ export class UserRepository implements UserRepositoryInterface {
         try {
           if (error) {
             reject(error);
+          }
+
+          if (Object.keys(data).length === 0) {
+            throw new NotFoundError();
           }
 
           const userEntity = new UserEntity(data.Item.id, data.Item.created_at);
@@ -75,17 +80,17 @@ export class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      try {
-        dynamoDb.put(params, (error: any) => {
+      dynamoDb.put(params, (error: any) => {
+        try {
           if (error) {
             reject(error);
           }
 
           resolve(userEntity);
-        });
-      } catch (error) {
-        reject(error);
-      }
+        } catch (error) {
+          reject(error);
+        }
+      });
     });
   }
 }
