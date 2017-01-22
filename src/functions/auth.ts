@@ -15,42 +15,38 @@ sourceMapSupport.install();
 export const authorization = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
   // TODO ロジックは後で適切な形で分離する @keita-nishimoto
-  const authorizationHeader = event.headers.Authorization;
+  const authorizationHeader = event.authorizationToken;
   const accessToken = extractAccessToken(authorizationHeader);
 
   if (accessToken === "") {
-    const responseBody = {
-      "code": 400,
-      "message": "Bad Request"
-    };
-
-    const response = {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(responseBody),
-    };
-
-    callback(null, response);
+    callback(new Error("Unauthorized"));
   }
 
-  // TODO 第三引数には本来event.methodArnの値を設定する。本実装の時に対応。 @keita-nishimoto
+  // TODO 仮実装。後で本格的な実装を行う。 @keita-nishimoto
+  let effect = "";
+  switch (accessToken) {
+    case "allow":
+      effect = "Allow";
+      break;
+    case "deny":
+      effect = "Deny";
+      break;
+    case "error":
+      callback(new Error("Internal Server Error"));
+      break;
+    default:
+      effect = "Allow";
+      break;
+  }
+
+  // TODO 第一引数（principalId）にはアクセストークンに紐付いたユーザーIDを渡すように改修する @keita-nishimoto
   const authResponse = generatePolicy(
-    accessToken,
-    "Allow",
-    "arn:aws:execute-api:ap-northeast-1:999999999999:test999999/*/POST/clients"
+    "user",
+    effect,
+    event.methodArn
   );
 
-  const response = {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin" : "*"
-    },
-    body: JSON.stringify(authResponse),
-  };
-
-  callback(null, response);
+  callback(null, authResponse);
 };
 
 /**
