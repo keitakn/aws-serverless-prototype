@@ -19,10 +19,38 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 
 サンプル用の各APIの呼び出し方法です。
 
+各APIの呼出にはアクセストークンによる認可が必要です。
+Authorizationにアクセストークンを設定して下さい。
+
+- allow（正常に認可が行われる）
+
+```bash
+curl -kv \
+-H "Authorization: Bearer allow" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
+```
+
+- deny（response 403 Forbidden）
+
+```bash
+curl -kv \
+-H "Authorization: Bearer deny" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
+```
+
+- error（500 Internal Server Error）
+
+```bash
+curl -kv \
+-H "Authorization: Bearer error" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
+```
+
 ### createClient
 
 ```bash
 curl -X POST -kv \
+-H "Authorization: Bearer allow" \
 -d \
 '
 {
@@ -36,13 +64,16 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
 ### findClient
 
 ```bash
-curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
+curl -kv \
+-H "Authorization: Bearer allow" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
 ```
 
 ### userCreate
 
 ```bash
 curl -X POST -kv \
+-H "Authorization: Bearer allow" \
 -d \
 '
 {
@@ -57,7 +88,9 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
 
 ### findUser
 ```bash
-curl -kv https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
+curl -kv \
+-H "Authorization: Bearer allow" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
 ```
 
 ## AWS services used
