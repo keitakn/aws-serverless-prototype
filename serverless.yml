@@ -22,7 +22,7 @@ provider:
 
 functions:
   createClient:
-    handler: clients.create
+    handler: client.create
     events:
       - http:
           path: clients
@@ -32,7 +32,7 @@ functions:
             resultTtlInSeconds: 0
           cors: true
   findClient:
-    handler: clients.find
+    handler: client.find
     events:
       - http:
           path: clients/{id}
@@ -42,7 +42,7 @@ functions:
             resultTtlInSeconds: 0
           cors: true
   createUser:
-    handler: users.create
+    handler: user.create
     events:
       - http:
           path: users
@@ -52,7 +52,7 @@ functions:
             resultTtlInSeconds: 0
           cors: true
   findUser:
-    handler: users.find
+    handler: user.find
     events:
       - http:
           path: users/{id}
