@@ -5,13 +5,13 @@
  * @since 2016-01-17
  */
 interface UserEntityInterface {
-  id: string
-  email: string
-  emailVerified: number
-  name: string
-  gender: string
-  birthdate: string
-  updatedAt: number
+  id: string;
+  email: string;
+  emailVerified: number;
+  name: string;
+  gender: string;
+  birthdate: string;
+  updatedAt: number;
 }
 
 /**

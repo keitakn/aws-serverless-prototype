@@ -1,6 +1,8 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
+import {AccessTokenRepository} from "../repositories/access-token-repository";
+import {AccessTokenEntity} from "../domain/auth/access-token-entity";
 
 sourceMapSupport.install();
 
@@ -39,14 +41,41 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
       break;
   }
 
-  // TODO 第一引数（principalId）にはアクセストークンに紐付いたユーザーIDを渡すように改修する @keita-nishimoto
-  const authResponse = generatePolicy(
-    "user",
-    effect,
-    event.methodArn
-  );
+  const accessTokenRepository = new AccessTokenRepository();
 
-  callback(null, authResponse);
+  accessTokenRepository.fetch(accessToken)
+    .then((accessTokenEntity) => {
+      const authResponse = generatePolicy(
+        "user",
+        effect,
+        event.methodArn
+      );
+
+      callback(null, authResponse);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+
+  /*
+  introspect(accessToken)
+    .then((accessTokenEntity: AccessTokenEntity) => {
+      console.log(accessTokenEntity);
+
+      const authResponse = generatePolicy(
+        accessTokenEntity.token,
+        effect,
+        event.methodArn
+      );
+
+      console.log(authResponse);
+
+      callback(null, authResponse);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+    */
 };
 
 /**
@@ -73,6 +102,21 @@ const extractAccessToken = (authorizationHeader: string): string => {
 
   return accessToken;
 };
+
+/**
+ * AuthleteのイントロスペクションAPIからアクセストークンを取得する
+ *
+ * @param accessToken
+ * @returns {Promise<AccessTokenEntity>}
+ */
+
+/*
+const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
+  const accessTokenRepository = new AccessTokenRepository();
+
+  return accessTokenRepository.fetch(accessToken);
+};
+*/
 
 /**
  * API Gatewayに返すポリシーを生成する

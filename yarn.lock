@@ -12,9 +12,22 @@
   dependencies:
     "@types/node" "*"
 
+"@types/form-data@*":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@types/form-data/-/form-data-0.0.33.tgz#c9ac85b2a5fd18435b8c85d9ecb50e6d6c893ff8"
+  dependencies:
+    "@types/node" "*"
+
 "@types/node@*":
   version "6.0.58"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.58.tgz#7b3b7065f3cdf24e2349d35b68d2795cfa874553"
+
+"@types/request@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@types/request/-/request-0.0.39.tgz#168b96cf4253c5d54d403f746f82ee7aed47ce2c"
+  dependencies:
+    "@types/form-data" "*"
+    "@types/node" "*"
 
 "@types/source-map-support@^0.2.28":
   version "0.2.28"
