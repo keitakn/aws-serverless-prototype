@@ -1,3 +1,5 @@
+import {IntrospectionResponseInterface} from "./introspection-response-interface";
+
 /**
  * AccessTokenEntityInterface
  *
@@ -6,8 +8,8 @@
  */
 interface AccessTokenEntityInterface {
   token: string;
-  clientId: number;
-  sub: string;
+  introspectionResponse: IntrospectionResponseInterface;
+  extractHttpStats(): string;
 }
 
 /**
@@ -17,15 +19,16 @@ interface AccessTokenEntityInterface {
  * @since 2016-01-23
  */
 export class AccessTokenEntity implements AccessTokenEntityInterface {
-
   /**
    * constructor
    *
    * @param _token
-   * @param _clientId
-   * @param _sub
+   * @param _introspectionResponse
    */
-  constructor(private _token: string, private _clientId: number, private _sub: string) {
+  constructor(
+    private _token: string,
+    private _introspectionResponse: IntrospectionResponseInterface
+  ) {
   }
 
   /**
@@ -36,16 +39,18 @@ export class AccessTokenEntity implements AccessTokenEntityInterface {
   }
 
   /**
-   * @returns {number}
+   * @returns {IntrospectionResponseInterface}
    */
-  get clientId(): number {
-    return this._clientId;
+  get introspectionResponse(): IntrospectionResponseInterface {
+    return this._introspectionResponse;
   }
 
   /**
+   * AuthleteのイントロスペクションAPI.actionから返却すべきHTTPステータスコードを取り出す
+   *
    * @returns {string}
    */
-  get sub(): string {
-    return this._sub;
+  extractHttpStats(): string {
+    return this._introspectionResponse.action;
   }
 }

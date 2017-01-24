@@ -24,58 +24,40 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
     callback(new Error("Unauthorized"));
   }
 
-  // TODO 仮実装。後で本格的な実装を行う。 @keita-nishimoto
-  let effect = "";
-  switch (accessToken) {
-    case "allow":
-      effect = "Allow";
-      break;
-    case "deny":
-      effect = "Deny";
-      break;
-    case "error":
-      callback(new Error("Internal Server Error"));
-      break;
-    default:
-      effect = "Allow";
-      break;
-  }
-
-  const accessTokenRepository = new AccessTokenRepository();
-
-  accessTokenRepository.fetch(accessToken)
-    .then((accessTokenEntity) => {
-      const authResponse = generatePolicy(
-        "user",
-        effect,
-        event.methodArn
-      );
-
-      callback(null, authResponse);
-    })
-    .catch((error) => {
-      callback(error);
-    });
-
-  /*
   introspect(accessToken)
     .then((accessTokenEntity: AccessTokenEntity) => {
-      console.log(accessTokenEntity);
+
+      let effect = "";
+      switch (accessTokenEntity.extractHttpStats()) {
+        case "OK":
+          effect = "Allow";
+          break;
+        case "BAD_REQUEST":
+        case "FORBIDDEN":
+          effect = "Deny";
+          break;
+        case "UNAUTHORIZED":
+          callback(new Error("Unauthorized"));
+          break;
+        case "INTERNAL_SERVER_ERROR":
+          callback(new Error("Internal Server Error"));
+          break;
+        default:
+          callback(new Error("Internal Server Error"));
+          break;
+      }
 
       const authResponse = generatePolicy(
-        accessTokenEntity.token,
+        accessTokenEntity.introspectionResponse.subject,
         effect,
         event.methodArn
       );
-
-      console.log(authResponse);
 
       callback(null, authResponse);
     })
     .catch((error) => {
       callback(error);
     });
-    */
 };
 
 /**
@@ -109,14 +91,11 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @param accessToken
  * @returns {Promise<AccessTokenEntity>}
  */
-
-/*
 const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
   return accessTokenRepository.fetch(accessToken);
 };
-*/
 
 /**
  * API Gatewayに返すポリシーを生成する
@@ -126,7 +105,7 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
  * @param resource
  * @returns {{principalId: string, policyDocument: {}}}
  */
-const generatePolicy = (principalId, effect, resource): any => {
+const generatePolicy = (principalId: string, effect: string, resource: any): any => {
   const authResponse = {
     principalId: "",
     policyDocument: {}

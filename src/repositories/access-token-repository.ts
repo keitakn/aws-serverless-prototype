@@ -1,6 +1,7 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
 import {AccessTokenEntity} from "../domain/auth/access-token-entity";
+import {IntrospectionResponseInterface} from "../domain/auth/introspection-response-interface";
 
 /**
  * AccessTokenRepository
@@ -41,7 +42,7 @@ export class AccessTokenRepository {
     };
 
     return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
-      request(options, (error: Error, response: any, body) => {
+      request(options, (error: Error, response: any, introspectionResponse: IntrospectionResponseInterface) => {
         try {
           if (error) {
             reject(error);
@@ -51,11 +52,9 @@ export class AccessTokenRepository {
             reject(new Error("Internal Server Error"));
           }
 
-          // TODO bodyの型定義を行う @keita-nishimoto
           const accessTokenEntity = new AccessTokenEntity(
             accessToken,
-            body.clientId,
-            body.subject
+            introspectionResponse
           );
 
           resolve(accessTokenEntity);
