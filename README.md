@@ -30,9 +30,10 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 確認した値は控えておき、下記のファイル内に記載します。
 
 - src/repositories/access-token-repository.ts
-```typescript
-    const API_KEY    = "YOUR API KEY";
-    const API_SECRET = "YOUR API SECRET";
+
+```
+const API_KEY    = "YOUR API KEY";
+const API_SECRET = "YOUR API SECRET";
 ```
 
 この仕組はイケてないので [こちらのissue](https://github.com/keita-nishimoto/aws-serverless-prototype/issues/37) で何らかの対応を行います。
@@ -43,9 +44,15 @@ Authleteでは、```https://api.authlete.com/api/auth/authorization/direct/{serv
 
 最も簡単な方法は以下のURLにブラウザでアクセスして[インプシリットフロー](https://tools.ietf.org/html/rfc6749#section-4.2) でアクセストークンを取得する事です。
 
-```https://api.authlete.com/api/auth/authorization/direct/{service-api-key}?client_id={client-id}&response_type=token```
+下記が接続の例になります。
+
+```
+https://api.authlete.com/api/auth/authorization/direct/{service-api-key}?client_id={client-id}&response_type=token
+```
 
 表示される認可画面のログインフォームには、あなたのAPIキーとAPIシークレットを入力して下さい。
+
+アクセストークン取得方法のさらに詳しい方法に関しては [Getting Started](https://www.authlete.com/documents/getting_started) を見て下さい。
 
 ## How to use
 
@@ -98,6 +105,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
 ```
 
 ### findUser
+
 ```bash
 curl -kv \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
