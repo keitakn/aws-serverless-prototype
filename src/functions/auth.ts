@@ -1,6 +1,8 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
+import {AccessTokenRepository} from "../repositories/access-token-repository";
+import {AccessTokenEntity} from "../domain/auth/access-token-entity";
 
 sourceMapSupport.install();
 
@@ -22,31 +24,40 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
     callback(new Error("Unauthorized"));
   }
 
-  // TODO 仮実装。後で本格的な実装を行う。 @keita-nishimoto
-  let effect = "";
-  switch (accessToken) {
-    case "allow":
-      effect = "Allow";
-      break;
-    case "deny":
-      effect = "Deny";
-      break;
-    case "error":
-      callback(new Error("Internal Server Error"));
-      break;
-    default:
-      effect = "Allow";
-      break;
-  }
+  introspect(accessToken)
+    .then((accessTokenEntity: AccessTokenEntity) => {
 
-  // TODO 第一引数（principalId）にはアクセストークンに紐付いたユーザーIDを渡すように改修する @keita-nishimoto
-  const authResponse = generatePolicy(
-    "user",
-    effect,
-    event.methodArn
-  );
+      let effect = "";
+      switch (accessTokenEntity.extractHttpStats()) {
+        case "OK":
+          effect = "Allow";
+          break;
+        case "BAD_REQUEST":
+        case "FORBIDDEN":
+          effect = "Deny";
+          break;
+        case "UNAUTHORIZED":
+          callback(new Error("Unauthorized"));
+          break;
+        case "INTERNAL_SERVER_ERROR":
+          callback(new Error("Internal Server Error"));
+          break;
+        default:
+          callback(new Error("Internal Server Error"));
+          break;
+      }
 
-  callback(null, authResponse);
+      const authResponse = generatePolicy(
+        accessTokenEntity.introspectionResponse.subject,
+        effect,
+        event.methodArn
+      );
+
+      callback(null, authResponse);
+    })
+    .catch((error) => {
+      callback(error);
+    });
 };
 
 /**
@@ -75,6 +86,18 @@ const extractAccessToken = (authorizationHeader: string): string => {
 };
 
 /**
+ * AuthleteのイントロスペクションAPIからアクセストークンを取得する
+ *
+ * @param accessToken
+ * @returns {Promise<AccessTokenEntity>}
+ */
+const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
+  const accessTokenRepository = new AccessTokenRepository();
+
+  return accessTokenRepository.fetch(accessToken);
+};
+
+/**
  * API Gatewayに返すポリシーを生成する
  *
  * @param principalId
@@ -82,7 +105,7 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @param resource
  * @returns {{principalId: string, policyDocument: {}}}
  */
-const generatePolicy = (principalId, effect, resource): any => {
+const generatePolicy = (principalId: string, effect: string, resource: any): any => {
   const authResponse = {
     principalId: "",
     policyDocument: {}
