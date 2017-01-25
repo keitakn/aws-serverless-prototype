@@ -30,7 +30,6 @@ export class ClientRepository implements ClientRepositoryInterface {
       dynamoDb.get(params, (error: any, data: any) => {
         try {
           if (error) {
-            console.log("エラーが出たよ 33行目");
             reject(error);
           }
 
