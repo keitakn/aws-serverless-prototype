@@ -1,3 +1,5 @@
+type Actions = "OK" | "BAD_REQUEST" | "FORBIDDEN" | "UNAUTHORIZED" | "INTERNAL_SERVER_ERROR";
+
 /**
  * IntrospectionResponseInterface
  * AuthleteのイントロスペクションAPIの結果
@@ -25,10 +27,8 @@ export interface IntrospectionResponseInterface {
    * - FORBIDDEN
    * - UNAUTHORIZED
    * - INTERNAL_SERVER_ERROR
-   *
-   * @todo String literal typesに変更出来そうか試してみる @keita-nishimoto
    */
-  action: string;
+  action: Actions;
 
   /**
    * アクセストークンに紐付いているクライアントID
