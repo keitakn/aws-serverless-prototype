@@ -5,7 +5,7 @@
  * @author keita-nishimoto
  * @since 2016-01-18
  */
-export class NotFoundError extends Error {
+export default class NotFoundError extends Error {
   /**
    * constructor
    *

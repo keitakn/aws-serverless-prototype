@@ -2,9 +2,9 @@ import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
-import {UserEntity} from "../domain/user/user-entity";
-import {UserRepository} from "../repositories/user-repository";
-import {ErrorResponse} from "../domain/error-response";
+import UserEntity from "../domain/user/user-entity";
+import UserRepository from "../repositories/user-repository";
+import ErrorResponse from "../domain/error-response";
 
 sourceMapSupport.install();
 

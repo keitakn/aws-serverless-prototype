@@ -1,6 +1,6 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
-import {AccessTokenEntity} from "../domain/auth/access-token-entity";
+import AccessTokenEntity from "../domain/auth/access-token-entity";
 import {IntrospectionResponseInterface} from "../domain/auth/introspection-response-interface";
 
 /**
@@ -9,7 +9,7 @@ import {IntrospectionResponseInterface} from "../domain/auth/introspection-respo
  * @author keita-nishimoto
  * @since 2016-01-23
  */
-export class AccessTokenRepository {
+export default class AccessTokenRepository {
 
   /**
    * アクセストークンを取得する

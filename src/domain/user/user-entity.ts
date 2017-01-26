@@ -20,7 +20,7 @@ interface UserEntityInterface {
  * @author keita-nishimoto
  * @since 2016-01-17
  */
-export class UserEntity implements UserEntityInterface {
+export default class UserEntity implements UserEntityInterface {
 
   /**
    * メールアドレス

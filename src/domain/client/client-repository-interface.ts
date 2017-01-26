@@ -1,4 +1,4 @@
-import {ClientEntity} from "./client-entity";
+import ClientEntity from "./client-entity";
 
 /**
  * ClientRepositoryInterface

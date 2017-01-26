@@ -1,4 +1,4 @@
-import {UserEntity} from "./user-entity";
+import UserEntity from "./user-entity";
 
 /**
  * UserRepositoryInterface

@@ -25,6 +25,8 @@ export interface IntrospectionResponseInterface {
    * - FORBIDDEN
    * - UNAUTHORIZED
    * - INTERNAL_SERVER_ERROR
+   *
+   * @todo String literal typesに変更出来そうか試してみる @keita-nishimoto
    */
   action: string;
 
