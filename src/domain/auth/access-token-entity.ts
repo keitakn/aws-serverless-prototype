@@ -18,7 +18,7 @@ interface AccessTokenEntityInterface {
  * @author keita-nishimoto
  * @since 2016-01-23
  */
-export class AccessTokenEntity implements AccessTokenEntityInterface {
+export default class AccessTokenEntity implements AccessTokenEntityInterface {
   /**
    * constructor
    *

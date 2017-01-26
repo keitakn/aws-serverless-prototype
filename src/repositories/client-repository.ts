@@ -1,7 +1,7 @@
-import {ClientEntity} from "../domain/client/client-entity";
+import ClientEntity from "../domain/client/client-entity";
 import * as AWS from "aws-sdk";
 import {ClientRepositoryInterface} from "../domain/client/client-repository-interface";
-import {NotFoundError} from "../errors/not-found-error";
+import NotFoundError from "../errors/not-found-error";
 
 /**
  * ClientRepository
@@ -9,7 +9,7 @@ import {NotFoundError} from "../errors/not-found-error";
  * @author keita-nishimoto
  * @since 2016-01-16
  */
-export class ClientRepository implements ClientRepositoryInterface {
+export default class ClientRepository implements ClientRepositoryInterface {
 
   /**
    * クライアントを取得する

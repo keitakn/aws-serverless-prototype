@@ -1,7 +1,7 @@
 import * as AWS from "aws-sdk";
-import {UserEntity} from "../domain/user/user-entity";
+import UserEntity from "../domain/user/user-entity";
 import {UserRepositoryInterface} from "../domain/user/user-repository-interface";
-import {NotFoundError} from "../errors/not-found-error";
+import NotFoundError from "../errors/not-found-error";
 
 /**
  * UserRepository
@@ -9,7 +9,7 @@ import {NotFoundError} from "../errors/not-found-error";
  * @author keita-nishimoto
  * @since 2016-01-18
  */
-export class UserRepository implements UserRepositoryInterface {
+export default class UserRepository implements UserRepositoryInterface {
 
   /**
    * ユーザーを取得する

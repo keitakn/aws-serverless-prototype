@@ -19,7 +19,7 @@ interface ClientEntityInterface {
  * @author keita-nishimoto
  * @since 2016-01-16
  */
-export class ClientEntity implements ClientEntityInterface {
+export default class ClientEntity implements ClientEntityInterface {
 
   /**
    * クライアントシークレット

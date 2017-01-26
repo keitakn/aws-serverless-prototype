@@ -4,7 +4,7 @@
  * @author keita-nishimoto
  * @since 2016-01-19
  */
-export class ErrorResponse {
+export default class ErrorResponse {
 
   /**
    * エラーレスポンスに必要な定数
