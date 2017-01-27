@@ -12,6 +12,35 @@ import NotFoundError from "../errors/not-found-error";
 export default class UserRepository implements UserRepositoryInterface {
 
   /**
+   * 自身のインスタンス
+   */
+  private static _instance: UserRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  constructor() {
+    if (UserRepository._instance) {
+      throw new Error("Error: Instantiation failed: Use UserRepository.getInstance() instead of new.");
+    }
+    UserRepository._instance = this;
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {UserRepository}
+   */
+  public static getInstance(): UserRepository {
+    if (UserRepository._instance === null) {
+      UserRepository._instance = new UserRepository();
+    }
+
+    return UserRepository._instance;
+  }
+
+  /**
    * ユーザーを取得する
    *
    * @param userId

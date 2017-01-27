@@ -27,7 +27,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   userEntity.birthdate = requestBody.birthdate;
   userEntity.updatedAt = nowDateTime;
 
-  const userRepository = new UserRepository();
+  const userRepository = UserRepository.getInstance();
   userRepository.save(userEntity)
     .then((userEntity) => {
 
@@ -68,7 +68,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   const userId = event.pathParameters.id;
 
-  const userRepository = new UserRepository();
+  const userRepository = UserRepository.getInstance();
   userRepository.find(userId)
     .then((userEntity) => {
       const responseBody = {
