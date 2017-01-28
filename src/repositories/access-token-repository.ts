@@ -12,6 +12,33 @@ import {IntrospectionResponseInterface} from "../domain/auth/introspection-respo
 export default class AccessTokenRepository {
 
   /**
+   * 自身のインスタンス
+   */
+  private static _instance: AccessTokenRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  private constructor() {
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {AccessTokenRepository}
+   */
+  public static getInstance(): AccessTokenRepository {
+    if (AccessTokenRepository._instance) {
+      return AccessTokenRepository._instance;
+    }
+
+    AccessTokenRepository._instance = new AccessTokenRepository();
+
+    return AccessTokenRepository._instance;
+  }
+
+  /**
    * アクセストークンを取得する
    * AuthleteのイントロスペクションAPIを利用する
    *
