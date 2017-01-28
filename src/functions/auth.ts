@@ -92,7 +92,7 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @returns {Promise<AccessTokenEntity>}
  */
 const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
-  const accessTokenRepository = new AccessTokenRepository();
+  const accessTokenRepository = AccessTokenRepository.getInstance();
 
   return accessTokenRepository.fetch(accessToken);
 };

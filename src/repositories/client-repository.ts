@@ -1,7 +1,7 @@
 import ClientEntity from "../domain/client/client-entity";
-import * as AWS from "aws-sdk";
 import {ClientRepositoryInterface} from "../domain/client/client-repository-interface";
 import NotFoundError from "../errors/not-found-error";
+import AwsSdkFactory from "../factories/aws-sdk-factory";
 
 /**
  * ClientRepository
@@ -12,13 +12,41 @@ import NotFoundError from "../errors/not-found-error";
 export default class ClientRepository implements ClientRepositoryInterface {
 
   /**
+   * 自身のインスタンス
+   */
+  private static _instance: ClientRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  private constructor() {
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {ClientRepository}
+   */
+  public static getInstance(): ClientRepository {
+    if (ClientRepository._instance) {
+      return ClientRepository._instance;
+    }
+
+    ClientRepository._instance = new ClientRepository();
+
+    return ClientRepository._instance;
+  }
+
+  /**
    * クライアントを取得する
    *
    * @param clientId
    * @returns {Promise<ClientEntity>}
    */
   find(clientId: string): Promise<ClientEntity> {
-    const dynamoDb = new AWS.DynamoDB.DocumentClient();
+    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+
     const params = {
       TableName: "Clients",
       Key: {
@@ -59,7 +87,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @returns {Promise<ClientEntity>}
    */
   save(clientEntity: ClientEntity): Promise<ClientEntity> {
-    const dynamoDb = new AWS.DynamoDB.DocumentClient();
+    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
     const clientCreateParams = {
       id: clientEntity.id,

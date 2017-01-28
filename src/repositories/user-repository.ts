@@ -1,7 +1,7 @@
-import * as AWS from "aws-sdk";
 import UserEntity from "../domain/user/user-entity";
 import {UserRepositoryInterface} from "../domain/user/user-repository-interface";
 import NotFoundError from "../errors/not-found-error";
+import AwsSdkFactory from "../factories/aws-sdk-factory";
 
 /**
  * UserRepository
@@ -12,13 +12,40 @@ import NotFoundError from "../errors/not-found-error";
 export default class UserRepository implements UserRepositoryInterface {
 
   /**
+   * 自身のインスタンス
+   */
+  private static _instance: UserRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  private constructor() {
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {UserRepository}
+   */
+  public static getInstance(): UserRepository {
+    if (UserRepository._instance) {
+      return UserRepository._instance;
+    }
+
+    UserRepository._instance = new UserRepository();
+
+    return UserRepository._instance;
+  }
+
+  /**
    * ユーザーを取得する
    *
    * @param userId
    * @returns {Promise<UserEntity>}
    */
   find(userId: string): Promise<UserEntity> {
-    const dynamoDb = new AWS.DynamoDB.DocumentClient();
+    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
     const params = {
       TableName: "Users",
@@ -61,7 +88,7 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<UserEntity>}
    */
   save(userEntity: UserEntity): Promise<UserEntity> {
-    const dynamoDb = new AWS.DynamoDB.DocumentClient();
+    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
     const userCreateParams = {
       id: userEntity.id,

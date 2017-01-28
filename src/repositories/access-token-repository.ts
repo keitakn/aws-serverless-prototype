@@ -2,6 +2,7 @@ import * as request from "request";
 import {Error} from "tslint/lib/error";
 import AccessTokenEntity from "../domain/auth/access-token-entity";
 import {IntrospectionResponseInterface} from "../domain/auth/introspection-response-interface";
+import {AccessTokenRepositoryInterface} from "../domain/auth/access-token-repository-interface";
 
 /**
  * AccessTokenRepository
@@ -9,7 +10,34 @@ import {IntrospectionResponseInterface} from "../domain/auth/introspection-respo
  * @author keita-nishimoto
  * @since 2016-01-23
  */
-export default class AccessTokenRepository {
+export default class AccessTokenRepository implements AccessTokenRepositoryInterface {
+
+  /**
+   * 自身のインスタンス
+   */
+  private static _instance: AccessTokenRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  private constructor() {
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {AccessTokenRepository}
+   */
+  public static getInstance(): AccessTokenRepository {
+    if (AccessTokenRepository._instance) {
+      return AccessTokenRepository._instance;
+    }
+
+    AccessTokenRepository._instance = new AccessTokenRepository();
+
+    return AccessTokenRepository._instance;
+  }
 
   /**
    * アクセストークンを取得する

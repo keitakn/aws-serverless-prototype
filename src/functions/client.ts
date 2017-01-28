@@ -26,7 +26,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   clientEntity.redirectUri = requestBody.redirect_uri;
   clientEntity.updatedAt = nowDateTime;
 
-  const clientRepository = new ClientRepository();
+  const clientRepository = ClientRepository.getInstance();
 
   clientRepository.save(clientEntity)
     .then((clientEntity) => {
@@ -64,7 +64,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
   const clientId = event.pathParameters.id;
-  const clientRepository = new ClientRepository();
+  const clientRepository = ClientRepository.getInstance();
 
   clientRepository.find(clientId)
     .then((clientEntity) => {
