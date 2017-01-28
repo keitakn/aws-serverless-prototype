@@ -20,11 +20,7 @@ export default class UserRepository implements UserRepositoryInterface {
    * constructor
    * シングルトンなのでprivateで宣言
    */
-  constructor() {
-    if (UserRepository._instance) {
-      throw new Error("Error: Instantiation failed: Use UserRepository.getInstance() instead of new.");
-    }
-    UserRepository._instance = this;
+  private constructor() {
   }
 
   /**
@@ -33,9 +29,11 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {UserRepository}
    */
   public static getInstance(): UserRepository {
-    if (UserRepository._instance === null) {
-      UserRepository._instance = new UserRepository();
+    if (UserRepository._instance) {
+      return UserRepository._instance;
     }
+
+    UserRepository._instance = new UserRepository();
 
     return UserRepository._instance;
   }

@@ -12,6 +12,33 @@ import NotFoundError from "../errors/not-found-error";
 export default class ClientRepository implements ClientRepositoryInterface {
 
   /**
+   * 自身のインスタンス
+   */
+  private static _instance: ClientRepository;
+
+  /**
+   * constructor
+   * シングルトンなのでprivateで宣言
+   */
+  private constructor() {
+  }
+
+  /**
+   * 自身のインスタンスを取得する
+   *
+   * @returns {ClientRepository}
+   */
+  public static getInstance(): ClientRepository {
+    if (ClientRepository._instance) {
+      return ClientRepository._instance;
+    }
+
+    ClientRepository._instance = new ClientRepository();
+
+    return ClientRepository._instance;
+  }
+
+  /**
    * クライアントを取得する
    *
    * @param clientId
