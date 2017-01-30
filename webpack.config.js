@@ -1,13 +1,17 @@
+const fs = require('fs');
 const path = require("path");
-const glob = require("glob");
+const paths = require("./paths");
+
+const handlers = fs.readdirSync(paths.appFunctions)
+  .map(filename => ({
+    [path.basename(filename, ".ts")]: path.join(paths.appFunctions, filename),
+  }))
+  .reduce(
+    (finalObject, entry) => Object.assign(finalObject, entry), {}
+  );
 
 module.exports = {
-  entry: glob.sync("./src/functions/*.ts").reduce(function(acc, item) {
-    const obj = {};
-    obj[path.basename(item, ".ts")] = item;
-    return Object.assign(acc, obj);
-  }, {}),
-
+  entry: handlers,
   target:  "node",
   devtool: "source-map",
 
@@ -29,15 +33,13 @@ module.exports = {
     extensions: [
       ".ts",
       ".js",
-      ".tsx",
-      ".jsx",
       "",
     ],
   },
 
   output: {
     libraryTarget: "commonjs",
-    path:          path.join(__dirname, ".build"),
-    filename:      "[name].js",
+    path: paths.appBuild,
+    filename: "[name].js",
   },
 };
