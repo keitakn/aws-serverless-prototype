@@ -2,7 +2,6 @@ service: prototype
 
 plugins:
   - serverless-webpack
-  - serverless-offline
 
 provider:
   name: aws
@@ -64,6 +63,11 @@ functions:
           cors: true
   authorization:
     handler: auth.authorization
+    events:
+      - http:
+          path: auth/authorization
+          method: get
+          cors: true
 
 resources:
   Resources:
