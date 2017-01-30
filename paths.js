@@ -10,7 +10,7 @@ const nodePaths = (process.env.NODE_PATH || "")
   .map(resolveApp);
 
 module.exports = {
-  appBuild: resolveApp(".build"),
+  appBuild: resolveApp(".webpack"),
   appFunctions: resolveApp("src/functions"),
   appPackageJson: resolveApp("package.json"),
   appNodeModules: resolveApp("node_modules"),
