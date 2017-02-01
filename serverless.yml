@@ -63,11 +63,6 @@ functions:
           cors: true
   authorization:
     handler: auth.authorization
-    events:
-      - http:
-          path: auth/authorization
-          method: get
-          cors: true
 
 resources:
   Resources:
