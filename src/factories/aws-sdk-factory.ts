@@ -42,8 +42,19 @@ export default class AwsSdkFactory {
    *
    * @returns {DocumentClient|DynamoDB.DocumentClient}
    */
-  createDynamoDbDocumentClient(): DocumentClient {
-    // TODO 生成ロジックを分離したがこのオブジェクトをFlyweightで1つにして良いかは検討する @keita-nishimoto
+  createDynamoDbDocumentClient(isLocal = false): DocumentClient {
+    if (isLocal === true) {
+      // DocumentClientOptionsというInterfaceで渡さないとダメみたい
+      const documentClientOptions = {
+        region: "localhost",
+        endpoint: "http://localhost:9000"
+      };
+
+      const dynamoDbDocumentClient = new AWS.DynamoDB.DocumentClient(documentClientOptions);
+
+      return dynamoDbDocumentClient;
+    }
+
     const dynamoDbDocumentClient = new AWS.DynamoDB.DocumentClient();
 
     return dynamoDbDocumentClient;

@@ -3,10 +3,14 @@ import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import UserEntity from "../domain/user/user-entity";
-import UserRepository from "../repositories/user-repository";
 import ErrorResponse from "../domain/error-response";
+import AwsSdkFactory from "../factories/aws-sdk-factory";
+import UserRepository from "../repositories/user-repository";
+import Environment from "../infrastructures/Environment";
 
 sourceMapSupport.install();
+
+let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
 /**
  * ユーザーを作成する
@@ -16,7 +20,16 @@ sourceMapSupport.install();
  * @param callback
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const requestBody = JSON.parse(event.body);
+  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
+  const environment = new Environment(event);
+
+  let requestBody;
+  if (environment.isLocal() === true) {
+    requestBody = event.body;
+  } else {
+    requestBody = JSON.parse(event.body);
+  }
+
   const nowDateTime = new Date().getTime();
 
   const userEntity = new UserEntity(uuid.v4(), nowDateTime);
@@ -27,7 +40,13 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   userEntity.birthdate = requestBody.birthdate;
   userEntity.updatedAt = nowDateTime;
 
-  const userRepository = UserRepository.getInstance();
+  if (environment.isLocal() === true) {
+    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+      environment.isLocal()
+    );
+  }
+
+  const userRepository = new UserRepository(dynamoDbDocumentClient);
   userRepository.save(userEntity)
     .then((userEntity) => {
 
@@ -66,9 +85,16 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
  * @param callback
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   const userId = event.pathParameters.id;
+  const environment = new Environment(event);
+  if (environment.isLocal() === true) {
+    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+      environment.isLocal()
+    );
+  }
 
-  const userRepository = UserRepository.getInstance();
+  const userRepository = new UserRepository(dynamoDbDocumentClient);
   userRepository.find(userId)
     .then((userEntity) => {
       const responseBody = {
