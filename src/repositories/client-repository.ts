@@ -1,7 +1,7 @@
 import ClientEntity from "../domain/client/client-entity";
 import {ClientRepositoryInterface} from "../domain/client/client-repository-interface";
 import NotFoundError from "../errors/not-found-error";
-import AwsSdkFactory from "../factories/aws-sdk-factory";
+import {DynamoDB} from "aws-sdk";
 
 /**
  * ClientRepository
@@ -12,30 +12,11 @@ import AwsSdkFactory from "../factories/aws-sdk-factory";
 export default class ClientRepository implements ClientRepositoryInterface {
 
   /**
-   * 自身のインスタンス
-   */
-  private static _instance: ClientRepository;
-
-  /**
    * constructor
-   * シングルトンなのでprivateで宣言
-   */
-  private constructor() {
-  }
-
-  /**
-   * 自身のインスタンスを取得する
    *
-   * @returns {ClientRepository}
+   * @param dynamoDbDocumentClient
    */
-  public static getInstance(): ClientRepository {
-    if (ClientRepository._instance) {
-      return ClientRepository._instance;
-    }
-
-    ClientRepository._instance = new ClientRepository();
-
-    return ClientRepository._instance;
+  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient) {
   }
 
   /**
@@ -45,7 +26,6 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @returns {Promise<ClientEntity>}
    */
   find(clientId: string): Promise<ClientEntity> {
-    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
     const params = {
       TableName: "Clients",
@@ -55,7 +35,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      dynamoDb.get(params, (error: any, data: any) => {
+      this.dynamoDbDocumentClient.get(params, (error: any, data: any) => {
         try {
           if (error) {
             reject(error);
@@ -87,7 +67,6 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @returns {Promise<ClientEntity>}
    */
   save(clientEntity: ClientEntity): Promise<ClientEntity> {
-    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
     const clientCreateParams = {
       id: clientEntity.id,
@@ -104,7 +83,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      dynamoDb.put(params, (error: any) => {
+      this.dynamoDbDocumentClient.put(params, (error: any) => {
         try {
           if (error) {
             reject(error);
