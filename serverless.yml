@@ -18,7 +18,15 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:ap-northeast-1:*:*"
+      Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
+
+custom:
+  authorizer:
+    name: authorization
+    type: 'TOKEN'
+    identitySource: method.request.header.Authorization
+    resultTtlInSeconds: 0
+  webpack: webpack.config.js
 
 functions:
   createClient:
@@ -27,9 +35,7 @@ functions:
       - http:
           path: clients
           method: post
-          authorizer:
-            name: authorization
-            resultTtlInSeconds: 0
+          authorizer: ${self:custom.authorizer}
           cors: true
   findClient:
     handler: client.find
@@ -37,9 +43,7 @@ functions:
       - http:
           path: clients/{id}
           method: get
-          authorizer:
-            name: authorization
-            resultTtlInSeconds: 0
+          authorizer: ${self:custom.authorizer}
           cors: true
   createUser:
     handler: user.create
@@ -47,9 +51,7 @@ functions:
       - http:
           path: users
           method: post
-          authorizer:
-            name: authorization
-            resultTtlInSeconds: 0
+          authorizer: ${self:custom.authorizer}
           cors: true
   findUser:
     handler: user.find
@@ -57,9 +59,7 @@ functions:
       - http:
           path: users/{id}
           method: get
-          authorizer:
-            name: authorization
-            resultTtlInSeconds: 0
+          authorizer: ${self:custom.authorizer}
           cors: true
   authorization:
     handler: auth.authorization
@@ -68,7 +68,7 @@ resources:
   Resources:
     ClientsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           -
@@ -84,7 +84,7 @@ resources:
         TableName: 'Clients'
     UsersDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           -

@@ -3,8 +3,12 @@ import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import ClientEntity from "../domain/client/client-entity";
-import ClientRepository from "../repositories/client-repository";
 import ErrorResponse from "../domain/error-response";
+import Environment from "../infrastructures/Environment";
+import AwsSdkFactory from "../factories/aws-sdk-factory";
+import ClientRepository from "../repositories/client-repository";
+
+let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
 sourceMapSupport.install();
 
@@ -16,7 +20,16 @@ sourceMapSupport.install();
  * @param callback
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  const requestBody = JSON.parse(event.body);
+  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
+  const environment = new Environment(event);
+
+  let requestBody;
+  if (environment.isLocal() === true) {
+    requestBody = event.body;
+  } else {
+    requestBody = JSON.parse(event.body);
+  }
+
   const nowDateTime = new Date().getTime();
 
   const clientEntity = new ClientEntity(uuid.v1(), nowDateTime);
@@ -26,7 +39,12 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   clientEntity.redirectUri = requestBody.redirect_uri;
   clientEntity.updatedAt = nowDateTime;
 
-  const clientRepository = ClientRepository.getInstance();
+  if (environment.isLocal() === true) {
+    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+      environment.isLocal()
+    );
+  }
+  const clientRepository = new ClientRepository(dynamoDbDocumentClient);
 
   clientRepository.save(clientEntity)
     .then((clientEntity) => {
@@ -62,9 +80,16 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
  * @param callback
  */
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-
+  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
+  const environment = new Environment(event);
   const clientId = event.pathParameters.id;
-  const clientRepository = ClientRepository.getInstance();
+
+  if (environment.isLocal() === true) {
+    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+      environment.isLocal()
+    );
+  }
+  const clientRepository = new ClientRepository(dynamoDbDocumentClient);
 
   clientRepository.find(clientId)
     .then((clientEntity) => {

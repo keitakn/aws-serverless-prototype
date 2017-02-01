@@ -1,7 +1,7 @@
 import UserEntity from "../domain/user/user-entity";
 import {UserRepositoryInterface} from "../domain/user/user-repository-interface";
 import NotFoundError from "../errors/not-found-error";
-import AwsSdkFactory from "../factories/aws-sdk-factory";
+import {DynamoDB} from "aws-sdk";
 
 /**
  * UserRepository
@@ -12,30 +12,11 @@ import AwsSdkFactory from "../factories/aws-sdk-factory";
 export default class UserRepository implements UserRepositoryInterface {
 
   /**
-   * 自身のインスタンス
-   */
-  private static _instance: UserRepository;
-
-  /**
    * constructor
-   * シングルトンなのでprivateで宣言
-   */
-  private constructor() {
-  }
-
-  /**
-   * 自身のインスタンスを取得する
    *
-   * @returns {UserRepository}
+   * @param dynamoDbDocumentClient
    */
-  public static getInstance(): UserRepository {
-    if (UserRepository._instance) {
-      return UserRepository._instance;
-    }
-
-    UserRepository._instance = new UserRepository();
-
-    return UserRepository._instance;
+  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient) {
   }
 
   /**
@@ -45,8 +26,6 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<UserEntity>}
    */
   find(userId: string): Promise<UserEntity> {
-    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
-
     const params = {
       TableName: "Users",
       Key: {
@@ -55,7 +34,7 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      dynamoDb.get(params, (error: any, data: any) => {
+      this.dynamoDbDocumentClient.get(params, (error: any, data: any) => {
         try {
           if (error) {
             reject(error);
@@ -88,8 +67,6 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<UserEntity>}
    */
   save(userEntity: UserEntity): Promise<UserEntity> {
-    const dynamoDb = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
-
     const userCreateParams = {
       id: userEntity.id,
       email: userEntity.email,
@@ -107,7 +84,7 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      dynamoDb.put(params, (error: any) => {
+      this.dynamoDbDocumentClient.put(params, (error: any) => {
         try {
           if (error) {
             reject(error);

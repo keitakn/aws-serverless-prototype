@@ -13,33 +13,6 @@ import {AccessTokenRepositoryInterface} from "../domain/auth/access-token-reposi
 export default class AccessTokenRepository implements AccessTokenRepositoryInterface {
 
   /**
-   * 自身のインスタンス
-   */
-  private static _instance: AccessTokenRepository;
-
-  /**
-   * constructor
-   * シングルトンなのでprivateで宣言
-   */
-  private constructor() {
-  }
-
-  /**
-   * 自身のインスタンスを取得する
-   *
-   * @returns {AccessTokenRepository}
-   */
-  public static getInstance(): AccessTokenRepository {
-    if (AccessTokenRepository._instance) {
-      return AccessTokenRepository._instance;
-    }
-
-    AccessTokenRepository._instance = new AccessTokenRepository();
-
-    return AccessTokenRepository._instance;
-  }
-
-  /**
    * アクセストークンを取得する
    * AuthleteのイントロスペクションAPIを利用する
    *
