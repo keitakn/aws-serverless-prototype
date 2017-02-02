@@ -4,6 +4,7 @@
     "moduleResolution": "node",
     "target": "es5",
     "sourceMap": true,
+    "removeComments": true,
     "lib": [
       "es2017"
     ],
