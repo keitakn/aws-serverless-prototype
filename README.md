@@ -29,7 +29,7 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 
 確認した値は控えておき、下記のファイル内に記載します。
 
-- src/repositories/access-token-repository.ts
+- src/repositories/AccessTokenRepository.ts
 
 ```
 const API_KEY    = "YOUR API KEY";

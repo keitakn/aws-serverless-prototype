@@ -1,8 +1,8 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
-import AccessTokenRepository from "../repositories/access-token-repository";
-import AccessTokenEntity from "../domain/auth/access-token-entity";
+import AccessTokenRepository from "../repositories/AccessTokenRepository";
+import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 
 sourceMapSupport.install();
 

@@ -1,4 +1,4 @@
-import AccessTokenEntity from "./access-token-entity";
+import AccessTokenEntity from "./AccessTokenEntity";
 
 /**
  * AccessTokenRepository
