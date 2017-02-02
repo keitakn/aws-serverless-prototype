@@ -3,6 +3,9 @@ import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
+import Statement from "../domain/auth/aws/iam/Statement";
+import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
+import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
 
 sourceMapSupport.install();
 
@@ -47,13 +50,13 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
           break;
       }
 
-      const authResponse = generatePolicy(
+      const authorizationResponse = generatePolicy(
         accessTokenEntity.introspectionResponse.subject,
         effect,
-        event.methodArn
+        [event.methodArn]
       );
 
-      callback(null, authResponse);
+      callback(null, authorizationResponse);
     })
     .catch((error) => {
       callback(error);
@@ -103,31 +106,25 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
  * @param principalId
  * @param effect
  * @param resource
- * @returns {{principalId: string, policyDocument: {}}}
+ * @returns {{principalId: string, policyDocument: {Version: string, Statement: {Action: string, Effect: string, Resource: string[]}[]}}}
  */
-const generatePolicy = (principalId: string, effect: string, resource: any): any => {
-  const authResponse = {
-    principalId: "",
-    policyDocument: {}
-  };
-  authResponse.principalId = principalId;
-  if (effect && resource) {
-    const policyDocument = {
-      Version: "2012-10-17",
-      Statement: []
-    };
+const generatePolicy = (principalId: string, effect: string, resource: [string]): Object => {
 
-    const statementOne = {
-      Action: "execute-api:Invoke",
-      Effect: "",
-      Resource: ""
-    };
+  const statement = new Statement(
+    "execute-api:Invoke",
+    effect,
+    resource
+  );
 
-    statementOne.Effect = effect;
-    statementOne.Resource = resource;
-    policyDocument.Statement[0] = statementOne;
-    authResponse.policyDocument = policyDocument;
-  }
+  const policyDocument = new PolicyDocument(
+    "2012-10-17",
+    [statement]
+  );
 
-  return authResponse;
+  const authorizationResponse = new AuthorizationResponse(
+    principalId,
+    policyDocument
+  );
+
+  return authorizationResponse.toObject();
 };
