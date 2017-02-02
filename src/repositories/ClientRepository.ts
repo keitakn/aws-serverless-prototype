@@ -1,6 +1,6 @@
-import ClientEntity from "../domain/client/client-entity";
-import {ClientRepositoryInterface} from "../domain/client/client-repository-interface";
-import NotFoundError from "../errors/not-found-error";
+import ClientEntity from "../domain/client/ClientEntity";
+import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
+import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 
 /**

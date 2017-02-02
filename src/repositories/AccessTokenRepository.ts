@@ -1,8 +1,8 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
-import AccessTokenEntity from "../domain/auth/access-token-entity";
-import {IntrospectionResponseInterface} from "../domain/auth/introspection-response-interface";
-import {AccessTokenRepositoryInterface} from "../domain/auth/access-token-repository-interface";
+import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
+import {IntrospectionResponseInterface} from "../domain/auth/IntrospectionResponseInterface";
+import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 
 /**
  * AccessTokenRepository

@@ -1,6 +1,6 @@
-import UserEntity from "../domain/user/user-entity";
-import {UserRepositoryInterface} from "../domain/user/user-repository-interface";
-import NotFoundError from "../errors/not-found-error";
+import UserEntity from "../domain/user/UserEntity";
+import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
+import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 
 /**

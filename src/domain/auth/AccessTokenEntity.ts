@@ -1,4 +1,4 @@
-import {IntrospectionResponseInterface} from "./introspection-response-interface";
+import {IntrospectionResponseInterface} from "./IntrospectionResponseInterface";
 
 /**
  * AccessTokenEntityInterface

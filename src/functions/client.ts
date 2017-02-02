@@ -2,11 +2,11 @@ import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
-import ClientEntity from "../domain/client/client-entity";
-import ErrorResponse from "../domain/error-response";
+import ClientEntity from "../domain/client/ClientEntity";
+import ErrorResponse from "../domain/ErrorResponse";
 import Environment from "../infrastructures/Environment";
-import AwsSdkFactory from "../factories/aws-sdk-factory";
-import ClientRepository from "../repositories/client-repository";
+import AwsSdkFactory from "../factories/AwsSdkFactory";
+import ClientRepository from "../repositories/ClientRepository";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
