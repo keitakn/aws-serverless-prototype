@@ -84,7 +84,7 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.put(params, (error: any) => {
+      this.dynamoDbDocumentClient.put(params, (error: Error) => {
         try {
           if (error) {
             reject(error);
