@@ -2,6 +2,7 @@ import UserEntity from "../domain/user/UserEntity";
 import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
+import {DynamoDbResponse} from "./DynamoDbResponse";
 
 /**
  * UserRepository
@@ -34,23 +35,23 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.get(params, (error: any, data: any) => {
+      this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.User) => {
         try {
           if (error) {
             reject(error);
           }
 
-          if (Object.keys(data).length === 0) {
+          if (Object.keys(dbResponse).length === 0) {
             throw new NotFoundError();
           }
 
-          const userEntity = new UserEntity(data.Item.id, data.Item.created_at);
-          userEntity.email = data.Item.email;
-          userEntity.emailVerified = data.Item.email_verified;
-          userEntity.name = data.Item.name;
-          userEntity.gender = data.Item.gender;
-          userEntity.birthdate = data.Item.birthdate;
-          userEntity.updatedAt = data.Item.updated_at;
+          const userEntity = new UserEntity(dbResponse.Item.id, dbResponse.Item.created_at);
+          userEntity.email = dbResponse.Item.email;
+          userEntity.emailVerified = dbResponse.Item.email_verified;
+          userEntity.name = dbResponse.Item.name;
+          userEntity.gender = dbResponse.Item.gender;
+          userEntity.birthdate = dbResponse.Item.birthdate;
+          userEntity.updatedAt = dbResponse.Item.updated_at;
 
           resolve(userEntity);
         } catch (error) {
@@ -84,7 +85,7 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.put(params, (error: any) => {
+      this.dynamoDbDocumentClient.put(params, (error: Error) => {
         try {
           if (error) {
             reject(error);
