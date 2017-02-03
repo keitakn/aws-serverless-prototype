@@ -3,6 +3,7 @@ import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterf
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
+import Environment from "../infrastructures/Environment";
 
 /**
  * ClientRepository
@@ -17,7 +18,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
    *
    * @param dynamoDbDocumentClient
    */
-  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient) {
+  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient, private environment: Environment) {
   }
 
   /**
@@ -28,8 +29,9 @@ export default class ClientRepository implements ClientRepositoryInterface {
    */
   find(clientId: string): Promise<ClientEntity> {
 
+    const tableName = `${this.environment.getStage()}_Clients`;
     const params = {
-      TableName: "Clients",
+      TableName: tableName,
       Key: {
         id: clientId
       }
@@ -78,8 +80,9 @@ export default class ClientRepository implements ClientRepositoryInterface {
       updated_at: clientEntity.updatedAt
     };
 
+    const tableName = `${this.environment.getStage()}_Clients`;
     const params = {
-      TableName: "Clients",
+      TableName: tableName,
       Item: clientCreateParams
     };
 
