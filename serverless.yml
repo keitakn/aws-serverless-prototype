@@ -19,6 +19,8 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
+  environment:
+    USERS_TABLE_NAME: ${env:TABLE_PREFIX}_Users
 
 custom:
   authorizer:
@@ -81,7 +83,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: 'Clients'
+        TableName: ${env:TABLE_PREFIX}_Clients
     UsersDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Delete
@@ -112,4 +114,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: 'Users'
+        TableName: ${env:TABLE_PREFIX}_Users
