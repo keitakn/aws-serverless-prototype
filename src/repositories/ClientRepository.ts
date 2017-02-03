@@ -2,6 +2,7 @@ import ClientEntity from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
+import {DynamoDbResponse} from "./DynamoDbResponse";
 
 /**
  * ClientRepository
@@ -35,22 +36,22 @@ export default class ClientRepository implements ClientRepositoryInterface {
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.get(params, (error: any, data: any) => {
+      this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.Client) => {
         try {
           if (error) {
             reject(error);
           }
 
-          if (Object.keys(data).length === 0) {
+          if (Object.keys(dbResponse).length === 0) {
             throw new NotFoundError();
           }
 
-          const clientEntity = new ClientEntity(data.Item.id, data.Item.created_at);
+          const clientEntity = new ClientEntity(dbResponse.Item.id, dbResponse.Item.created_at);
 
-          clientEntity.secret = data.Item.secret;
-          clientEntity.name = data.Item.name;
-          clientEntity.redirectUri = data.Item.redirect_uri;
-          clientEntity.updatedAt = data.Item.updated_at;
+          clientEntity.secret = dbResponse.Item.secret;
+          clientEntity.name = dbResponse.Item.name;
+          clientEntity.redirectUri = dbResponse.Item.redirect_uri;
+          clientEntity.updatedAt = dbResponse.Item.updated_at;
 
           resolve(clientEntity);
         } catch (error) {
@@ -83,7 +84,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
     };
 
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.put(params, (error: any) => {
+      this.dynamoDbDocumentClient.put(params, (error: Error) => {
         try {
           if (error) {
             reject(error);
