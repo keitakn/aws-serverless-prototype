@@ -35,22 +35,4 @@ export default class Environment {
 
     return false;
   }
-
-  /**
-   * 実行環境を取得する
-   *
-   * @returns {string}
-   */
-  getStage(): string {
-    return this.event.requestContext.stage;
-  }
-
-  /**
-   * 実行環境のUsersテーブル名を取得する
-   *
-   * @returns {any}
-   */
-  getUsersTableName(): string {
-    return process.env.USERS_TABLE_NAME;
-  }
 }
