@@ -13,8 +13,8 @@ export default class PolicyDocument {
   /**
    * constructor
    *
-   * @param version
-   * @param statement
+   * @param _version
+   * @param _statement
    */
   constructor(private _version: string, private _statement:[Statement]) {
   }

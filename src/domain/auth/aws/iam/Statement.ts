@@ -11,9 +11,9 @@ export default class Statement {
   /**
    * constructor
    *
-   * @param action
-   * @param effect
-   * @param resource
+   * @param _action
+   * @param _effect
+   * @param _resource
    */
   constructor(private _action: string, private _effect: string, private _resource: [string]) {
   }

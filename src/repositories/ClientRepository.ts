@@ -29,7 +29,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
   find(clientId: string): Promise<ClientEntity> {
 
     const params = {
-      TableName: "Clients",
+      TableName: this.getClientsTableName(),
       Key: {
         id: clientId
       }
@@ -79,7 +79,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
     };
 
     const params = {
-      TableName: "Clients",
+      TableName: this.getClientsTableName(),
       Item: clientCreateParams
     };
 
@@ -96,5 +96,14 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       });
     });
+  }
+
+  /**
+   * 実行環境のClientsテーブル名を取得する
+   *
+   * @returns {string}
+   */
+  private getClientsTableName(): string {
+    return process.env.CLIENTS_TABLE_NAME;
   }
 }

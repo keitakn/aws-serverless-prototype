@@ -38,6 +38,22 @@ const API_SECRET = "YOUR API SECRET";
 
 この仕組はイケてないので [こちらのissue](https://github.com/keita-nishimoto/aws-serverless-prototype/issues/37) で何らかの対応を行います。
 
+### 各種環境変数の設定
+
+動作に必要な環境変数を設定します。
+
+以下は.bash_profileへの設定例です。
+
+```bash
+echo export SLS_DEBUG=true >> ~/.bash_profile
+echo export DEPLOY_STAGE=dev >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+- DEPLOY_STAGEは特に重要です、これがそのままデプロイ先の環境を指します。（例ではdevですがステージングはstg、本番はprd等状況に合わせて値を設定して下さい。）
+- SLS_DEBUGは必須ではありませんがServerless Frameworkに問題が発生した場合に詳細なエラーが分かるので設定しておく事を推奨します。
+
+
 ### Authleteのアクセストークン発行方法
 
 Authleteでは、```https://api.authlete.com/api/auth/authorization/direct/{service-api-key}``` というURLで認可エンドポイントのデフォルト実装を提供しています (デフォルトで利用可能になっています)。

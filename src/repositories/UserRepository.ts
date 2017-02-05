@@ -28,7 +28,7 @@ export default class UserRepository implements UserRepositoryInterface {
    */
   find(userId: string): Promise<UserEntity> {
     const params = {
-      TableName: "Users",
+      TableName: this.getUsersTableName(),
       Key: {
         id: userId
       }
@@ -80,7 +80,7 @@ export default class UserRepository implements UserRepositoryInterface {
     };
 
     const params = {
-      TableName: "Users",
+      TableName: this.getUsersTableName(),
       Item: userCreateParams
     };
 
@@ -97,5 +97,14 @@ export default class UserRepository implements UserRepositoryInterface {
         }
       });
     });
+  }
+
+  /**
+   * 実行環境のUsersテーブル名を取得する
+   *
+   * @returns {string}
+   */
+  private getUsersTableName(): string {
+    return process.env.USERS_TABLE_NAME;
   }
 }

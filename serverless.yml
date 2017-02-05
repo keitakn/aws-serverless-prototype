@@ -7,7 +7,7 @@ provider:
   name: aws
   runtime: nodejs4.3
   region: ap-northeast-1
-  stage: dev
+  stage: ${env:DEPLOY_STAGE}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -19,6 +19,9 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
+  environment:
+    CLIENTS_TABLE_NAME: ${env:DEPLOY_STAGE}_Clients
+    USERS_TABLE_NAME: ${env:DEPLOY_STAGE}_Users
 
 custom:
   authorizer:
@@ -81,7 +84,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: 'Clients'
+        TableName: ${env:DEPLOY_STAGE}_Clients
     UsersDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Delete
@@ -112,4 +115,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: 'Users'
+        TableName: ${env:DEPLOY_STAGE}_Users

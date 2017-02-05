@@ -11,7 +11,14 @@ export default class Environment {
   /**
    * constructor
    */
-  constructor(private event: LambdaExecutionEvent) {
+  constructor(private _event: LambdaExecutionEvent) {
+  }
+
+  /**
+   * @returns {LambdaExecutionEvent}
+   */
+  get event(): LambdaExecutionEvent {
+    return this._event;
   }
 
   /**
