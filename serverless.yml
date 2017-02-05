@@ -22,6 +22,8 @@ provider:
   environment:
     CLIENTS_TABLE_NAME: ${env:DEPLOY_STAGE}_Clients
     USERS_TABLE_NAME: ${env:DEPLOY_STAGE}_Users
+    AUTHLETE_API_KEY: ${env:AUTHLETE_API_KEY}
+    AUTHLETE_API_SECRET: ${env:AUTHLETE_API_SECRET}
 
 custom:
   authorizer:

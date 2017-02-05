@@ -27,16 +27,7 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 
 [サービス管理者コンソール](https://so.authlete.com/accounts/login?locale=ja) にログインを行い確認して下さい。
 
-確認した値は控えておき、下記のファイル内に記載します。
-
-- src/repositories/AccessTokenRepository.ts
-
-```
-const API_KEY    = "YOUR API KEY";
-const API_SECRET = "YOUR API SECRET";
-```
-
-この仕組はイケてないので [こちらのissue](https://github.com/keita-nishimoto/aws-serverless-prototype/issues/37) で何らかの対応を行います。
+確認した値は控えておき、環境変数に設定を行います。（これは後に説明します。）
 
 ### 各種環境変数の設定
 
@@ -47,11 +38,15 @@ const API_SECRET = "YOUR API SECRET";
 ```bash
 echo export SLS_DEBUG=true >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
+echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
+echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
 - DEPLOY_STAGEは特に重要です、これがそのままデプロイ先の環境を指します。（例ではdevですがステージングはstg、本番はprd等状況に合わせて値を設定して下さい。）
 - SLS_DEBUGは必須ではありませんがServerless Frameworkに問題が発生した場合に詳細なエラーが分かるので設定しておく事を推奨します。
+- AUTHLETE_API_KEYにはAuthleteのAPIキーを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
+- AUTHLETE_API_SECRETにはAuthleteのAPIシークレットを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 
 
 ### Authleteのアクセストークン発行方法
