@@ -12,8 +12,8 @@ export default class AuthorizeResponse {
   /**
    * constructor
    *
-   * @param principalId
-   * @param policyDocument
+   * @param _principalId
+   * @param _policyDocument
    */
   constructor(private _principalId: string, private _policyDocument: PolicyDocument) {
   }
