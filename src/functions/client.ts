@@ -44,7 +44,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       environment.isLocal()
     );
   }
-  const clientRepository = new ClientRepository(dynamoDbDocumentClient, environment);
+  const clientRepository = new ClientRepository(dynamoDbDocumentClient);
 
   clientRepository.save(clientEntity)
     .then((clientEntity) => {
@@ -89,7 +89,7 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       environment.isLocal()
     );
   }
-  const clientRepository = new ClientRepository(dynamoDbDocumentClient, environment);
+  const clientRepository = new ClientRepository(dynamoDbDocumentClient);
 
   clientRepository.find(clientId)
     .then((clientEntity) => {

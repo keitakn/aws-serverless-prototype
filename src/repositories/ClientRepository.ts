@@ -3,7 +3,6 @@ import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterf
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
-import Environment from "../infrastructures/Environment";
 
 /**
  * ClientRepository
@@ -18,7 +17,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
    *
    * @param dynamoDbDocumentClient
    */
-  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient, private environment: Environment) {
+  constructor(private dynamoDbDocumentClient: DynamoDB.DocumentClient) {
   }
 
   /**
@@ -29,9 +28,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
    */
   find(clientId: string): Promise<ClientEntity> {
 
-    const tableName = `${this.environment.getStage()}_Clients`;
     const params = {
-      TableName: tableName,
+      TableName: this.getClientsTableName(),
       Key: {
         id: clientId
       }
@@ -80,9 +78,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
       updated_at: clientEntity.updatedAt
     };
 
-    const tableName = `${this.environment.getStage()}_Clients`;
     const params = {
-      TableName: tableName,
+      TableName: this.getClientsTableName(),
       Item: clientCreateParams
     };
 
@@ -99,5 +96,14 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       });
     });
+  }
+
+  /**
+   * 実行環境のClientsテーブル名を取得する
+   *
+   * @returns {string}
+   */
+  private getClientsTableName(): string {
+    return process.env.CLIENTS_TABLE_NAME;
   }
 }
