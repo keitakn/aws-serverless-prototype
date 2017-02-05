@@ -20,10 +20,6 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @returns {Promise<AccessTokenEntity>}
    */
   fetch(accessToken: string): Promise<AccessTokenEntity> {
-    // TODO これは環境設定ファイル等から読み込むように変更する。 @keita-nishimoto
-    const API_KEY    = "";
-    const API_SECRET = "";
-
     const headers = {
       "Content-Type": "application/json"
     };
@@ -32,8 +28,8 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
       url: "https://api.authlete.com/api/auth/introspection",
       method: "POST",
       auth: {
-        username: API_KEY,
-        pass: API_SECRET
+        username: this.getAuthleteApiKey(),
+        pass: this.getAuthleteApiSecret()
       },
       headers: headers,
       json: true,
@@ -65,5 +61,23 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         }
       });
     });
+  }
+
+  /**
+   * 環境変数からAuthleteのAPIキーを取得する
+   *
+   * @returns {string}
+   */
+  private getAuthleteApiKey(): string {
+    return process.env.AUTHLETE_API_KEY;
+  }
+
+  /**
+   * 環境変数からAuthleteのAPIシークレットを取得する
+   *
+   * @returns {string}
+   */
+  private getAuthleteApiSecret(): string {
+    return process.env.AUTHLETE_API_SECRET;
   }
 }
