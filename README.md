@@ -79,6 +79,7 @@ AuthorizationHeaderにアクセストークンを設定して下さい。
 
 ```bash
 curl -X POST -kv \
+-H "Content-type: application/json" \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
 -d \
 '
@@ -102,6 +103,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
 
 ```bash
 curl -X POST -kv \
+-H "Content-type: application/json" \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
 -d \
 '
