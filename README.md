@@ -107,6 +107,7 @@ curl -X POST -kv \
 '
 {
   "email":"keita@gmail.com",
+  "password": "MyPassword",
   "name": "keita",
   "gender": "male",
   "birthdate": "1990-01-01"
