@@ -2,11 +2,13 @@ import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
-import UserEntity from "../domain/user/UserEntity";
 import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
 import Environment from "../infrastructures/Environment";
+import PasswordService from "../domain/auth/PasswordService";
+import PasswordHash from "../domain/auth/PasswordHash";
+import UserEntity from "../domain/user/UserEntity";
 
 sourceMapSupport.install();
 
@@ -46,14 +48,19 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     );
   }
 
-  const userRepository = new UserRepository(dynamoDbDocumentClient);
-  userRepository.save(userEntity)
-    .then((userEntity) => {
+  PasswordService.generatePasswordHash(requestBody.password)
+    .then((passwordHash: PasswordHash) => {
+      userEntity.passwordHash = passwordHash;
+      const userRepository = new UserRepository(dynamoDbDocumentClient);
+      return userRepository.save(userEntity);
+    })
+    .then((userEntity: UserEntity) => {
 
       const responseBody = {
         id: userEntity.id,
         email: userEntity.email,
         email_verified: userEntity.emailVerified,
+        password_hash: userEntity.passwordHash.passwordHash,
         name: userEntity.name,
         gender: userEntity.gender,
         birthdate: userEntity.birthdate,
@@ -71,7 +78,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 
       callback(null, response);
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.error("createUserError", error);
       callback(error);
     });
