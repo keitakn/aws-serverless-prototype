@@ -6,7 +6,6 @@ import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 import Statement from "../domain/auth/aws/iam/Statement";
 import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
 import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
-import Environment from "../infrastructures/Environment";
 
 sourceMapSupport.install();
 
@@ -60,52 +59,9 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
       callback(null, authorizationResponse);
     })
     .catch((error) => {
+      console.error("authorization", error);
       callback(error);
     });
-};
-
-/**
- * 認証を行う
- * この関数はAuthlete.Authentication Callbackに合わせて作成されている事が必要
- *
- * @param event
- * @param context
- * @param callback
- * @link https://www.authlete.com/documents/definitive_guide/authentication_callback
- */
-export const authentication = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-
-  // TODO これは仮実装、準備が整い次第本格的な実装を行う。 @keita-koga
-  const environment = new Environment(event);
-
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
-
-  const responseBody = {
-    authenticated: true,
-    subject: requestBody.id,
-    claims: {
-      name: "keita",
-      email: "keita@gmail.com",
-      email_verified: 0,
-      gender: "male",
-      birthdate: "1990-01-01"
-    }
-  };
-
-  const response = {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin" : "*"
-    },
-    body: JSON.stringify(responseBody),
-  };
-
-  callback(null, response);
 };
 
 /**

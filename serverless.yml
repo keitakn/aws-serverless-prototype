@@ -67,14 +67,14 @@ functions:
           authorizer: ${self:custom.authorizer}
           cors: true
   authentication:
-    handler: auth.authentication
+    handler: authentication.authentication
     events:
       - http:
           path: auth/authentication
           method: post
           cors: true
   authorization:
-    handler: auth.authorization
+    handler: authorization.authorization
 
 resources:
   Resources:
