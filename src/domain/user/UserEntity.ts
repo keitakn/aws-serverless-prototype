@@ -180,4 +180,20 @@ export default class UserEntity implements UserEntityInterface {
   set updatedAt(value: number) {
     this._updatedAt = value;
   }
+
+  /**
+   * パスワードを検証する
+   *
+   * @param passwordHash
+   * @returns {boolean}
+   */
+  verifyPassword(passwordHash: PasswordHash) {
+    const userPasswordHash = this.passwordHash.passwordHash;
+
+    if (userPasswordHash === passwordHash.passwordHash) {
+      return true;
+    }
+
+    return false;
+  }
 }

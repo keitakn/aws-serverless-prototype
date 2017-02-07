@@ -3,6 +3,7 @@ import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
+import PasswordHash from "../domain/auth/PasswordHash";
 
 /**
  * UserRepository
@@ -48,6 +49,7 @@ export default class UserRepository implements UserRepositoryInterface {
           const userEntity = new UserEntity(dbResponse.Item.id, dbResponse.Item.created_at);
           userEntity.email = dbResponse.Item.email;
           userEntity.emailVerified = dbResponse.Item.email_verified;
+          userEntity.passwordHash = new PasswordHash(dbResponse.Item.password_hash);
           userEntity.name = dbResponse.Item.name;
           userEntity.gender = dbResponse.Item.gender;
           userEntity.birthdate = dbResponse.Item.birthdate;
@@ -72,6 +74,7 @@ export default class UserRepository implements UserRepositoryInterface {
       id: userEntity.id,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
+      password_hash: userEntity.passwordHash.passwordHash,
       name: userEntity.name,
       gender: userEntity.gender,
       birthdate: userEntity.birthdate,

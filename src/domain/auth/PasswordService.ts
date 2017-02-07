@@ -13,24 +13,13 @@ export default class PasswordService {
    * パスワードハッシュオブジェクトを生成する
    *
    * @param password
-   * @returns {Promise<PasswordHash>}
+   * @returns {PasswordHash}
    */
-  static generatePasswordHash(password: string): Promise<PasswordHash> {
+  static generatePasswordHash(password: string): PasswordHash {
 
-    return new Promise<PasswordHash>((resolve: Function, reject: Function) => {
+    const sha512 = crypto.createHash("sha512");
+    const passwordHashStr = sha512.digest("hex");
 
-      try {
-        const sha512 = crypto.createHash("sha512");
-        sha512.update(password);
-
-        const passwordHashStr = sha512.digest("hex");
-
-        resolve(
-          new PasswordHash(passwordHashStr, password)
-        );
-      } catch (error) {
-        reject(error);
-      }
-    });
+    return new PasswordHash(passwordHashStr, password);
   }
 }

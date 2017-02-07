@@ -14,9 +14,13 @@ export default class ErrorResponse {
    * @todo ここにハードコードするのはイケてないので何らかの対策を考える @keita-nishimoto
    */
   private _errorConstant: any = {
-    "NotFoundError": {
-      "statusCode": 404,
-      "errorCode": 404
+    NotFoundError: {
+      statusCode: 404,
+      errorCode: 404
+    },
+    UnauthorizedError: {
+      statusCode: 401,
+      errorCode: 401
     }
   };
 

@@ -6,9 +6,8 @@ import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
 import Environment from "../infrastructures/Environment";
-import PasswordService from "../domain/auth/PasswordService";
-import PasswordHash from "../domain/auth/PasswordHash";
 import UserEntity from "../domain/user/UserEntity";
+import PasswordService from "../domain/auth/PasswordService";
 
 sourceMapSupport.install();
 
@@ -35,8 +34,11 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   const nowDateTime = new Date().getTime();
 
   const userEntity = new UserEntity(uuid.v4(), nowDateTime);
+  const passwordHash = PasswordService.generatePasswordHash(requestBody.password);
+
   userEntity.email = requestBody.email;
   userEntity.emailVerified = 0;
+  userEntity.passwordHash = passwordHash;
   userEntity.name = requestBody.name;
   userEntity.gender = requestBody.gender;
   userEntity.birthdate = requestBody.birthdate;
@@ -48,12 +50,8 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     );
   }
 
-  PasswordService.generatePasswordHash(requestBody.password)
-    .then((passwordHash: PasswordHash) => {
-      userEntity.passwordHash = passwordHash;
-      const userRepository = new UserRepository(dynamoDbDocumentClient);
-      return userRepository.save(userEntity);
-    })
+  const userRepository = new UserRepository(dynamoDbDocumentClient);
+  userRepository.save(userEntity)
     .then((userEntity: UserEntity) => {
 
       const responseBody = {
