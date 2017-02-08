@@ -28,6 +28,7 @@ export namespace DynamoDbResponse {
       id: string;
       email: string;
       email_verified: number;
+      password_hash: string;
       name: string;
       gender: string;
       birthdate: string;

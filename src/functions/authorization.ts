@@ -59,6 +59,7 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
       callback(null, authorizationResponse);
     })
     .catch((error) => {
+      console.error("authorization", error);
       callback(error);
     });
 };

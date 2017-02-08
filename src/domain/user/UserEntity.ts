@@ -1,3 +1,5 @@
+import PasswordHash from "../auth/PasswordHash";
+
 /**
  * UserEntityInterface
  *
@@ -8,6 +10,7 @@ interface UserEntityInterface {
   id: string;
   email: string;
   emailVerified: number;
+  passwordHash: PasswordHash;
   name: string;
   gender: string;
   birthdate: string;
@@ -31,6 +34,11 @@ export default class UserEntity implements UserEntityInterface {
    * メールアドレス検証済ステータス
    */
   private _emailVerified: number;
+
+  /**
+   * パスワードハッシュ値
+   */
+  private _passwordHash: PasswordHash;
 
   /**
    * 名前
@@ -104,6 +112,20 @@ export default class UserEntity implements UserEntityInterface {
   }
 
   /**
+   * @returns {PasswordHash}
+   */
+  get passwordHash(): PasswordHash {
+    return this._passwordHash;
+  }
+
+  /**
+   * @param value
+   */
+  set passwordHash(value: PasswordHash) {
+    this._passwordHash = value;
+  }
+
+  /**
    * @returns {string}
    */
   get name(): string {
@@ -157,5 +179,21 @@ export default class UserEntity implements UserEntityInterface {
    */
   set updatedAt(value: number) {
     this._updatedAt = value;
+  }
+
+  /**
+   * パスワードを検証する
+   *
+   * @param passwordHash
+   * @returns {boolean}
+   */
+  verifyPassword(passwordHash: PasswordHash) {
+    const userPasswordHash = this.passwordHash.passwordHash;
+
+    if (userPasswordHash === passwordHash.passwordHash) {
+      return true;
+    }
+
+    return false;
   }
 }
