@@ -18,6 +18,7 @@ export default class PasswordService {
   static generatePasswordHash(password: string): PasswordHash {
 
     const sha512 = crypto.createHash("sha512");
+    sha512.update(password);
     const passwordHashStr = sha512.digest("hex");
 
     return new PasswordHash(passwordHashStr, password);
