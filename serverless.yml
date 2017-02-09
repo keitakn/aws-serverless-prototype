@@ -32,6 +32,7 @@ custom:
     identitySource: method.request.header.Authorization
     resultTtlInSeconds: 0
   webpack: webpack.config.js
+  webpackIncludeModules: true
 
 functions:
   createClient:

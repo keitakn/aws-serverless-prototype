@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require("path");
 const paths = require("./paths");
+const nodeExternals = require('webpack-node-externals');
 
 const handlers = fs.readdirSync(paths.appFunctions)
   .map(filename => ({
@@ -13,6 +14,7 @@ const handlers = fs.readdirSync(paths.appFunctions)
 module.exports = {
   entry: handlers,
   target:  "node",
+  externals: [nodeExternals()],
   devtool: "source-map",
 
   module: {
