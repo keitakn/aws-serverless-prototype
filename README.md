@@ -126,6 +126,22 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
 ```
 
+### authentication
+
+```bash
+curl -kv \
+-X POST \
+-H "Content-type: application/json" \
+-d \
+'
+{
+  "id":"{userId}",
+  "password": "{userPassword}"
+}
+' \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authentication
+```
+
 ## AWS services used
 
 - Lambda
