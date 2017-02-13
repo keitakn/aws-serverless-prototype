@@ -20,6 +20,7 @@ provider:
         - dynamodb:DeleteItem
       Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
   environment:
+    DEPLOY_STAGE: ${env:DEPLOY_STAGE}
     CLIENTS_TABLE_NAME: ${env:DEPLOY_STAGE}_Clients
     USERS_TABLE_NAME: ${env:DEPLOY_STAGE}_Users
     AUTHLETE_API_KEY: ${env:AUTHLETE_API_KEY}
