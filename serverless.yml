@@ -23,6 +23,7 @@ provider:
     DEPLOY_STAGE: ${env:DEPLOY_STAGE}
     CLIENTS_TABLE_NAME: ${env:DEPLOY_STAGE}_Clients
     USERS_TABLE_NAME: ${env:DEPLOY_STAGE}_Users
+    RESOURCES_TABLE_NAME: ${env:DEPLOY_STAGE}_Resources
     AUTHLETE_API_KEY: ${env:AUTHLETE_API_KEY}
     AUTHLETE_API_SECRET: ${env:AUTHLETE_API_SECRET}
 
@@ -127,3 +128,19 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${env:DEPLOY_STAGE}_Users
+    ResourcesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${env:DEPLOY_STAGE}_Resources

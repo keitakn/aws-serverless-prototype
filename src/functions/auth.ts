@@ -128,6 +128,8 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
           break;
       }
 
+      fetchRequiredScopes(event.methodArn);
+
       const authorizationResponse = generatePolicy(
         accessTokenEntity.introspectionResponse.subject,
         effect,
@@ -177,6 +179,37 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
   return accessTokenRepository.fetch(accessToken);
+};
+
+/**
+ * ARNから必要となるscopeのリストを返す
+ *
+ * @param arn
+ * @returns {string}
+ */
+const fetchRequiredScopes = (arn: string): string => {
+  // TODO 仮実装です。 @keita-nishimoto
+  const resource = extractMethodAndPath(arn);
+
+  return resource.httpMethod + resource.resourcePath;
+};
+
+/**
+ * ARNからリソースのHTTPメソッドとリソースパスを取り出す
+ *
+ * @param arn
+ * @returns {{httpMethod: string, resourcePath: string}}
+ */
+const extractMethodAndPath = (arn: string): {httpMethod: string, resourcePath: string} => {
+  const arnElements      = arn.split(":", 6);
+  const resourceElements = arnElements[5].split("/", 4);
+  const httpMethod       = resourceElements[2];
+  const resourcePath     = resourceElements[3];
+
+  return {
+    httpMethod: httpMethod,
+    resourcePath: resourcePath
+  };
 };
 
 /**
