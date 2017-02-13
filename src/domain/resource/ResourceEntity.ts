@@ -1,10 +1,26 @@
 /**
+ * ResourceEntityInterface
+ *
+ * @author keita-nishimoto
+ * @since 2016-02-13
+ */
+interface ResourceEntityInterface {
+  id: string;
+  httpMethod: string;
+  resourcePath: string;
+  name: string;
+  scopes: [string];
+  createdAt: number;
+  updatedAt: number;
+}
+
+/**
  * ResourceEntity
  *
  * @author keita-nishimoto
  * @since 2016-02-13
  */
-export class ResourceEntity {
+export class ResourceEntity implements ResourceEntityInterface {
 
   /**
    * HTTPメソッド
