@@ -69,6 +69,13 @@ functions:
           method: get
           authorizer: ${self:custom.authorizer}
           cors: true
+  createResource:
+    handler: resource.create
+    events:
+      - http:
+          path: resource
+          method: post
+          cors: true
   authentication:
     handler: auth.authentication
     events:
