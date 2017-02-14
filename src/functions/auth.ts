@@ -13,6 +13,9 @@ import UserRepository from "../repositories/UserRepository";
 import PasswordService from "../domain/auth/PasswordService";
 import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
+import {ResourceRepository} from "../repositories/ResourceRepository";
+import {ResourceEntity} from "../domain/resource/ResourceEntity";
+import NotFoundError from "../errors/NotFoundError";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -107,11 +110,17 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
 
   introspect(accessToken)
     .then((accessTokenEntity: AccessTokenEntity) => {
+      return hasRequiredScopes(event.methodArn, accessTokenEntity);
+    })
+    .then((accessTokenEntity) => {
 
       let effect = "";
       switch (accessTokenEntity.extractHttpStats()) {
         case "OK":
           effect = "Allow";
+          if (accessTokenEntity.isAllowed === false) {
+            effect = "Deny";
+          }
           break;
         case "BAD_REQUEST":
         case "FORBIDDEN":
@@ -177,6 +186,64 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
   return accessTokenRepository.fetch(accessToken);
+};
+
+/**
+ * ARNからscopeを持っているか確認する
+ * 結果はAccessTokenEntity.isAllowed にセットされる
+ *
+ * @param arn
+ * @param accessTokenEntity
+ * @returns {Promise<AccessTokenEntity>}
+ */
+const hasRequiredScopes = (arn: string, accessTokenEntity: AccessTokenEntity) => {
+  // TODO メソッド名が微妙。一度に複数の事をやっているのもダメ。時間が出来たらリファクタ対象。 @keita-nishimoto
+  return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
+    const resource = extractMethodAndPath(arn);
+    const resourceId = `${resource.httpMethod}/${resource.resourcePath}`;
+
+    const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
+    resourceRepository
+      .find(resourceId)
+      .then((resourceEntity: ResourceEntity) => {
+
+        resourceEntity.scopes.map((scopeResourceHas) => {
+          accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
+            if (scopeResourceHas === scopeTokenHas) {
+              accessTokenEntity.isAllowed = true;
+            }
+          });
+        });
+
+        resolve(accessTokenEntity);
+      })
+      .catch((error: Error) => {
+        if (error.name === "NotFoundError") {
+          accessTokenEntity.isAllowed = true;
+          resolve(accessTokenEntity);
+        } else {
+          reject(error);
+        }
+      });
+  });
+};
+
+/**
+ * ARNからリソースのHTTPメソッドとリソースパスを取り出す
+ *
+ * @param arn
+ * @returns {{httpMethod: string, resourcePath: string}}
+ */
+const extractMethodAndPath = (arn: string): {httpMethod: string, resourcePath: string} => {
+  const arnElements      = arn.split(":", 6);
+  const resourceElements = arnElements[5].split("/", 4);
+  const httpMethod       = resourceElements[2];
+  const resourcePath     = resourceElements[3];
+
+  return {
+    httpMethod: httpMethod,
+    resourcePath: resourcePath
+  };
 };
 
 /**
