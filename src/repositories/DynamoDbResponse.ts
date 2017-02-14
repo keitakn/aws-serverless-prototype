@@ -36,4 +36,19 @@ export namespace DynamoDbResponse {
       updated_at: number;
     }
   }
+
+  /**
+   * ResourcesテーブルのResponse
+   */
+  export interface Resource {
+    Item: {
+      id: string;
+      http_method: string;
+      resource_path: string;
+      name: string;
+      scopes: [string];
+      created_at: number;
+      updated_at: number;
+    }
+  }
 }

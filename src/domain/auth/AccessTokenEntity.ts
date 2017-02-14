@@ -9,6 +9,7 @@ import {IntrospectionResponseInterface} from "./IntrospectionResponseInterface";
 interface AccessTokenEntityInterface {
   token: string;
   introspectionResponse: IntrospectionResponseInterface;
+  isAllowed: boolean;
   extractHttpStats(): string;
 }
 
@@ -19,15 +20,18 @@ interface AccessTokenEntityInterface {
  * @since 2016-01-23
  */
 export default class AccessTokenEntity implements AccessTokenEntityInterface {
+
   /**
    * constructor
    *
    * @param _token
    * @param _introspectionResponse
+   * @param _isAllowed
    */
   constructor(
     private _token: string,
-    private _introspectionResponse: IntrospectionResponseInterface
+    private _introspectionResponse: IntrospectionResponseInterface,
+    private _isAllowed: boolean = false
   ) {
   }
 
@@ -43,6 +47,20 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   get introspectionResponse(): IntrospectionResponseInterface {
     return this._introspectionResponse;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get isAllowed(): boolean {
+    return this._isAllowed;
+  }
+
+  /**
+   * @param value
+   */
+  set isAllowed(value: boolean) {
+    this._isAllowed = value;
   }
 
   /**
