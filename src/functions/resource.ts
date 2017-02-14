@@ -51,7 +51,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
 
   resourceRepository.save(resourceEntity)
-    .then((resourceEntity) => {
+    .then((resourceEntity: ResourceEntity) => {
 
       const responseBody = {
         id: resourceEntity.id,
@@ -68,7 +68,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
         headers: {
           "Access-Control-Allow-Origin" : "*"
         },
-        body: JSON.stringify(responseBody),
+        body: JSON.stringify(responseBody)
       };
 
       callback(null, response);

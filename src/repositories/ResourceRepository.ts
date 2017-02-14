@@ -63,34 +63,35 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * リソースを保存する
    *
    * @param resourceEntity
-   * @returns {Promise<T>|Promise<TResult|T>}
+   * @returns {Promise<ResourceEntity>}
    */
   save(resourceEntity: ResourceEntity): Promise<ResourceEntity> {
+    return new Promise<ResourceEntity>((resolve: Function, reject: Function) => {
+      const resourceCreateParams = {
+        id: resourceEntity.id,
+        http_method: resourceEntity.httpMethod,
+        resource_path: resourceEntity.resourcePath,
+        name: resourceEntity.name,
+        scopes: resourceEntity.scopes,
+        created_at: resourceEntity.createdAt,
+        updated_at: resourceEntity.updatedAt
+      };
 
-    const resourceCreateParams = {
-      id: resourceEntity.id,
-      http_method: resourceEntity.httpMethod,
-      resource_path: resourceEntity.resourcePath,
-      name: resourceEntity.name,
-      scopes: resourceEntity.scopes,
-      created_at: resourceEntity.createdAt,
-      updated_at: resourceEntity.updatedAt
-    };
+      const params = {
+        TableName: this.getResourcesTableName(),
+        Item: resourceCreateParams
+      };
 
-    const params = {
-      TableName: this.getResourcesTableName(),
-      Item: resourceCreateParams
-    };
-
-    return this.dynamoDbDocumentClient
-      .put(params)
-      .promise()
-      .then(() => {
-        return resourceEntity;
-      })
-      .catch((error: Error) => {
-        return error;
-      });
+      this.dynamoDbDocumentClient
+        .put(params)
+        .promise()
+        .then(() => {
+          resolve(resourceEntity);
+        })
+        .catch((error: Error) => {
+          reject(error);
+        });
+    });
   }
 
   /**
