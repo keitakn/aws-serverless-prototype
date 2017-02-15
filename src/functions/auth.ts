@@ -16,6 +16,7 @@ import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
+import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -32,7 +33,6 @@ sourceMapSupport.install();
  */
 export const authentication = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
-  // TODO これは仮実装、準備が整い次第本格的な実装を行う。 @keita-koga
   const environment = new Environment(event);
 
   let requestBody;
@@ -85,6 +85,44 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
 
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
+
+      callback(null, response);
+    });
+};
+
+/**
+ * 認可コードを作成する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ */
+export const createAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+
+  // TODO 仮実装状態。レスポンスも含めて仮状態なのでこれから本格実装を行う。 @keita-koga
+  const environment = new Environment(event);
+
+  let requestBody;
+  if (environment.isLocal() === true) {
+    requestBody = event.body;
+  } else {
+    requestBody = JSON.parse(event.body);
+  }
+
+  const clientId = requestBody.client_id;
+  const state    = requestBody.state;
+
+  const authorizationRepository = new AuthorizationRepository();
+  authorizationRepository.createAuthorizationTicket(clientId, state)
+    .then((responseBody) => {
+
+      const response = {
+        statusCode: 201,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody)
+      };
 
       callback(null, response);
     });
