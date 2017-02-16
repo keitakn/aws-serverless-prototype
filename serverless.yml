@@ -83,6 +83,13 @@ functions:
           path: auth/authentication
           method: post
           cors: true
+  createAuthorizationCode:
+    handler: auth.createAuthorizationCode
+    events:
+      - http:
+          path: auth/authorization/code
+          method: post
+          cors: true
   authorization:
     handler: auth.authorization
 
