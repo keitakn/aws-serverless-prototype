@@ -113,8 +113,12 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
   const state    = requestBody.state;
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.createAuthorizationTicket(clientId, state)
-    .then((responseBody) => {
+  authorizationRepository.createAuthorizationCode(clientId, state)
+    .then((authorizationResponse) => {
+
+      const responseBody = {
+        code: authorizationResponse.authorizationCode
+      };
 
       const response = {
         statusCode: 201,
@@ -123,6 +127,14 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
         },
         body: JSON.stringify(responseBody)
       };
+
+      callback(null, response);
+    })
+    .catch((error: Error) => {
+      console.error("createAuthorizationCode", error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
 
       callback(null, response);
     });

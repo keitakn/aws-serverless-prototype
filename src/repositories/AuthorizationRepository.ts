@@ -1,4 +1,5 @@
 import * as request from "request";
+import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 
 /**
  * AuthorizationRepository
@@ -9,13 +10,68 @@ import * as request from "request";
 export class AuthorizationRepository {
 
   /**
+   * 認可コードを作成する
+   *
+   * @param clientId
+   * @param state
+   * @returns {Promise<AuthleteResponse.AuthorizationIssueResponse>}
+   */
+  createAuthorizationCode(clientId: number, state: string): Promise<AuthleteResponse.AuthorizationIssueResponse> {
+    return new Promise((resolve: Function, reject: Function) => {
+      this.createAuthorizationTicket(clientId, state)
+        .then((authorizationResponse) => {
+          const headers = {
+            "Content-Type": "application/json"
+          };
+
+          const params = {
+            ticket: authorizationResponse.ticket,
+            subject: 9999
+          };
+
+          const options = {
+            url: "https://api.authlete.com/api/auth/authorization/issue",
+            method: "POST",
+            auth: {
+              username: this.getAuthleteApiKey(),
+              pass: this.getAuthleteApiSecret()
+            },
+            json: true,
+            headers: headers,
+            body: params
+          };
+
+          request(options, (error: Error, response: any, authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) => {
+            try {
+              if (error) {
+                reject(error);
+              }
+
+              if (response.statusCode !== 200) {
+                console.error(response);
+                reject(new Error("Internal Server Error"));
+              }
+
+              resolve(authorizationIssueResponse);
+            } catch (error) {
+              reject(error);
+            }
+          });
+        })
+        .catch((error: Error) => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
    * 認可ticketを作成する
    *
    * @param clientId
    * @param state
-   * @returns {Promise<T>}
+   * @returns {Promise<AuthleteResponse.Authorization>}
    */
-  createAuthorizationTicket(clientId: number, state: string) {
+  private createAuthorizationTicket(clientId: number, state: string): Promise<AuthleteResponse.Authorization> {
 
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -35,13 +91,18 @@ export class AuthorizationRepository {
     };
 
     return new Promise((resolve: Function, reject: Function) => {
-      request(options, (error: Error, response: any, body: any) => {
-
+      request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {
         try {
           if (error) {
             reject(error);
           }
-          resolve(body);
+
+          if (response.statusCode !== 200) {
+            console.error(response);
+            reject(new Error("Internal Server Error"));
+          }
+
+          resolve(authorizationResponse);
 
         } catch (error) {
           reject(error);
