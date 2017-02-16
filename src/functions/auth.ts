@@ -17,7 +17,6 @@ import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
-import * as querystring from "querystring";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -100,7 +99,6 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
  */
 export const createAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
-  // TODO 仮実装状態。レスポンスも含めて仮状態なのでこれから本格実装を行う。 @keita-koga
   const environment = new Environment(event);
 
   let requestBody;
@@ -115,17 +113,11 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
 
   const authorizationRepository = new AuthorizationRepository();
   authorizationRepository.createAuthorizationCode(clientId, state)
-    .then((authorizationResponse) => {
-
-      const query = authorizationResponse.responseContent.substr(
-        authorizationResponse.responseContent.indexOf("?") + 1
-      );
-
-      const queries = querystring.parse(query);
+    .then((authorizationCodeEntity) => {
 
       const responseBody = {
-        code: authorizationResponse.authorizationCode,
-        state: queries.state
+        code: authorizationCodeEntity.code,
+        state: authorizationCodeEntity.state
       };
 
       const response = {

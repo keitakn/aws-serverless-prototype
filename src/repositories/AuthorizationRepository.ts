@@ -1,5 +1,6 @@
 import * as request from "request";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
+import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 
 /**
  * AuthorizationRepository
@@ -14,9 +15,9 @@ export class AuthorizationRepository {
    *
    * @param clientId
    * @param state
-   * @returns {Promise<AuthleteResponse.AuthorizationIssueResponse>}
+   * @returns {Promise<AuthorizationCodeEntity>}
    */
-  createAuthorizationCode(clientId: number, state: string): Promise<AuthleteResponse.AuthorizationIssueResponse> {
+  createAuthorizationCode(clientId: number, state: string): Promise<AuthorizationCodeEntity> {
     return new Promise((resolve: Function, reject: Function) => {
       this.createAuthorizationTicket(clientId, state)
         .then((authorizationResponse) => {
@@ -52,7 +53,10 @@ export class AuthorizationRepository {
                 reject(new Error("Internal Server Error"));
               }
 
-              resolve(authorizationIssueResponse);
+              const authorizationCodeEntity = new AuthorizationCodeEntity(authorizationIssueResponse);
+
+              // TODO authorizationIssueResponse.actionがLOCATIONでなければエラーにする処理が必要。@keita-nishimoto
+              resolve(authorizationCodeEntity);
             } catch (error) {
               reject(error);
             }
@@ -102,6 +106,7 @@ export class AuthorizationRepository {
             reject(new Error("Internal Server Error"));
           }
 
+          // TODO authorizationResponse.actionがINTERACTIONでなければエラーにする処理が必要。 @keita-nishimoto
           resolve(authorizationResponse);
 
         } catch (error) {
