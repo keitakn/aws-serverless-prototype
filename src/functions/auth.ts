@@ -17,6 +17,7 @@ import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
+import * as querystring from "querystring";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -116,8 +117,15 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
   authorizationRepository.createAuthorizationCode(clientId, state)
     .then((authorizationResponse) => {
 
+      const query = authorizationResponse.responseContent.substr(
+        authorizationResponse.responseContent.indexOf("?") + 1
+      );
+
+      const queries = querystring.parse(query);
+
       const responseBody = {
-        code: authorizationResponse.authorizationCode
+        code: authorizationResponse.authorizationCode,
+        state: queries.state
       };
 
       const response = {

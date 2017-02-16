@@ -37,7 +37,19 @@ export namespace AuthleteResponse
    * /auth/authorization/issue APIのレスポンス
    */
   export interface AuthorizationIssueResponse {
+    /**
+     * レスポンスで返すべきHTTPステータスが設定される
+     */
     action: AuthorizationIssueActions;
+
+    /**
+     * 認可コード
+     */
     authorizationCode: string;
+
+    /**
+     * リダイレクトURI + 認可コード等のqueryパラメータが付与されたURI
+     */
+    responseContent: string;
   }
 }
