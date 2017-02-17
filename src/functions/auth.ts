@@ -108,11 +108,13 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
     requestBody = JSON.parse(event.body);
   }
 
-  const clientId = requestBody.client_id;
-  const state    = requestBody.state;
+  const clientId    = requestBody.client_id;
+  const state       = requestBody.state;
+  const redirectUri = requestBody.redirect_uri;
+  const subject     = requestBody.subject;
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.createAuthorizationCode(clientId, state)
+  authorizationRepository.createAuthorizationCode(clientId, state, redirectUri, subject)
     .then((authorizationCodeEntity) => {
 
       const responseBody = {
