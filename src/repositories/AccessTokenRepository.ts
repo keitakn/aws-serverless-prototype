@@ -64,6 +64,56 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
   }
 
   /**
+   * アクセストークンを作成する（認可コード）
+   *
+   * @param authorizationCode
+   * @param redirectUri
+   * @returns {Promise<T>}
+   */
+  create(authorizationCode: string, redirectUri: string) {
+
+    // TODO 仮実装。後で本格実装。 @keita-koga
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    const options = {
+      url: "https://api.authlete.com/api/auth/token",
+      method: "POST",
+      auth: {
+        username: this.getAuthleteApiKey(),
+        pass: this.getAuthleteApiSecret()
+      },
+      json: true,
+      headers: headers,
+      body: {
+        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+      }
+    };
+
+    return new Promise((resolve: Function, reject: Function) => {
+      request(options, (error: Error, response: any, body: any) => {
+        try {
+          if (error) {
+            reject(error);
+          }
+
+          if (response.statusCode !== 200) {
+            console.error(response);
+            reject(new Error("Internal Server Error"));
+          }
+
+          // TODO bodyの型定義。 @keita-koga
+          resolve(body);
+
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
    * 環境変数からAuthleteのAPIキーを取得する
    *
    * @returns {string}

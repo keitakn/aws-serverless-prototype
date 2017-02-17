@@ -76,6 +76,13 @@ functions:
           path: resource
           method: post
           cors: true
+  createToken:
+    handler: token.create
+    events:
+      - http:
+          path: tokens
+          method: post
+          cors: true
   authentication:
     handler: auth.authentication
     events:
