@@ -142,7 +142,7 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authentication
 ```
 
-### createAuthorizationCode
+### issueAuthorizationCode
 
 ```bash
 curl -kv \

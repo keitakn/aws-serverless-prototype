@@ -11,17 +11,18 @@ import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 export class AuthorizationRepository {
 
   /**
-   * 認可コードを作成する
+   * 認可コードを発行する
    *
    * @param clientId
    * @param state
    * @param redirectUri
+   * @param subject
    * @returns {Promise<AuthorizationCodeEntity>}
    */
-  createAuthorizationCode(clientId: number, state: string, redirectUri: string, subject: string): Promise<AuthorizationCodeEntity> {
+  issueAuthorizationCode(clientId: number, state: string, redirectUri: string, subject: string): Promise<AuthorizationCodeEntity> {
     // TODO 引数が多いので引数用のオブジェクトを定義する等して簡略化する。 @keita-koga
     return new Promise((resolve: Function, reject: Function) => {
-      this.createAuthorizationTicket(clientId, state, redirectUri)
+      this.issueAuthorizationTicket(clientId, state, redirectUri)
         .then((authorizationResponse) => {
           const headers = {
             "Content-Type": "application/json"
@@ -71,14 +72,14 @@ export class AuthorizationRepository {
   }
 
   /**
-   * 認可ticketを作成する
+   * 認可ticketを発行する
    *
    * @param clientId
    * @param state
    * @param redirectUri
    * @returns {Promise<AuthleteResponse.Authorization>}
    */
-  private createAuthorizationTicket(clientId: number, state: string, redirectUri: string): Promise<AuthleteResponse.Authorization> {
+  private issueAuthorizationTicket(clientId: number, state: string, redirectUri: string): Promise<AuthleteResponse.Authorization> {
 
     // TODO 引数が多いので引数用のオブジェクトを定義する等して簡略化する。 @keita-koga
     const headers = {
