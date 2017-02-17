@@ -1,8 +1,9 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
-import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 import {IntrospectionResponseInterface} from "../domain/auth/IntrospectionResponseInterface";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
+import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
+import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 
 /**
  * AccessTokenRepository
@@ -68,11 +69,10 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    *
    * @param authorizationCode
    * @param redirectUri
-   * @returns {Promise<T>}
+   * @returns {Promise<AccessTokenEntity>}
    */
-  issue(authorizationCode: string, redirectUri: string) {
+  issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
 
-    // TODO 仮実装。後で本格実装。 @keita-koga
     const headers = {
       "Content-Type": "application/json"
     };
@@ -92,7 +92,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
     };
 
     return new Promise((resolve: Function, reject: Function) => {
-      request(options, (error: Error, response: any, body: any) => {
+      request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
         try {
           if (error) {
             reject(error);
@@ -103,8 +103,15 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
             reject(new Error("Internal Server Error"));
           }
 
-          // TODO bodyの型定義。 @keita-koga
-          resolve(body);
+          const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
+          accessTokenEntity.tokenResponse = tokenResponse;
+
+          // TODO アクションに応じて返すエラーを分岐する。 @keita-koga
+          if (accessTokenEntity.extractTokenAction() !== "OK") {
+            reject(error);
+          }
+
+          resolve(accessTokenEntity);
 
         } catch (error) {
           reject(error);

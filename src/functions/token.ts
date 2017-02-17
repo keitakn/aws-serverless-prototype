@@ -15,7 +15,6 @@ sourceMapSupport.install();
  */
 export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
-  // TODO 仮実装。後で本格実装。 @keita-koga
   const environment = new Environment(event);
 
   let requestBody;
@@ -30,20 +29,20 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
 
   const accessTokenRepository = new AccessTokenRepository();
   accessTokenRepository.issue(authorizationCode, redirectUri)
-    .then((responseBody) => {
+    .then((accessTokenEntity) => {
 
       const response = {
         statusCode: 201,
         headers: {
           "Access-Control-Allow-Origin" : "*"
         },
-        body: JSON.stringify(responseBody)
+        body: accessTokenEntity.tokenResponse.responseContent
       };
 
       callback(null, response);
     })
     .catch((error) => {
-      console.error("createTokenError", error);
+      console.error("issueTokenFromCode", error);
       callback(error);
     });
 };

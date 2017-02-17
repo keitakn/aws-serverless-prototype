@@ -1,4 +1,5 @@
 import {IntrospectionResponseInterface} from "./IntrospectionResponseInterface";
+import {AuthleteResponse} from "./AuthleteResponse";
 
 /**
  * AccessTokenEntityInterface
@@ -18,8 +19,14 @@ interface AccessTokenEntityInterface {
  *
  * @author keita-nishimoto
  * @since 2016-01-23
+ * @todo Genericsを使った形にリファクタリングする。 @keita-koga
  */
 export default class AccessTokenEntity implements AccessTokenEntityInterface {
+
+  /**
+   * /auth/token APIのレスポンス
+   */
+  private _tokenResponse: AuthleteResponse.TokenResponse;
 
   /**
    * constructor
@@ -30,7 +37,7 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   constructor(
     private _token: string,
-    private _introspectionResponse: IntrospectionResponseInterface,
+    private _introspectionResponse?: IntrospectionResponseInterface,
     private _isAllowed: boolean = false
   ) {
   }
@@ -47,6 +54,20 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   get introspectionResponse(): IntrospectionResponseInterface {
     return this._introspectionResponse;
+  }
+
+  /**
+   * @returns {AuthleteResponse.TokenResponse}
+   */
+  get tokenResponse(): AuthleteResponse.TokenResponse {
+    return this._tokenResponse;
+  }
+
+  /**
+   * @param value
+   */
+  set tokenResponse(value: AuthleteResponse.TokenResponse) {
+    this._tokenResponse = value;
   }
 
   /**
@@ -70,5 +91,14 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   extractHttpStats(): string {
     return this._introspectionResponse.action;
+  }
+
+  /**
+   * トークン発行時にクライアントに返すべきアクションを取り出す
+   *
+   * @returns {TokenResponseActions}
+   */
+  extractTokenAction(): string {
+    return this.tokenResponse.action;
   }
 }
