@@ -94,6 +94,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
     return new Promise((resolve: Function, reject: Function) => {
       request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
         try {
+          // TODO エラー処理が十分ではない。クライアントタイプがCONFIDENTIALの場合、現在のコードでは正常に動作しないので解消する。 @keita-nishimoto
           if (error) {
             reject(error);
           }
