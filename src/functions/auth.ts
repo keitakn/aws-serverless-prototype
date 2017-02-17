@@ -91,13 +91,13 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
 };
 
 /**
- * 認可コードを作成する
+ * 認可コードを発行する
  *
  * @param event
  * @param context
  * @param callback
  */
-export const createAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
   const environment = new Environment(event);
 
@@ -108,11 +108,13 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
     requestBody = JSON.parse(event.body);
   }
 
-  const clientId = requestBody.client_id;
-  const state    = requestBody.state;
+  const clientId    = requestBody.client_id;
+  const state       = requestBody.state;
+  const redirectUri = requestBody.redirect_uri;
+  const subject     = requestBody.subject;
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.createAuthorizationCode(clientId, state)
+  authorizationRepository.issueAuthorizationCode(clientId, state, redirectUri, subject)
     .then((authorizationCodeEntity) => {
 
       const responseBody = {
@@ -131,7 +133,7 @@ export const createAuthorizationCode = (event: LambdaExecutionEvent, context: la
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("createAuthorizationCode", error);
+      console.error("issueAuthorizationCode", error);
 
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();

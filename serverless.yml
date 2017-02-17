@@ -76,6 +76,13 @@ functions:
           path: resource
           method: post
           cors: true
+  issueTokenFromCode:
+    handler: token.issueTokenFromCode
+    events:
+      - http:
+          path: tokens/code
+          method: post
+          cors: true
   authentication:
     handler: auth.authentication
     events:
@@ -83,8 +90,8 @@ functions:
           path: auth/authentication
           method: post
           cors: true
-  createAuthorizationCode:
-    handler: auth.createAuthorizationCode
+  issueAuthorizationCode:
+    handler: auth.issueAuthorizationCode
     events:
       - http:
           path: auth/authorization/code

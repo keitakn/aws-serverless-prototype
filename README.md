@@ -142,7 +142,7 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authentication
 ```
 
-### createAuthorizationCode
+### issueAuthorizationCode
 
 ```bash
 curl -kv \
@@ -152,10 +152,28 @@ curl -kv \
 '
 {
   "client_id": AuthleteClientId,
-  "state": "XXXXXXXXXXXXXXXXXXX"
+  "state": "XXXXXXXXXXXXXXXXXXX",
+  "redirect_uri": "https://your-redirect-uri",
+  "subject": "{userId}"
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authorization/code
+```
+
+### issueTokenFromCode
+
+```bash
+curl -kv \
+-X POST \
+-H "Content-type: application/json" \
+-d \
+'
+{
+  "code": "Your AuthorizationCode",
+  "redirect_uri": "https://your-redirect-uri"
+}
+' \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/tokens
 ```
 
 ### createResource

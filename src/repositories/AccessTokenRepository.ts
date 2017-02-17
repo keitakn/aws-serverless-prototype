@@ -1,8 +1,9 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
-import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 import {IntrospectionResponseInterface} from "../domain/auth/IntrospectionResponseInterface";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
+import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
+import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 
 /**
  * AccessTokenRepository
@@ -53,6 +54,62 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
             accessToken,
             introspectionResponse
           );
+
+          resolve(accessTokenEntity);
+
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * 認可コードからアクセストークンを発行する
+   *
+   * @param authorizationCode
+   * @param redirectUri
+   * @returns {Promise<AccessTokenEntity>}
+   */
+  issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
+
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    const options = {
+      url: "https://api.authlete.com/api/auth/token",
+      method: "POST",
+      auth: {
+        username: this.getAuthleteApiKey(),
+        pass: this.getAuthleteApiSecret()
+      },
+      json: true,
+      headers: headers,
+      body: {
+        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+      }
+    };
+
+    return new Promise((resolve: Function, reject: Function) => {
+      request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
+        try {
+          if (error) {
+            reject(error);
+          }
+
+          if (response.statusCode !== 200) {
+            console.error(response);
+            reject(new Error("Internal Server Error"));
+          }
+
+          const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
+          accessTokenEntity.tokenResponse = tokenResponse;
+
+          // TODO アクションに応じて返すエラーを分岐する。 @keita-koga
+          if (accessTokenEntity.extractTokenAction() !== "OK") {
+            reject(error);
+          }
 
           resolve(accessTokenEntity);
 
