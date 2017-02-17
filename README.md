@@ -160,7 +160,7 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authorization/code
 ```
 
-### createToken
+### issueTokenFromCode
 
 ```bash
 curl -kv \
@@ -170,7 +170,6 @@ curl -kv \
 '
 {
   "code": "Your AuthorizationCode",
-  "grant_type": "authorization_code",
   "redirect_uri": "https://your-redirect-uri"
 }
 ' \

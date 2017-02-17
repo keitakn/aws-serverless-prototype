@@ -64,13 +64,13 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
   }
 
   /**
-   * アクセストークンを作成する（認可コード）
+   * 認可コードからアクセストークンを発行する
    *
    * @param authorizationCode
    * @param redirectUri
    * @returns {Promise<T>}
    */
-  create(authorizationCode: string, redirectUri: string) {
+  issue(authorizationCode: string, redirectUri: string) {
 
     // TODO 仮実装。後で本格実装。 @keita-koga
     const headers = {

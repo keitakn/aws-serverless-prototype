@@ -76,11 +76,11 @@ functions:
           path: resource
           method: post
           cors: true
-  createToken:
-    handler: token.create
+  issueTokenFromCode:
+    handler: token.issueTokenFromCode
     events:
       - http:
-          path: tokens
+          path: tokens/code
           method: post
           cors: true
   authentication:
