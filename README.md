@@ -173,7 +173,7 @@ curl -kv \
   "redirect_uri": "https://your-redirect-uri"
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/tokens
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/tokens/code
 ```
 
 ### createResource
