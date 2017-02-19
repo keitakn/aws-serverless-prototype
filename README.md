@@ -194,6 +194,14 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource
 ```
 
+# ローカル環境でデバッグを行う方法
+
+[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考に必要なテーブルをローカル内のDynamoDBに作成して下さい。
+
+※DynamoDBのポートは必ず9000で起動する必要があります。
+
+また、ローカルでデバッガーを利用する為には [こちらの記事](http://qiita.com/keita-nishimoto/items/9c27bfcd1e67c0dc4ad1) を参考にして下さい。
+
 ## AWS services used
 
 - Lambda
