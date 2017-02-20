@@ -1,7 +1,6 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
-import ClientEntity from "../domain/client/ClientEntity";
 import ErrorResponse from "../domain/ErrorResponse";
 import Environment from "../infrastructures/Environment";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
@@ -65,6 +64,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
         application_type: clientEntity.applicationType,
         redirect_uris: clientEntity.redirectUris,
         grant_types: clientEntity.grantTypes,
+        scopes: clientEntity.scopes,
         created_at: clientEntity.createdAt,
         updated_at: clientEntity.updatedAt
       };
@@ -108,7 +108,14 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
     .then((clientEntity) => {
 
       const responseBody = {
-        id: clientEntity.id,
+        client_id: clientEntity.id,
+        client_secret: clientEntity.secret,
+        client_name: clientEntity.name,
+        developer: clientEntity.developer,
+        application_type: clientEntity.applicationType,
+        redirect_uris: clientEntity.redirectUris,
+        grant_types: clientEntity.grantTypes,
+        scopes: clientEntity.scopes,
         created_at: clientEntity.createdAt,
         updated_at: clientEntity.updatedAt
       };

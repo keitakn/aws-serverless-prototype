@@ -98,7 +98,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       };
 
-      request(options, (error: Error, response: any, clientCreateResponse: AuthleteResponse.ClientResponse) => {
+      request(options, (error: Error, response: any, clientResponse: AuthleteResponse.ClientResponse) => {
         try {
 
           if (error) {
@@ -111,18 +111,18 @@ export default class ClientRepository implements ClientRepositoryInterface {
           }
 
           const clientEntity = new ClientEntity(
-            clientCreateResponse.clientId,
-            clientCreateResponse.createdAt
+            clientResponse.clientId,
+            clientResponse.createdAt
           );
 
-          clientEntity.secret          = clientCreateResponse.clientSecret;
-          clientEntity.name            = clientCreateResponse.clientName;
-          clientEntity.developer       = clientCreateResponse.developer;
-          clientEntity.applicationType = clientCreateResponse.applicationType;
-          clientEntity.redirectUris    = clientCreateResponse.redirectUris;
-          clientEntity.grantTypes      = clientCreateResponse.grantTypes;
+          clientEntity.secret          = clientResponse.clientSecret;
+          clientEntity.name            = clientResponse.clientName;
+          clientEntity.developer       = clientResponse.developer;
+          clientEntity.applicationType = clientResponse.applicationType;
+          clientEntity.redirectUris    = clientResponse.redirectUris;
+          clientEntity.grantTypes      = clientResponse.grantTypes;
           clientEntity.scopes          = createClientRequest.scopes;
-          clientEntity.updatedAt       = clientCreateResponse.modifiedAt;
+          clientEntity.updatedAt       = clientResponse.modifiedAt;
 
           resolve(clientEntity);
         } catch (error) {
@@ -224,13 +224,19 @@ export default class ClientRepository implements ClientRepositoryInterface {
         json: true
       };
 
-      request(options, (error: Error, response: any, body: any) => {
+      request(options, (error: Error, response: any, clientResponse: AuthleteResponse.ClientResponse) => {
         try {
           if (error) {
             reject(error);
           }
 
-          console.log(body);
+          clientEntity.secret          = clientResponse.clientSecret;
+          clientEntity.name            = clientResponse.clientName;
+          clientEntity.developer       = clientResponse.developer;
+          clientEntity.applicationType = clientResponse.applicationType;
+          clientEntity.redirectUris    = clientResponse.redirectUris;
+          clientEntity.grantTypes      = clientResponse.grantTypes;
+          clientEntity.updatedAt       = clientResponse.modifiedAt;
 
           resolve(clientEntity);
         } catch (error) {
