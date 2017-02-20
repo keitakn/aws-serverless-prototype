@@ -84,8 +84,13 @@ curl -X POST -kv \
 -d \
 '
 {
-  "name":"neko",
-  "redirect_uri":"https://example.com"
+  "developer":"neko",
+  "application_type": "WEB",
+  "client_type": "CONFIDENTIAL",
+  "redirect_uris": ["https://example.com/oauth2/callback", "https://example.com/openid/callback"],
+  "response_types": ["CODE", "TOKEN"],
+  "grant_types": ["AUTHORIZATION_CODE", "REFRESH_TOKEN"],
+  "scopes": ["scope1", "scope2"]
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
