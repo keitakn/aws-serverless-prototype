@@ -95,7 +95,7 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   const environment = new Environment(event);
-  const clientId = event.pathParameters.id;
+  const clientId = parseInt(event.pathParameters.id);
 
   if (environment.isLocal() === true) {
     dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -109,9 +109,6 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
 
       const responseBody = {
         id: clientEntity.id,
-        secret: clientEntity.secret,
-        name: clientEntity.name,
-        redirect_uri: [""],
         created_at: clientEntity.createdAt,
         updated_at: clientEntity.updatedAt
       };

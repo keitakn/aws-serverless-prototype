@@ -132,9 +132,9 @@ export namespace AuthleteResponse
   type ResponseType = "NONE | CODE | TOKEN | ID_TOKEN | CODE_TOKEN | CODE_ID_TOKEN | ID_TOKEN_TOKEN | CODE_ID_TOKEN_TOKEN";
 
   /**
-   * クライアント作成のレスポンス
+   * クライアントのレスポンス
    */
-  export interface ClientCreateResponse {
+  export interface ClientResponse {
     /**
      * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
      */

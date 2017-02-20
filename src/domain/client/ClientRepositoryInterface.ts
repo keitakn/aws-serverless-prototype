@@ -14,7 +14,7 @@ export interface ClientRepositoryInterface {
    * @param clientId
    * @returns {Promise<ClientEntity>}
    */
-  find(clientId: string): Promise<ClientEntity>;
+  find(clientId: number): Promise<ClientEntity>;
 
   /**
    * クライアントを作成する

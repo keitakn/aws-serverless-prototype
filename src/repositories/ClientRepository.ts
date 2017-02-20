@@ -6,7 +6,7 @@ import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import {ClientRequest} from "../domain/client/ClientRequest";
-import ClientCreateResponse = AuthleteResponse.ClientCreateResponse;
+import ClientCreateResponse = AuthleteResponse.ClientResponse;
 
 /**
  * ClientRepository
@@ -30,34 +30,18 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @param clientId
    * @returns {Promise<ClientEntity>}
    */
-  find(clientId: string): Promise<ClientEntity> {
-
-    const params = {
-      TableName: this.getClientsTableName(),
-      Key: {
-        id: clientId
-      }
-    };
-
+  find(clientId: number): Promise<ClientEntity> {
     return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.Client) => {
-        try {
-          if (error) {
-            reject(error);
-          }
-
-          if (Object.keys(dbResponse).length === 0) {
-            throw new NotFoundError();
-          }
-
-          const clientEntity = new ClientEntity(dbResponse.Item.id, dbResponse.Item.created_at);
-          clientEntity.updatedAt = dbResponse.Item.updated_at;
-
+      this.findFromDb(clientId)
+        .then((clientEntity) => {
+          return this.fetchFromAPi(clientEntity);
+        })
+        .then((clientEntity) => {
           resolve(clientEntity);
-        } catch (error) {
+        })
+        .catch((error: Error) => {
           reject(error);
-        }
-      });
+        });
     });
   }
 
@@ -114,7 +98,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       };
 
-      request(options, (error: Error, response: any, clientCreateResponse: AuthleteResponse.ClientCreateResponse) => {
+      request(options, (error: Error, response: any, clientCreateResponse: AuthleteResponse.ClientResponse) => {
         try {
 
           if (error) {
@@ -174,6 +158,79 @@ export default class ClientRepository implements ClientRepositoryInterface {
           if (error) {
             reject(error);
           }
+
+          resolve(clientEntity);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * DBからクライアントを取得する
+   *
+   * @param clientId
+   * @returns {Promise<ClientEntity>}
+   */
+  private findFromDb(clientId: number): Promise<ClientEntity> {
+    return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
+      const params = {
+        TableName: this.getClientsTableName(),
+        Key: {
+          id: clientId
+        }
+      };
+
+      this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.Client) => {
+        try {
+          if (error) {
+            reject(error);
+          }
+
+          if (Object.keys(dbResponse).length === 0) {
+            throw new NotFoundError();
+          }
+
+          const clientEntity = new ClientEntity(dbResponse.Item.id, dbResponse.Item.created_at);
+          clientEntity.scopes = dbResponse.Item.scopes;
+          clientEntity.updatedAt = dbResponse.Item.updated_at;
+
+          resolve(clientEntity);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Authlete APIからクライアントを取得する
+   *
+   * @param clientEntity
+   * @returns {Promise<ClientEntity>}
+   */
+  private fetchFromAPi(clientEntity: ClientEntity) {
+    return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
+      const clientId = clientEntity.id;
+
+      const options = {
+        url: `https://api.authlete.com/api/client/get/${clientId}`,
+        method: "GET",
+        auth: {
+          username: this.getAuthleteApiKey(),
+          pass: this.getAuthleteApiSecret()
+        },
+        json: true
+      };
+
+      request(options, (error: Error, response: any, body: any) => {
+        try {
+          if (error) {
+            reject(error);
+          }
+
+          console.log(body);
 
           resolve(clientEntity);
         } catch (error) {

@@ -12,6 +12,7 @@ export namespace DynamoDbResponse {
   export interface Client {
     Item: {
       id: number;
+      scopes: [string];
       created_at: number;
       updated_at: number;
     }
