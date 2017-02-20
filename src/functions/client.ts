@@ -1,12 +1,12 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import * as uuid from "uuid";
 import {LambdaExecutionEvent} from "../../types";
 import ClientEntity from "../domain/client/ClientEntity";
 import ErrorResponse from "../domain/ErrorResponse";
 import Environment from "../infrastructures/Environment";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import ClientRepository from "../repositories/ClientRepository";
+import {ClientRequest} from "../domain/client/ClientRequest";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -20,7 +20,6 @@ sourceMapSupport.install();
  * @param callback
  */
 export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
-  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   const environment = new Environment(event);
 
   let requestBody;
@@ -30,14 +29,13 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     requestBody = JSON.parse(event.body);
   }
 
-  const nowDateTime = new Date().getTime();
-
-  const clientEntity = new ClientEntity(uuid.v1(), nowDateTime);
-
-  clientEntity.secret = uuid.v4();
-  clientEntity.name = requestBody.name;
-  clientEntity.redirectUri = requestBody.redirect_uri;
-  clientEntity.updatedAt = nowDateTime;
+  const developer       = requestBody.developer;
+  const applicationType = requestBody.application_type;
+  const clientType      = requestBody.client_type;
+  const redirectUris    = requestBody.redirect_uris;
+  const responseTypes   = requestBody.response_types;
+  const grantTypes      = requestBody.grant_types;
+  const scopes          = requestBody.scopes;
 
   if (environment.isLocal() === true) {
     dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -46,13 +44,27 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   }
   const clientRepository = new ClientRepository(dynamoDbDocumentClient);
 
-  clientRepository.save(clientEntity)
+  // TODO オブジェクトの生成方法が冗長なので対策を考え実施する。 @keita-koga
+  const createClientRequest = new ClientRequest.CreateClientRequest(
+    developer,
+    applicationType,
+    clientType,
+    redirectUris,
+    responseTypes,
+    grantTypes,
+    scopes
+  );
+
+  clientRepository.create(createClientRequest)
     .then((clientEntity) => {
       const responseBody = {
-        id: clientEntity.id,
-        secret: clientEntity.secret,
-        name: clientEntity.name,
-        redirect_uri: clientEntity.redirectUri,
+        client_id: clientEntity.id,
+        client_secret: clientEntity.secret,
+        client_name: clientEntity.name,
+        developer: clientEntity.developer,
+        application_type: clientEntity.applicationType,
+        redirect_uris: clientEntity.redirectUris,
+        grant_types: clientEntity.grantTypes,
         created_at: clientEntity.createdAt,
         updated_at: clientEntity.updatedAt
       };
@@ -66,7 +78,8 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       };
 
       callback(null, response);
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error("createClientError", error);
       callback(error);
   });
@@ -98,7 +111,7 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
         id: clientEntity.id,
         secret: clientEntity.secret,
         name: clientEntity.name,
-        redirect_uri: clientEntity.redirectUri,
+        redirect_uri: [""],
         created_at: clientEntity.createdAt,
         updated_at: clientEntity.updatedAt
       };

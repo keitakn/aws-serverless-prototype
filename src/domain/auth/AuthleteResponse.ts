@@ -110,4 +110,84 @@ export namespace AuthleteResponse
      */
     responseContent: string;
   }
+
+  /**
+   * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
+   */
+  type ApplicationType = "WEB | NATIVE";
+
+  /**
+   * RFC 6749, 2.1. Client Types.
+   */
+  type ClientType = "CONFIDENTIAL | PUBLIC";
+
+  /**
+   * OAuth 2.0 supportedGrantTypes
+   */
+  type GrantType = "AUTHORIZATION_CODE | IMPLICIT | PASSWORD | CLIENT_CREDENTIALS | REFRESH_TOKEN";
+
+  /**
+   * OAuth 2.0 Response Type
+   */
+  type ResponseType = "NONE | CODE | TOKEN | ID_TOKEN | CODE_TOKEN | CODE_ID_TOKEN | ID_TOKEN_TOKEN | CODE_ID_TOKEN_TOKEN";
+
+  /**
+   * クライアント作成のレスポンス
+   */
+  export interface ClientCreateResponse {
+    /**
+     * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
+     */
+    applicationType: ApplicationType;
+
+    /**
+     * クライアントID
+     */
+    clientId: number;
+
+    /**
+     * クライアント名
+     */
+    clientName: string;
+
+    /**
+     * クライアントシークレット
+     */
+    clientSecret: string;
+
+    /**
+     * RFC 6749, 2.1. Client Types.
+     */
+    clientType: ClientType;
+
+    /**
+     * 作成日時（UnixTime）
+     */
+    createdAt: number;
+
+    /**
+     * 更新日時（UnixTime）
+     */
+    modifiedAt: number;
+
+    /**
+     * 開発者
+     */
+    developer: string;
+
+    /**
+     * OAuth 2.0 supportedGrantTypes
+     */
+    grantTypes: [GrantType];
+
+    /**
+     * リダイレクトURI
+     */
+    redirectUris: [string]
+
+    /**
+     * OAuth 2.0 Response Type
+     */
+    responseTypes: [ResponseType];
+  }
 }

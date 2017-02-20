@@ -1,4 +1,5 @@
 import ClientEntity from "./ClientEntity";
+import {ClientRequest} from "./ClientRequest";
 
 /**
  * ClientRepositoryInterface
@@ -16,10 +17,10 @@ export interface ClientRepositoryInterface {
   find(clientId: string): Promise<ClientEntity>;
 
   /**
-   * クライアントを保存する
+   * クライアントを作成する
    *
-   * @param clientEntity
+   * @param createClientRequest
    * @returns {Promise<ClientEntity>}
    */
-  save(clientEntity: ClientEntity): Promise<ClientEntity>;
+  create(createClientRequest: ClientRequest.CreateClientRequest): Promise<ClientEntity>;
 }

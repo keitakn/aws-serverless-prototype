@@ -11,10 +11,7 @@ export namespace DynamoDbResponse {
    */
   export interface Client {
     Item: {
-      id: string;
-      secret: string;
-      name: string;
-      redirect_uri: string;
+      id: number;
       created_at: number;
       updated_at: number;
     }

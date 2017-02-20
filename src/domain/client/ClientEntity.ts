@@ -5,12 +5,16 @@
  * @since 2016-01-16
  */
 interface ClientEntityInterface {
-  id: string,
-  secret: string,
-  name: string,
-  redirectUri: string,
-  createdAt: number,
-  updatedAt: number
+  id: number;
+  secret: string;
+  name: string;
+  developer: string;
+  applicationType: string;
+  redirectUris: [string];
+  grantTypes: [string];
+  scopes: [string];
+  createdAt: number;
+  updatedAt: number;
 }
 
 /**
@@ -32,9 +36,29 @@ export default class ClientEntity implements ClientEntityInterface {
   private _name: string;
 
   /**
+   * 開発者
+   */
+  private _developer: string;
+
+  /**
+   * アプリケーションタイプ
+   */
+  private _applicationType: string;
+
+  /**
    * リダイレクトURI
    */
-  private _redirectUri: string;
+  private _redirectUris: [string];
+
+  /**
+   * クライアントタイプ
+   */
+  private _grantTypes: [string];
+
+  /**
+   * スコープ
+   */
+  private _scopes: [string];
 
   /**
    * 更新日時
@@ -47,13 +71,13 @@ export default class ClientEntity implements ClientEntityInterface {
    * @param _id
    * @param _createdAt
    */
-  constructor(private _id: string, private _createdAt: number) {
+  constructor(private _id: number, private _createdAt: number) {
   }
 
   /**
-   * @returns {string}
+   * @returns {number}
    */
-  get id(): string {
+  get id(): number {
     return this._id;
   }
 
@@ -95,15 +119,71 @@ export default class ClientEntity implements ClientEntityInterface {
   /**
    * @returns {string}
    */
-  get redirectUri(): string {
-    return this._redirectUri;
+  get developer(): string {
+    return this._developer;
   }
 
   /**
    * @param value
    */
-  set redirectUri(value: string) {
-    this._redirectUri = value;
+  set developer(value: string) {
+    this._developer = value;
+  }
+
+  /**
+   * @returns {string}
+   */
+  get applicationType(): string {
+    return this._applicationType;
+  }
+
+  /**
+   * @param value
+   */
+  set applicationType(value: string) {
+    this._applicationType = value;
+  }
+
+  /**
+   * @returns {[string]}
+   */
+  get redirectUris(): [string] {
+    return this._redirectUris;
+  }
+
+  /**
+   * @param value
+   */
+  set redirectUris(value: [string]) {
+    this._redirectUris = value;
+  }
+
+  /**
+   * @returns {[string]}
+   */
+  get grantTypes(): [string] {
+    return this._grantTypes;
+  }
+
+  /**
+   * @param value
+   */
+  set grantTypes(value: [string]) {
+    this._grantTypes = value;
+  }
+
+  /**
+   * @returns {[string]}
+   */
+  get scopes(): [string] {
+    return this._scopes;
+  }
+
+  /**
+   * @param value
+   */
+  set scopes(value: [string]) {
+    this._scopes = value;
   }
 
   /**
