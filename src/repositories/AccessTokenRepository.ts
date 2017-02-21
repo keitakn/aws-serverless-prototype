@@ -109,7 +109,11 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
 
           // TODO アクションに応じて返すエラーを分岐する。 @keita-koga
           if (accessTokenEntity.extractTokenAction() !== "OK") {
-            reject(error);
+            reject(
+              new Error(
+                accessTokenEntity.tokenResponse.responseContent
+              )
+            );
           }
 
           resolve(accessTokenEntity);

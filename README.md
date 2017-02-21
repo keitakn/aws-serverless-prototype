@@ -75,27 +75,6 @@ AuthorizationHeaderにアクセストークンを設定して下さい。
 以下はcurlでの接続例です。
 "YOUR ACCESS TOKEN"の部分をあなたが取得したアクセストークンに置き換えて下さい。
 
-### createClient
-
-```bash
-curl -X POST -kv \
--H "Content-type: application/json" \
--H "Authorization: Bearer YOUR ACCESS TOKEN" \
--d \
-'
-{
-  "developer":"neko",
-  "application_type": "WEB",
-  "client_type": "CONFIDENTIAL",
-  "redirect_uris": ["https://example.com/oauth2/callback", "https://example.com/openid/callback"],
-  "response_types": ["CODE", "TOKEN"],
-  "grant_types": ["AUTHORIZATION_CODE", "REFRESH_TOKEN"],
-  "scopes": ["scope1", "scope2"]
-}
-' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients
-```
-
 ### findClient
 
 ```bash

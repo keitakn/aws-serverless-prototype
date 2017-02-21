@@ -17,6 +17,7 @@ import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
+import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -112,9 +113,19 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
   const state       = requestBody.state;
   const redirectUri = requestBody.redirect_uri;
   const subject     = requestBody.subject;
+  const scopes      = requestBody.scopes;
+
+  const requestBuilder = new AuthorizationRequest.RequestBuilder();
+  requestBuilder.clientId    = clientId;
+  requestBuilder.state       = state;
+  requestBuilder.redirectUri = redirectUri;
+  requestBuilder.subject     = subject;
+  requestBuilder.scopes      = scopes;
+
+  const authorizationRequest = requestBuilder.build();
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.issueAuthorizationCode(clientId, state, redirectUri, subject)
+  authorizationRepository.issueAuthorizationCode(authorizationRequest)
     .then((authorizationCodeEntity) => {
 
       const responseBody = {
