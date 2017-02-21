@@ -189,5 +189,13 @@ export namespace AuthleteResponse
      * OAuth 2.0 Response Type
      */
     responseTypes: [ResponseType];
+
+    /**
+     * クライアントが持てる拡張情報
+     */
+    extension: {
+      // リクエスト可能なscope一覧
+      requestableScopes: [string]
+    }
   }
 }

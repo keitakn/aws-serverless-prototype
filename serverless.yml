@@ -37,14 +37,6 @@ custom:
   webpackIncludeModules: true
 
 functions:
-  createClient:
-    handler: client.create
-    events:
-      - http:
-          path: clients
-          method: post
-          authorizer: ${self:custom.authorizer}
-          cors: true
   findClient:
     handler: client.find
     events:
@@ -102,22 +94,6 @@ functions:
 
 resources:
   Resources:
-    ClientsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Delete
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: N
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${env:DEPLOY_STAGE}_Clients
     UsersDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Delete
