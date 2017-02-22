@@ -24,25 +24,25 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @returns {Promise<AccessTokenEntity>}
    */
   fetch(accessToken: string): Promise<AccessTokenEntity> {
-    const headers = {
-      "Content-Type": "application/json"
-    };
-
-    const options = {
-      url: "https://api.authlete.com/api/auth/introspection",
-      method: "POST",
-      auth: {
-        username: this.getAuthleteApiKey(),
-        pass: this.getAuthleteApiSecret()
-      },
-      headers: headers,
-      json: true,
-      body: {
-        token: accessToken
-      }
-    };
-
     return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      const options = {
+        url: "https://api.authlete.com/api/auth/introspection",
+        method: "POST",
+        auth: {
+          username: this.getAuthleteApiKey(),
+          pass: this.getAuthleteApiSecret()
+        },
+        headers: headers,
+        json: true,
+        body: {
+          token: accessToken
+        }
+      };
+
       request(options, (error: Error, response: any, introspectionResponse: IntrospectionResponseInterface) => {
         try {
           if (error) {
@@ -75,26 +75,25 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @returns {Promise<AccessTokenEntity>}
    */
   issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
-
-    const headers = {
-      "Content-Type": "application/json"
-    };
-
-    const options = {
-      url: "https://api.authlete.com/api/auth/token",
-      method: "POST",
-      auth: {
-        username: this.getAuthleteApiKey(),
-        pass: this.getAuthleteApiSecret()
-      },
-      json: true,
-      headers: headers,
-      body: {
-        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
-      }
-    };
-
     return new Promise((resolve: Function, reject: Function) => {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      const options = {
+        url: "https://api.authlete.com/api/auth/token",
+        method: "POST",
+        auth: {
+          username: this.getAuthleteApiKey(),
+          pass: this.getAuthleteApiSecret()
+        },
+        json: true,
+        headers: headers,
+        body: {
+          parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+        }
+      };
+
       request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
         try {
           if (error) {
