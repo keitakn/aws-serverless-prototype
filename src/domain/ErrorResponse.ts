@@ -1,3 +1,5 @@
+import {isUndefined} from "util";
+
 /**
  * ErrorResponse
  *
@@ -9,9 +11,7 @@ export default class ErrorResponse {
   /**
    * エラーレスポンスに必要な定数
    *
-   * @type {{NotFoundError: {statusCode: number; errorCode: number}}}
    * @private
-   * @todo ここにハードコードするのはイケてないので何らかの対策を考える @keita-nishimoto
    */
   private _errorConstant: any = {
     NotFoundError: {
@@ -21,6 +21,18 @@ export default class ErrorResponse {
     UnauthorizedError: {
       statusCode: 401,
       errorCode: 401
+    },
+    BadRequestError: {
+      statusCode: 400,
+      errorCode: 400
+    },
+    ForbiddenError: {
+      statusCode: 403,
+      errorCode: 403
+    },
+    InternalServerError : {
+      statusCode: 500,
+      errorCode: 500
     }
   };
 
@@ -45,11 +57,7 @@ export default class ErrorResponse {
    * @param _error
    */
   constructor(private _error: Error) {
-    for (const key of Object.keys(this.errorConstant)) {
-      if (key === this.error.name) {
-        this.createResponse();
-      }
-    }
+    this.setErrorInfo();
   }
 
   /**
@@ -94,6 +102,21 @@ export default class ErrorResponse {
    */
   getResponse(): any {
     // このメソッドでObjectを整形して返すよりも呼出元でこのObjectを作ったほうが良いかも
+    const defaultStatusCode = 500;
+    const defaultErrorCode  = defaultStatusCode;
+
+    if (isUndefined(this.errorCode) === true) {
+      this._errorCode = defaultErrorCode;
+    }
+
+    if (isUndefined(this.errorMessage) === true) {
+      this._errorMessage = "Internal Server Error";
+    }
+
+    if (isUndefined(this.statusCode) === true) {
+      this._statusCode = defaultStatusCode;
+    }
+
     const responseBody = {
       "code": this.errorCode,
       "message": `${this.errorMessage}`
@@ -111,14 +134,39 @@ export default class ErrorResponse {
   }
 
   /**
-   * レスポンスを生成する
+   * エラーをセットする
    */
-  private createResponse() {
-    // TODO 想定外のErrorが渡ってきた時の考慮が必要 @keita-nishimoto
-    const errorClassName = this.error.name;
+  private setErrorInfo() {
+    for (const key of Object.keys(this.errorConstant)) {
+      if (isUndefined(this.error.name) === false) {
+        if (key === this.error.name) {
+          this.setBusinessLogicErrorInfo();
+          return;
+        } else {
+          continue;
+        }
+      }
+    }
 
+    this.setUnexpectedErrorInfo();
+  }
+
+  /**
+   * ビジネスロジックエラーをセットする
+   */
+  private setBusinessLogicErrorInfo() {
+    const errorClassName = this.error.name;
     this._statusCode = this.errorConstant[errorClassName]["statusCode"];
     this._errorCode = this.errorConstant[errorClassName]["errorCode"];
     this._errorMessage = this.error.message;
+  }
+
+  /**
+   * 予期せぬエラーをセットする
+   */
+  private setUnexpectedErrorInfo() {
+    this._statusCode = 500;
+    this._errorCode = 500;
+    this._errorMessage = "Internal Server Error";
   }
 }

@@ -138,7 +138,8 @@ curl -kv \
   "client_id": AuthleteClientId,
   "state": "XXXXXXXXXXXXXXXXXXX",
   "redirect_uri": "https://your-redirect-uri",
-  "subject": "{userId}"
+  "subject": "{userId}",
+  "scopes": ["openid", "email"]
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authorization/code
@@ -172,7 +173,7 @@ curl -kv \
   "http_method": "POST",
   "resource_path": "users",
   "name": "Create User.",
-  "scopes": ["prototype_users", "prototype_users_post"]
+  "scopes": ["email"]
 }
 ' \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource

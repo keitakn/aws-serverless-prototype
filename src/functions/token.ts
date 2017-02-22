@@ -3,6 +3,7 @@ import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
 import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
+import ErrorResponse from "../domain/ErrorResponse";
 
 sourceMapSupport.install();
 
@@ -41,8 +42,12 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
 
       callback(null, response);
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.error("issueTokenFromCode", error);
-      callback(error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
+
+      callback(null, response);
     });
 };
