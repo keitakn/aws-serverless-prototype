@@ -16,6 +16,12 @@ export namespace AuthleteResponse
    * /auth/authorization APIのレスポンス
    */
   export interface Authorization {
+
+    /**
+     * APIの結果メッセージ
+     */
+    resultMessage: string;
+
     /**
      * レスポンスで返すべきHTTPステータスが設定される
      */
@@ -37,6 +43,12 @@ export namespace AuthleteResponse
    * /auth/authorization/issue APIのレスポンス
    */
   export interface AuthorizationIssueResponse {
+
+    /**
+     * APIの結果メッセージ
+     */
+    resultMessage: string;
+
     /**
      * レスポンスで返すべきHTTPステータスが設定される
      */

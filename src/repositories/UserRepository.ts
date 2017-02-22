@@ -4,6 +4,7 @@ import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
 import PasswordHash from "../domain/auth/PasswordHash";
+import InternalServerError from "../errors/InternalServerError";
 
 /**
  * UserRepository
@@ -28,22 +29,24 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<UserEntity>}
    */
   find(userId: string): Promise<UserEntity> {
-    const params = {
-      TableName: this.getUsersTableName(),
-      Key: {
-        id: userId
-      }
-    };
-
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
+      const params = {
+        TableName: this.getUsersTableName(),
+        Key: {
+          id: userId
+        }
+      };
+
       this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.User) => {
         try {
           if (error) {
-            reject(error);
+            reject(
+              new InternalServerError(error.message)
+            );
           }
 
           if (Object.keys(dbResponse).length === 0) {
-            throw new NotFoundError();
+            reject(new NotFoundError());
           }
 
           const userEntity = new UserEntity(dbResponse.Item.id, dbResponse.Item.created_at);
@@ -57,7 +60,9 @@ export default class UserRepository implements UserRepositoryInterface {
 
           resolve(userEntity);
         } catch (error) {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         }
       });
     });
@@ -70,33 +75,37 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {Promise<UserEntity>}
    */
   save(userEntity: UserEntity): Promise<UserEntity> {
-    const userCreateParams = {
-      id: userEntity.id,
-      email: userEntity.email,
-      email_verified: userEntity.emailVerified,
-      password_hash: userEntity.passwordHash.passwordHash,
-      name: userEntity.name,
-      gender: userEntity.gender,
-      birthdate: userEntity.birthdate,
-      created_at: userEntity.createdAt,
-      updated_at: userEntity.updatedAt
-    };
-
-    const params = {
-      TableName: this.getUsersTableName(),
-      Item: userCreateParams
-    };
-
     return new Promise<UserEntity>((resolve: Function, reject: Function) => {
+      const userCreateParams = {
+        id: userEntity.id,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        password_hash: userEntity.passwordHash.passwordHash,
+        name: userEntity.name,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate,
+        created_at: userEntity.createdAt,
+        updated_at: userEntity.updatedAt
+      };
+
+      const params = {
+        TableName: this.getUsersTableName(),
+        Item: userCreateParams
+      };
+
       this.dynamoDbDocumentClient.put(params, (error: Error) => {
         try {
           if (error) {
-            reject(error);
+            reject(
+              new InternalServerError(error.message)
+            );
           }
 
           resolve(userEntity);
         } catch (error) {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         }
       });
     });

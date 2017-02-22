@@ -78,7 +78,11 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     })
     .catch((error: Error) => {
       console.error("createUserError", error);
-      callback(error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
+
+      callback(null, response);
     });
 };
 

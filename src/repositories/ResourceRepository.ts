@@ -4,6 +4,7 @@ import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepository
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {DynamoDbResponse} from "./DynamoDbResponse";
 import NotFoundError from "../errors/NotFoundError";
+import InternalServerError from "../errors/InternalServerError";
 
 /**
  * ResourceRepository
@@ -54,7 +55,9 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           resolve(resourceEntity);
         })
         .catch((error: Error) => {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         });
     });
   }
@@ -89,7 +92,9 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           resolve(resourceEntity);
         })
         .catch((error: Error) => {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         });
     });
   }

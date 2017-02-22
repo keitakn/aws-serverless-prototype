@@ -5,6 +5,7 @@ import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import Environment from "../infrastructures/Environment";
+import ErrorResponse from "../domain/ErrorResponse";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -75,6 +76,10 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
     })
     .catch((error: Error) => {
       console.error("createResourceError", error);
-      callback(error);
+
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
+
+      callback(null, response);
     });
 };
