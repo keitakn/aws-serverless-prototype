@@ -270,6 +270,7 @@ const hasRequiredScopes = (arn: string, accessTokenEntity: AccessTokenEntity) =>
       .find(resourceId)
       .then((resourceEntity: ResourceEntity) => {
 
+        // TODO 適切な書き方ではない（無駄にループを回している）のでリファクタリング @keita-koga
         resourceEntity.scopes.map((scopeResourceHas) => {
           accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
             if (scopeResourceHas === scopeTokenHas) {
