@@ -119,7 +119,7 @@ curl -kv \
 -d \
 '
 {
-  "id":"{userId}",
+  "id": "{userId}",
   "password": "{userPassword}"
 }
 ' \
