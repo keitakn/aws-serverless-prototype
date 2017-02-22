@@ -2,6 +2,8 @@ import * as request from "request";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
+import InternalServerError from "../errors/InternalServerError";
+import BadRequestError from "../errors/BadRequestError";
 
 /**
  * AuthorizationRepository
@@ -45,25 +47,48 @@ export class AuthorizationRepository {
           request(options, (error: Error, response: any, authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) => {
             try {
               if (error) {
-                reject(error);
+                reject(
+                  new InternalServerError(error.message)
+                );
               }
 
               if (response.statusCode !== 200) {
-                console.error(response);
-                reject(new Error("Internal Server Error"));
+                console.error("issueAuthorizationCode", response);
+                reject(
+                  new InternalServerError()
+                );
               }
 
-              const authorizationCodeEntity = new AuthorizationCodeEntity(authorizationIssueResponse);
+              const action = authorizationIssueResponse.action.toString();
 
-              // TODO authorizationIssueResponse.actionがLOCATIONでなければエラーにする処理が必要。@keita-nishimoto
-              resolve(authorizationCodeEntity);
+              switch (action) {
+                case "LOCATION":
+                  const authorizationCodeEntity = new AuthorizationCodeEntity(authorizationIssueResponse);
+                  resolve(authorizationCodeEntity);
+                  break;
+                case "BAD_REQUEST":
+                  reject(
+                    new BadRequestError(authorizationIssueResponse.resultMessage)
+                  );
+                  break;
+                default:
+                  reject(
+                    new InternalServerError(authorizationIssueResponse.resultMessage)
+                  );
+                  break;
+              }
+
             } catch (error) {
-              reject(error);
+              reject(
+                new InternalServerError(error.message)
+              );
             }
           });
         })
         .catch((error: Error) => {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         });
     });
   }
@@ -106,19 +131,44 @@ export class AuthorizationRepository {
       request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {
         try {
           if (error) {
-            reject(error);
+            reject(
+              new InternalServerError(error.message)
+            );
           }
 
           if (response.statusCode !== 200) {
-            console.error(response);
-            reject(new Error("Internal Server Error"));
+            console.error("issueAuthorizationTicket", response);
+            reject(
+              new InternalServerError()
+            );
           }
 
-          // TODO authorizationResponse.actionがINTERACTIONでなければエラーにする処理が必要。 @keita-nishimoto
-          resolve(authorizationResponse);
+          const action = authorizationResponse.action.toString();
+          switch (action) {
+            case "INTERACTION":
+              resolve(authorizationResponse);
+              break;
+            case "BAD_REQUEST":
+              reject(
+                new BadRequestError(authorizationResponse.resultMessage)
+              );
+              break;
+            case "INTERNAL_SERVER_ERROR":
+              reject(
+                new InternalServerError(authorizationResponse.resultMessage)
+              );
+              break;
+            default:
+              reject(
+                new InternalServerError(authorizationResponse.resultMessage)
+              );
+              break;
+          }
 
         } catch (error) {
-          reject(error);
+          reject(
+            new InternalServerError(error.message)
+          );
         }
       })
     });
