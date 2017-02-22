@@ -4,6 +4,9 @@ import {IntrospectionResponseInterface} from "../domain/auth/IntrospectionRespon
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
+import BadRequestError from "../errors/BadRequestError";
+import ForbiddenError from "../errors/ForbiddenError";
+import InternalServerError from "../errors/InternalServerError";
 
 /**
  * AccessTokenRepository
@@ -94,26 +97,40 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
     return new Promise((resolve: Function, reject: Function) => {
       request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
         try {
-          // TODO エラー処理が十分ではない。クライアントタイプがCONFIDENTIALの場合、現在のコードでは正常に動作しないので解消する。 @keita-nishimoto
           if (error) {
-            reject(error);
+            reject(
+              new InternalServerError(error.message)
+            );
           }
 
           if (response.statusCode !== 200) {
             console.error(response);
-            reject(new Error("Internal Server Error"));
+            reject(
+              new InternalServerError()
+            );
           }
 
           const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
           accessTokenEntity.tokenResponse = tokenResponse;
 
-          // TODO アクションに応じて返すエラーを分岐する。 @keita-koga
           if (accessTokenEntity.extractTokenAction() !== "OK") {
-            reject(
-              new Error(
-                accessTokenEntity.tokenResponse.responseContent
-              )
-            );
+            switch (accessTokenEntity.extractTokenAction()) {
+              case "BAD_REQUEST":
+                reject(
+                  new BadRequestError(accessTokenEntity.tokenResponse.resultMessage)
+                );
+                break;
+              case "FORBIDDEN":
+                reject(
+                  new ForbiddenError(accessTokenEntity.tokenResponse.resultMessage)
+                );
+                break;
+              default:
+                reject(
+                  new InternalServerError(accessTokenEntity.tokenResponse.resultMessage)
+                );
+                break;
+            }
           }
 
           resolve(accessTokenEntity);

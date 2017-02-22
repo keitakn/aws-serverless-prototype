@@ -71,9 +71,7 @@ export class AuthorizationRepository {
   /**
    * 認可ticketを発行する
    *
-   * @param clientId
-   * @param state
-   * @param redirectUri
+   * @param authorizationRequest
    * @returns {Promise<AuthleteResponse.Authorization>}
    */
   private issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteResponse.Authorization> {
@@ -86,6 +84,13 @@ export class AuthorizationRepository {
       const state       = authorizationRequest.state;
       const redirectUri = authorizationRequest.redirectUri;
 
+      let scopes = "openid";
+      authorizationRequest.scopes.map((scope) => {
+        if (scope !== "openid") {
+          scopes += "%20" + scope;
+        }
+      });
+
       const options = {
         url: "https://api.authlete.com/api/auth/authorization",
         method: "POST",
@@ -95,7 +100,7 @@ export class AuthorizationRepository {
         },
         json: true,
         headers: headers,
-        form: `parameters=client_id%3D${clientId}%26response_type%3Dcode%26state%3D${state}%26scope%3Dopenid%26redirect_uri=${redirectUri}`
+        form: `parameters=client_id%3D${clientId}%26response_type%3Dcode%26state%3D${state}%26scope%3D${scopes}%26redirect_uri=${redirectUri}`
       };
 
       request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {

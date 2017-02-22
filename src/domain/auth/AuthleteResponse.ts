@@ -57,12 +57,17 @@ export namespace AuthleteResponse
    * actionのデータ型（/auth/token API）
    * レスポンスで返すべきHTTPステータスが設定される
    */
-  type TokenResponseActions = "OK | PASSWORD | BAD_REQUEST | INTERNAL_SERVER_ERROR | INVALID_CLIENT";
+  type TokenResponseActions = "OK | BAD_REQUEST | FORBIDDEN | INTERNAL_SERVER_ERROR";
 
   /**
    * /auth/token APIのレスポンス
    */
   export interface TokenResponse {
+
+    /**
+     * APIの結果メッセージ
+     */
+    resultMessage: string;
 
     /**
      * アクセストークン
