@@ -3,7 +3,7 @@
  * 認可コード発行のリクエスト
  *
  * @author keita-nishimoto
- * @since 2016-02-21
+ * @since 2017-02-21
  */
 export namespace AuthorizationRequest {
 
@@ -11,7 +11,7 @@ export namespace AuthorizationRequest {
    * RequestBuilder
    *
    * @author keita-nishimoto
-   * @since 2016-02-21
+   * @since 2017-02-21
    */
   export class RequestBuilder {
 
@@ -131,7 +131,7 @@ export namespace AuthorizationRequest {
    * 認可コード発行のリクエスト
    *
    * @author keita-nishimoto
-   * @since 2016-02-21
+   * @since 2017-02-21
    */
   export class Request {
 

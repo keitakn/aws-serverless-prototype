@@ -10,7 +10,7 @@ import InternalServerError from "../errors/InternalServerError";
  * UserRepository
  *
  * @author keita-nishimoto
- * @since 2016-01-18
+ * @since 2017-01-18
  */
 export default class UserRepository implements UserRepositoryInterface {
 

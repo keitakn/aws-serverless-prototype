@@ -10,7 +10,7 @@ import InternalServerError from "../errors/InternalServerError";
  * ResourceRepository
  *
  * @author keita-nishimoto
- * @since 2016-02-14
+ * @since 2017-02-14
  */
 export class ResourceRepository implements ResourceRepositoryInterface {
 

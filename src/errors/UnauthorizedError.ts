@@ -3,7 +3,7 @@
  * 認証失敗時に利用する
  *
  * @author keita-nishimoto
- * @since 2016-02-07
+ * @since 2017-02-07
  */
 export default class UnauthorizedError extends Error {
   /**

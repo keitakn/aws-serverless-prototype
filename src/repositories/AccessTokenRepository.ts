@@ -12,7 +12,7 @@ import InternalServerError from "../errors/InternalServerError";
  * AccessTokenRepository
  *
  * @author keita-nishimoto
- * @since 2016-01-23
+ * @since 2017-01-23
  */
 export default class AccessTokenRepository implements AccessTokenRepositoryInterface {
 

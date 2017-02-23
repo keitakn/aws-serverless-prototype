@@ -3,7 +3,7 @@
  * IAMポリシードキュメントのStatement属性
  *
  * @author keita-nishimoto
- * @since 2016-02-02
+ * @since 2017-02-02
  * @link http://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/reference_policies_elements.html#Statement
  */
 export default class Statement {

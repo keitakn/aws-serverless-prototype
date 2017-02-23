@@ -9,7 +9,7 @@ import NotFoundError from "../errors/NotFoundError";
  * ClientRepository
  *
  * @author keita-nishimoto
- * @since 2016-01-16
+ * @since 2017-01-16
  */
 export default class ClientRepository implements ClientRepositoryInterface {
 

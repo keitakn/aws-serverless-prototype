@@ -4,7 +4,7 @@ import UserEntity from "./UserEntity";
  * UserRepositoryInterface
  *
  * @author keita-nishimoto
- * @since 2016-01-18
+ * @since 2017-01-18
  */
 export interface UserRepositoryInterface {
 

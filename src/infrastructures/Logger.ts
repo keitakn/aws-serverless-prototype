@@ -3,7 +3,7 @@
  * ログレベルはRFC 5424に準拠する
  *
  * @author keita-nishimoto
- * @since 2016-02-15
+ * @since 2017-02-23
  * @link https://tools.ietf.org/html/rfc5424
  */
 export class Logger {

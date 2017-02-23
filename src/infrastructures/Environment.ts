@@ -4,7 +4,7 @@ import {LambdaExecutionEvent} from "../../types";
  * Environment
  *
  * @author keita-nishimoto
- * @since 2016-02-01
+ * @since 2017-02-01
  */
 export default class Environment {
 

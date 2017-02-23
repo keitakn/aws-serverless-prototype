@@ -9,7 +9,7 @@ import BadRequestError from "../errors/BadRequestError";
  * AuthorizationRepository
  *
  * @author keita-nishimoto
- * @since 2016-02-15
+ * @since 2017-02-15
  */
 export class AuthorizationRepository {
 
