@@ -7,6 +7,7 @@ import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 import BadRequestError from "../errors/BadRequestError";
 import ForbiddenError from "../errors/ForbiddenError";
 import InternalServerError from "../errors/InternalServerError";
+import {Logger} from "../infrastructures/Logger";
 
 /**
  * AccessTokenRepository
@@ -46,11 +47,15 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
       request(options, (error: Error, response: any, introspectionResponse: IntrospectionResponseInterface) => {
         try {
           if (error) {
-            reject(error);
+            Logger.critical(error);
+            reject(
+              new InternalServerError(error.message)
+            );
           }
 
           if (response.statusCode !== 200) {
-            reject(new Error("Internal Server Error"));
+            Logger.critical(response);
+            reject(new InternalServerError());
           }
 
           const accessTokenEntity = new AccessTokenEntity(
@@ -61,7 +66,8 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
           resolve(accessTokenEntity);
 
         } catch (error) {
-          reject(error);
+          Logger.critical(error);
+          reject(new InternalServerError());
         }
       });
     });
@@ -97,6 +103,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
       request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
         try {
           if (error) {
+            Logger.critical(error);
             reject(
               new InternalServerError(error.message)
             );
@@ -125,6 +132,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
                 );
                 break;
               default:
+                Logger.critical(accessTokenEntity.tokenResponse);
                 reject(
                   new InternalServerError(accessTokenEntity.tokenResponse.resultMessage)
                 );
@@ -135,7 +143,8 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
           resolve(accessTokenEntity);
 
         } catch (error) {
-          reject(error);
+          Logger.critical(error);
+          reject(new InternalServerError());
         }
       });
     });

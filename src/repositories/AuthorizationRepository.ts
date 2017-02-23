@@ -4,6 +4,7 @@ import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import InternalServerError from "../errors/InternalServerError";
 import BadRequestError from "../errors/BadRequestError";
+import {Logger} from "../infrastructures/Logger";
 
 /**
  * AuthorizationRepository
@@ -47,13 +48,14 @@ export class AuthorizationRepository {
           request(options, (error: Error, response: any, authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) => {
             try {
               if (error) {
+                Logger.critical(error);
                 reject(
                   new InternalServerError(error.message)
                 );
               }
 
               if (response.statusCode !== 200) {
-                console.error("issueAuthorizationCode", response);
+                Logger.critical(response);
                 reject(
                   new InternalServerError()
                 );
@@ -72,6 +74,7 @@ export class AuthorizationRepository {
                   );
                   break;
                 default:
+                  Logger.critical(authorizationIssueResponse);
                   reject(
                     new InternalServerError(authorizationIssueResponse.resultMessage)
                   );
@@ -79,6 +82,7 @@ export class AuthorizationRepository {
               }
 
             } catch (error) {
+              Logger.critical(error);
               reject(
                 new InternalServerError(error.message)
               );
@@ -86,6 +90,7 @@ export class AuthorizationRepository {
           });
         })
         .catch((error: Error) => {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
@@ -131,13 +136,14 @@ export class AuthorizationRepository {
       request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {
         try {
           if (error) {
+            Logger.critical(error);
             reject(
               new InternalServerError(error.message)
             );
           }
 
           if (response.statusCode !== 200) {
-            console.error("issueAuthorizationTicket", response);
+            Logger.critical(response);
             reject(
               new InternalServerError()
             );
@@ -154,6 +160,7 @@ export class AuthorizationRepository {
               );
               break;
             case "INTERNAL_SERVER_ERROR":
+              Logger.critical(authorizationResponse);
               reject(
                 new InternalServerError(authorizationResponse.resultMessage)
               );
@@ -166,6 +173,7 @@ export class AuthorizationRepository {
           }
 
         } catch (error) {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );

@@ -5,6 +5,7 @@ import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {DynamoDbResponse} from "./DynamoDbResponse";
 import NotFoundError from "../errors/NotFoundError";
 import InternalServerError from "../errors/InternalServerError";
+import {Logger} from "../infrastructures/Logger";
 
 /**
  * ResourceRepository
@@ -55,6 +56,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           resolve(resourceEntity);
         })
         .catch((error: Error) => {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
@@ -92,6 +94,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           resolve(resourceEntity);
         })
         .catch((error: Error) => {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
