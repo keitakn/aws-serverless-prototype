@@ -77,8 +77,6 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("createUserError", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
@@ -128,9 +126,6 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      // TODO ログにStackTraceを出力させる対応が必要 @keita-nishimoto
-      console.error("findUserError", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 

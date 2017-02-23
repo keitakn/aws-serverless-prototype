@@ -5,7 +5,7 @@ import PolicyDocument from "./PolicyDocument";
  * API Gatewayに返却するレスポンスオブジェクト
  *
  * @author keita-nishimoto
- * @since 2016-02-02
+ * @since 2017-02-02
  */
 export default class AuthorizeResponse {
 

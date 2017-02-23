@@ -2,7 +2,7 @@
  * ResourceEntityInterface
  *
  * @author keita-nishimoto
- * @since 2016-02-13
+ * @since 2017-02-13
  */
 interface ResourceEntityInterface {
   id: string;
@@ -18,7 +18,7 @@ interface ResourceEntityInterface {
  * ResourceEntity
  *
  * @author keita-nishimoto
- * @since 2016-02-13
+ * @since 2017-02-13
  */
 export class ResourceEntity implements ResourceEntityInterface {
 

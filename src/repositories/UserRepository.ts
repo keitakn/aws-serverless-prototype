@@ -5,12 +5,13 @@ import {DynamoDB} from "aws-sdk";
 import {DynamoDbResponse} from "./DynamoDbResponse";
 import PasswordHash from "../domain/auth/PasswordHash";
 import InternalServerError from "../errors/InternalServerError";
+import {Logger} from "../infrastructures/Logger";
 
 /**
  * UserRepository
  *
  * @author keita-nishimoto
- * @since 2016-01-18
+ * @since 2017-01-18
  */
 export default class UserRepository implements UserRepositoryInterface {
 
@@ -40,6 +41,7 @@ export default class UserRepository implements UserRepositoryInterface {
       this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.User) => {
         try {
           if (error) {
+            Logger.critical(error);
             reject(
               new InternalServerError(error.message)
             );
@@ -60,6 +62,7 @@ export default class UserRepository implements UserRepositoryInterface {
 
           resolve(userEntity);
         } catch (error) {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
@@ -96,6 +99,7 @@ export default class UserRepository implements UserRepositoryInterface {
       this.dynamoDbDocumentClient.put(params, (error: Error) => {
         try {
           if (error) {
+            Logger.critical(error);
             reject(
               new InternalServerError(error.message)
             );
@@ -103,6 +107,7 @@ export default class UserRepository implements UserRepositoryInterface {
 
           resolve(userEntity);
         } catch (error) {
+          Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );

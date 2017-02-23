@@ -5,7 +5,7 @@ import {AuthleteResponse} from "./AuthleteResponse";
  * AuthorizationCodeEntityInterface
  *
  * @author keita-nishimoto
- * @since 2016-02-16
+ * @since 2017-02-16
  */
 interface AuthorizationCodeEntityInterface {
   authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse;
@@ -18,7 +18,7 @@ interface AuthorizationCodeEntityInterface {
  * AuthorizationCodeEntity
  *
  * @author keita-nishimoto
- * @since 2016-02-16
+ * @since 2017-02-16
  */
 export class AuthorizationCodeEntity implements AuthorizationCodeEntityInterface {
 

@@ -3,7 +3,7 @@
  * 対象のリソースが見つからない場合に利用する
  *
  * @author keita-nishimoto
- * @since 2016-01-18
+ * @since 2017-01-18
  */
 export default class NotFoundError extends Error {
   /**

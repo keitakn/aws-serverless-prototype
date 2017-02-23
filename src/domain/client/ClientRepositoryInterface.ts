@@ -4,7 +4,7 @@ import ClientEntity from "./ClientEntity";
  * ClientRepositoryInterface
  *
  * @author keita-nishimoto
- * @since 2016-01-16
+ * @since 2017-01-16
  */
 export interface ClientRepositoryInterface {
   /**

@@ -5,7 +5,7 @@ type Actions = "OK" | "BAD_REQUEST" | "FORBIDDEN" | "UNAUTHORIZED" | "INTERNAL_S
  * AuthleteのイントロスペクションAPIの結果
  *
  * @author keita-nishimoto
- * @since 2016-01-25
+ * @since 2017-01-25
  */
 export interface IntrospectionResponseInterface {
   /**

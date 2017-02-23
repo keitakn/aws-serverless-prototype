@@ -6,7 +6,7 @@ import DocumentClient = DynamoDB.DocumentClient;
  * AwsSdkFactory
  *
  * @author keita-nishimoto
- * @since 2016-01-30
+ * @since 2017-01-30
  */
 export default class AwsSdkFactory {
 

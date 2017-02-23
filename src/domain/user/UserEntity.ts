@@ -4,7 +4,7 @@ import PasswordHash from "../auth/PasswordHash";
  * UserEntityInterface
  *
  * @author keita-nishimoto
- * @since 2016-01-17
+ * @since 2017-01-17
  */
 interface UserEntityInterface {
   id: string;
@@ -21,7 +21,7 @@ interface UserEntityInterface {
  * UserEntity
  *
  * @author keita-nishimoto
- * @since 2016-01-17
+ * @since 2017-01-17
  */
 export default class UserEntity implements UserEntityInterface {
 

@@ -3,7 +3,7 @@
  * リクエストが不正な場合に利用する。
  *
  * @author keita-nishimoto
- * @since 2016-02-22
+ * @since 2017-02-22
  */
 export default class BadRequestError extends Error {
   /**

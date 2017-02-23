@@ -5,7 +5,7 @@ import {AuthleteResponse} from "./AuthleteResponse";
  * AccessTokenEntityInterface
  *
  * @author keita-nishimoto
- * @since 2016-01-23
+ * @since 2017-01-23
  */
 interface AccessTokenEntityInterface {
   token: string;
@@ -18,7 +18,7 @@ interface AccessTokenEntityInterface {
  * AccessTokenEntity
  *
  * @author keita-nishimoto
- * @since 2016-01-23
+ * @since 2017-01-23
  * @todo Genericsを使った形にリファクタリングする。 @keita-koga
  */
 export default class AccessTokenEntity implements AccessTokenEntityInterface {

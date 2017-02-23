@@ -2,7 +2,7 @@
  * PasswordHash
  *
  * @author keita-nishimoto
- * @since 2016-02-06
+ * @since 2017-02-06
  */
 export default class PasswordHash {
 

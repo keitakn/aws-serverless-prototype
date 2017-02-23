@@ -4,12 +4,13 @@ import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterf
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import ClientCreateResponse = AuthleteResponse.ClientResponse;
 import NotFoundError from "../errors/NotFoundError";
+import {Logger} from "../infrastructures/Logger";
 
 /**
  * ClientRepository
  *
  * @author keita-nishimoto
- * @since 2016-01-16
+ * @since 2017-01-16
  */
 export default class ClientRepository implements ClientRepositoryInterface {
 
@@ -53,6 +54,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
       request(options, (error: Error, response: any, clientResponse: AuthleteResponse.ClientResponse) => {
         try {
           if (error) {
+            Logger.critical(error);
             reject(error);
           }
 
@@ -72,6 +74,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
 
           resolve(clientEntity);
         } catch (error) {
+          Logger.critical(error);
           reject(error);
         }
       });

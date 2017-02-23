@@ -2,7 +2,7 @@
  * AuthleteResponse
  *
  * @author keita-nishimoto
- * @since 2016-02-16
+ * @since 2017-02-16
  */
 export namespace AuthleteResponse
 {

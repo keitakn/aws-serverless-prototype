@@ -4,7 +4,7 @@ import {isUndefined} from "util";
  * ErrorResponse
  *
  * @author keita-nishimoto
- * @since 2016-01-19
+ * @since 2017-01-19
  */
 export default class ErrorResponse {
 
@@ -142,8 +142,6 @@ export default class ErrorResponse {
         if (key === this.error.name) {
           this.setBusinessLogicErrorInfo();
           return;
-        } else {
-          continue;
         }
       }
     }

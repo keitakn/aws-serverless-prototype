@@ -2,7 +2,7 @@
  * DynamoDbResponse
  *
  * @author keita-nishimoto
- * @since 2016-02-03
+ * @since 2017-02-03
  */
 export namespace DynamoDbResponse {
 
