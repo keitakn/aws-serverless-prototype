@@ -142,8 +142,6 @@ export default class ErrorResponse {
         if (key === this.error.name) {
           this.setBusinessLogicErrorInfo();
           return;
-        } else {
-          continue;
         }
       }
     }
