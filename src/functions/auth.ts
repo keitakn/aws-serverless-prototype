@@ -82,8 +82,6 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("authentication", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
@@ -144,8 +142,6 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("issueAuthorizationCode", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 

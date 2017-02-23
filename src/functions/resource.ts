@@ -75,8 +75,6 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("createResourceError", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 

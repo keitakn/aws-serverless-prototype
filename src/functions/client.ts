@@ -44,9 +44,6 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
       callback(null, response);
     })
     .catch((error) => {
-      // TODO ログにStackTraceを出力させる対応が必要 @keita-nishimoto
-      console.error("findClient", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 

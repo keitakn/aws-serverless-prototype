@@ -43,8 +43,6 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
       callback(null, response);
     })
     .catch((error: Error) => {
-      console.error("issueTokenFromCode", error);
-
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
