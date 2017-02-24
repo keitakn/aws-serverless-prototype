@@ -38,12 +38,12 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
         201
       );
 
-      callback(null, successResponse.getResponse(false));
+      callback(undefined, successResponse.getResponse(false));
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };

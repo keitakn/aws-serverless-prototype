@@ -59,9 +59,9 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
           }
 
           const accessTokenEntity = new AccessTokenEntity(
-            accessToken,
-            introspectionResponse
+            accessToken
           );
+          accessTokenEntity.introspectionResponse = introspectionResponse;
 
           resolve(accessTokenEntity);
 

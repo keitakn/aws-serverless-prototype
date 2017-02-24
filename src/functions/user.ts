@@ -69,13 +69,13 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
 
       const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, successResponse.getResponse());
+      callback(undefined, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };
 
@@ -112,12 +112,12 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
 
       const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, successResponse.getResponse());
+      callback(undefined, successResponse.getResponse());
     })
     .catch((error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };

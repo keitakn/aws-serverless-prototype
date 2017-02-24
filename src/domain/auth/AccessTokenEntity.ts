@@ -9,8 +9,10 @@ import {AuthleteResponse} from "./AuthleteResponse";
 interface AccessTokenEntityInterface {
   token: string;
   introspectionResponse: AuthleteResponse.IntrospectionResponse;
+  tokenResponse: AuthleteResponse.TokenResponse;
   isAllowed: boolean;
   extractHttpStats(): string;
+  extractTokenAction(): string;
 }
 
 /**
@@ -18,7 +20,7 @@ interface AccessTokenEntityInterface {
  *
  * @author keita-nishimoto
  * @since 2017-01-23
- * @todo Genericsを使った形にリファクタリングする。 @keita-koga
+ * @todo Authleteのレスポンスは書き換えられたくないのでもっと良い実装がないか検討 @keita-nishimoto
  */
 export default class AccessTokenEntity implements AccessTokenEntityInterface {
 
@@ -28,15 +30,18 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
   private _tokenResponse: AuthleteResponse.TokenResponse;
 
   /**
+   * AuthleteのイントロスペクションAPIのレスポンス
+   */
+  private _introspectionResponse: AuthleteResponse.IntrospectionResponse;
+
+  /**
    * constructor
    *
    * @param _token
-   * @param _introspectionResponse
    * @param _isAllowed
    */
   constructor(
     private _token: string,
-    private _introspectionResponse?: AuthleteResponse.IntrospectionResponse,
     private _isAllowed: boolean = false
   ) {
   }
@@ -46,6 +51,13 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   get token(): string {
     return this._token;
+  }
+
+  /**
+   * @param value
+   */
+  set introspectionResponse(value: AuthleteResponse.IntrospectionResponse) {
+    this._introspectionResponse = value;
   }
 
   /**

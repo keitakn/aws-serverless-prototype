@@ -58,13 +58,13 @@ export namespace AuthleteResponse
      *
      * ['email', 'address']
      */
-    scopes?: [string];
+    scopes: [string];
 
     /**
      * アクセストークンに紐付いているユーザーの識別子
      * クライアントクレデンシャル等、アクセストークンにユーザーが紐付かない場合はこの値は設定されない
      */
-    subject?: string;
+    subject: string;
   }
 
   /**
