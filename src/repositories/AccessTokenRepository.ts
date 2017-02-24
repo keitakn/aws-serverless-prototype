@@ -1,6 +1,5 @@
 import * as request from "request";
 import {Error} from "tslint/lib/error";
-import {IntrospectionResponseInterface} from "../domain/auth/IntrospectionResponseInterface";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
@@ -45,7 +44,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         }
       };
 
-      request(options, (error: Error, response: any, introspectionResponse: IntrospectionResponseInterface) => {
+      request(options, (error: Error, response: any, introspectionResponse: AuthleteResponse.IntrospectionResponse) => {
         try {
           if (error) {
             Logger.critical(error);

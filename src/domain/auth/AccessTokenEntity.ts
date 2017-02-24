@@ -1,4 +1,3 @@
-import {IntrospectionResponseInterface} from "./IntrospectionResponseInterface";
 import {AuthleteResponse} from "./AuthleteResponse";
 
 /**
@@ -9,7 +8,7 @@ import {AuthleteResponse} from "./AuthleteResponse";
  */
 interface AccessTokenEntityInterface {
   token: string;
-  introspectionResponse: IntrospectionResponseInterface;
+  introspectionResponse: AuthleteResponse.IntrospectionResponse;
   isAllowed: boolean;
   extractHttpStats(): string;
 }
@@ -37,7 +36,7 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   constructor(
     private _token: string,
-    private _introspectionResponse?: IntrospectionResponseInterface,
+    private _introspectionResponse?: AuthleteResponse.IntrospectionResponse,
     private _isAllowed: boolean = false
   ) {
   }
@@ -50,9 +49,9 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
   }
 
   /**
-   * @returns {IntrospectionResponseInterface}
+   * @returns {AuthleteResponse.IntrospectionResponse}
    */
-  get introspectionResponse(): IntrospectionResponseInterface {
+  get introspectionResponse(): AuthleteResponse.IntrospectionResponse {
     return this._introspectionResponse;
   }
 
