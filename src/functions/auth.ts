@@ -18,6 +18,8 @@ import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
+import {SuccessResponse} from "../domain/SuccessResponse";
+import {Logger} from "../infrastructures/Logger";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -71,15 +73,9 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
         }
       };
 
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody),
-      };
+      const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
@@ -131,15 +127,9 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
         state: authorizationCodeEntity.state
       };
 
-      const response = {
-        statusCode: 201,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody)
-      };
+      const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
@@ -159,7 +149,6 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
  */
 export const authorization = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
 
-  // TODO ロジックは後で適切な形で分離する @keita-nishimoto
   const authorizationHeader = event.authorizationToken;
   const accessToken = extractAccessToken(authorizationHeader);
 
@@ -189,9 +178,11 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
           callback(new Error("Unauthorized"));
           break;
         case "INTERNAL_SERVER_ERROR":
+          Logger.critical(accessTokenEntity.introspectionResponse);
           callback(new Error("Internal Server Error"));
           break;
         default:
+          Logger.critical(accessTokenEntity.introspectionResponse);
           callback(new Error("Internal Server Error"));
           break;
       }
@@ -205,7 +196,7 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
       callback(null, authorizationResponse);
     })
     .catch((error) => {
-      console.error("authorization", error);
+      Logger.critical(error);
       callback(error);
     });
 };
