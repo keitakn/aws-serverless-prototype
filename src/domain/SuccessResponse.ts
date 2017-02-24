@@ -22,13 +22,20 @@ export class SuccessResponse {
   /**
    * レスポンスを取得する
    *
-   * @returns {{statusCode: number, headers: Object, body: string}}
+   * @param isConvertJson
+   * @returns {{statusCode: number, headers: Object, body: Object}}
    */
-  getResponse() {
+  getResponse(isConvertJson: boolean = true) {
+
+    let responseBody = this.responseBody;
+    if (isConvertJson === true) {
+      responseBody = JSON.stringify(this.responseBody);
+    }
+
     const response = {
       statusCode: this.statusCode,
       headers: this.headers,
-      body: JSON.stringify(this.responseBody)
+      body: responseBody
     };
 
     return response;
