@@ -50,8 +50,8 @@ export class ResourceEntity implements ResourceEntityInterface {
   /**
    * constructor
    *
-   * @param id
-   * @param createdAt
+   * @param _id
+   * @param _createdAt
    */
   constructor(private _id: string, private _createdAt: number) {
   }
