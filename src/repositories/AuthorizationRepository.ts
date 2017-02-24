@@ -5,6 +5,7 @@ import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest"
 import InternalServerError from "../errors/InternalServerError";
 import BadRequestError from "../errors/BadRequestError";
 import {Logger} from "../infrastructures/Logger";
+import {Authlete} from "../config/Authlete";
 
 /**
  * AuthorizationRepository
@@ -37,8 +38,8 @@ export class AuthorizationRepository {
             url: "https://api.authlete.com/api/auth/authorization/issue",
             method: "POST",
             auth: {
-              username: this.getAuthleteApiKey(),
-              pass: this.getAuthleteApiSecret()
+              username: Authlete.getApiKey(),
+              pass: Authlete.getApiSecret()
             },
             json: true,
             headers: headers,
@@ -125,8 +126,8 @@ export class AuthorizationRepository {
         url: "https://api.authlete.com/api/auth/authorization",
         method: "POST",
         auth: {
-          username: this.getAuthleteApiKey(),
-          pass: this.getAuthleteApiSecret()
+          username: Authlete.getApiKey(),
+          pass: Authlete.getApiSecret()
         },
         json: true,
         headers: headers,
@@ -180,25 +181,5 @@ export class AuthorizationRepository {
         }
       })
     });
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIキーを取得する
-   *
-   * @todo AccessTokenRepositoryに同名のメソッドがあるので共通化する @keita-koga
-   * @returns {string}
-   */
-  private getAuthleteApiKey(): string {
-    return process.env.AUTHLETE_API_KEY;
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIシークレットを取得する
-   *
-   * @todo AccessTokenRepositoryに同名のメソッドがあるので共通化する @keita-koga
-   * @returns {string}
-   */
-  private getAuthleteApiSecret(): string {
-    return process.env.AUTHLETE_API_SECRET;
   }
 }
