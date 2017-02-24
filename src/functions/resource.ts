@@ -6,6 +6,7 @@ import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
+import {SuccessResponse} from "../domain/SuccessResponse";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -64,15 +65,9 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
         updated_at: resourceEntity.updatedAt
       };
 
-      const response = {
-        statusCode: 201,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody)
-      };
+      const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);

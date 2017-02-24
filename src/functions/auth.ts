@@ -18,6 +18,7 @@ import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
+import {SuccessResponse} from "../domain/SuccessResponse";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -71,15 +72,9 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
         }
       };
 
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody),
-      };
+      const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
@@ -131,15 +126,9 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
         state: authorizationCodeEntity.state
       };
 
-      const response = {
-        statusCode: 201,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody)
-      };
+      const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);

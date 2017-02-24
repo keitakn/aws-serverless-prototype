@@ -8,6 +8,7 @@ import UserRepository from "../repositories/UserRepository";
 import Environment from "../infrastructures/Environment";
 import UserEntity from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
+import {SuccessResponse} from "../domain/SuccessResponse";
 
 sourceMapSupport.install();
 
@@ -66,15 +67,9 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
         updated_at: userEntity.updatedAt
       };
 
-      const response = {
-        statusCode: 201,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody)
-      };
+      const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
@@ -115,15 +110,9 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
         updated_at: userEntity.updatedAt
       };
 
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody),
-      };
+      const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error) => {
       const errorResponse = new ErrorResponse(error);

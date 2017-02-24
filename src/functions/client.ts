@@ -3,6 +3,7 @@ import * as lambda from "aws-lambda";
 import {LambdaExecutionEvent} from "../../types";
 import ErrorResponse from "../domain/ErrorResponse";
 import ClientRepository from "../repositories/ClientRepository";
+import {SuccessResponse} from "../domain/SuccessResponse";
 
 sourceMapSupport.install();
 
@@ -33,15 +34,9 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
         updated_at: clientEntity.updatedAt
       };
 
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: JSON.stringify(responseBody)
-      };
+      const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, response);
+      callback(null, successResponse.getResponse());
     })
     .catch((error) => {
       const errorResponse = new ErrorResponse(error);

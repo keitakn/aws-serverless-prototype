@@ -4,6 +4,7 @@ import {LambdaExecutionEvent} from "../../types";
 import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
+import {SuccessResponse} from "../domain/SuccessResponse";
 
 sourceMapSupport.install();
 
@@ -32,15 +33,12 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
   accessTokenRepository.issue(authorizationCode, redirectUri)
     .then((accessTokenEntity) => {
 
-      const response = {
-        statusCode: 201,
-        headers: {
-          "Access-Control-Allow-Origin" : "*"
-        },
-        body: accessTokenEntity.tokenResponse.responseContent
-      };
+      const successResponse = new SuccessResponse(
+        accessTokenEntity.tokenResponse.responseContent,
+        201
+      );
 
-      callback(null, response);
+      callback(null, successResponse.getResponse(false));
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
