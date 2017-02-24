@@ -8,6 +8,7 @@ import BadRequestError from "../errors/BadRequestError";
 import ForbiddenError from "../errors/ForbiddenError";
 import InternalServerError from "../errors/InternalServerError";
 import {Logger} from "../infrastructures/Logger";
+import {Authlete} from "../config/Authlete";
 
 /**
  * AccessTokenRepository
@@ -34,8 +35,8 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         url: "https://api.authlete.com/api/auth/introspection",
         method: "POST",
         auth: {
-          username: this.getAuthleteApiKey(),
-          pass: this.getAuthleteApiSecret()
+          username: Authlete.getApiKey(),
+          pass: Authlete.getApiSecret()
         },
         headers: headers,
         json: true,
@@ -90,8 +91,8 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         url: "https://api.authlete.com/api/auth/token",
         method: "POST",
         auth: {
-          username: this.getAuthleteApiKey(),
-          pass: this.getAuthleteApiSecret()
+          username: Authlete.getApiKey(),
+          pass: Authlete.getApiSecret()
         },
         json: true,
         headers: headers,
@@ -148,23 +149,5 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         }
       });
     });
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIキーを取得する
-   *
-   * @returns {string}
-   */
-  private getAuthleteApiKey(): string {
-    return process.env.AUTHLETE_API_KEY;
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIシークレットを取得する
-   *
-   * @returns {string}
-   */
-  private getAuthleteApiSecret(): string {
-    return process.env.AUTHLETE_API_SECRET;
   }
 }

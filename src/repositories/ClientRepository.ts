@@ -5,6 +5,7 @@ import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import ClientCreateResponse = AuthleteResponse.ClientResponse;
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
+import {Authlete} from "../config/Authlete";
 
 /**
  * ClientRepository
@@ -45,8 +46,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
         url: `https://api.authlete.com/api/client/get/${clientId}`,
         method: "GET",
         auth: {
-          username: this.getAuthleteApiKey(),
-          pass: this.getAuthleteApiSecret()
+          username: Authlete.getApiKey(),
+          pass: Authlete.getApiSecret()
         },
         json: true
       };
@@ -79,23 +80,5 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       });
     });
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIキーを取得する
-   *
-   * @returns {string}
-   */
-  private getAuthleteApiKey(): string {
-    return process.env.AUTHLETE_API_KEY;
-  }
-
-  /**
-   * 環境変数からAuthleteのAPIシークレットを取得する
-   *
-   * @returns {string}
-   */
-  private getAuthleteApiSecret(): string {
-    return process.env.AUTHLETE_API_SECRET;
   }
 }

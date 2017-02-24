@@ -35,4 +35,22 @@ export default class Environment {
 
     return false;
   }
+
+  /**
+   * 環境変数からAuthleteのAPIキーを取得する
+   *
+   * @returns {string}
+   */
+  getAuthleteApiKey(): string {
+    return process.env.AUTHLETE_API_KEY;
+  }
+
+  /**
+   * 環境変数からAuthleteのAPIシークレットを取得する
+   *
+   * @returns {string}
+   */
+  getAuthleteApiSecret(): string {
+    return process.env.AUTHLETE_API_SECRET;
+  }
 }
