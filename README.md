@@ -196,3 +196,12 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource
 ## Other services used
 
 - [Authlete](https://www.authlete.com)
+
+## TypeScriptのコンパイルオプションについて
+
+tsconfig.json を参照して下さい。
+
+これらのオプションパラメータの意味は下記のDocumentを参照して下さい。
+
+- http://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+- http://json.schemastore.org/tsconfig

@@ -1,11 +1,19 @@
 {
   "compilerOptions": {
+    // モジュール形式、2017年2月24日時点だとAWS Lambdaで利用するならcommonjs以外に選択肢はない
     "module": "commonjs",
+    // モジュールの解決方法。AWS Lambdaで利用するならnode
     "moduleResolution": "node",
+    // コンパイル後のターゲット（'es3', 'es5', 'es2015', 'es2016', 'es2017'）
+    // 何も指定しない場合のデフォルト値は'es3'の模様
     "target": "es5",
+    // SourceMapを出力するかどうか
     "sourceMap": true,
+    // コンパイル時にコメントを削除するかどうか
     "removeComments": true,
+    // 暗黙のany型を禁止するかどうか
     "noImplicitAny": true,
+    // Null安全かどうかチェックする（一部抜け道はありなので完璧ではない）
     "strictNullChecks": true,
     "lib": [
       "es2017"
