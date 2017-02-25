@@ -1,5 +1,4 @@
 import {DynamoDB} from "aws-sdk";
-import DocumentClient = DynamoDB.DocumentClient;
 import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepositoryInterface";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {DynamoDbResponse} from "./DynamoDbResponse";

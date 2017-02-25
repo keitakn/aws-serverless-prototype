@@ -36,13 +36,13 @@ export const find = (event: LambdaExecutionEvent, context: lambda.Context, callb
 
       const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, successResponse.getResponse());
+      callback(undefined, successResponse.getResponse());
     })
     .catch((error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };
 

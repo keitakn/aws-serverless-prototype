@@ -12,7 +12,7 @@ export default class PasswordHash {
    * @param _passwordHash
    * @param _password
    */
-  constructor(private _passwordHash: string, private _password?: string) {
+  constructor(private _passwordHash: string, private _password?: string|null) {
   }
 
   /**
@@ -23,9 +23,9 @@ export default class PasswordHash {
   }
 
   /**
-   * @returns {string}
+   * @returns {string|null}
    */
-  get password(): string {
+  get password(): string|any {
     return this._password;
   }
 }

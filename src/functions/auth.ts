@@ -15,7 +15,6 @@ import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
-import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -75,13 +74,13 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
 
       const successResponse = new SuccessResponse(responseBody);
 
-      callback(null, successResponse.getResponse());
+      callback(undefined, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };
 
@@ -129,13 +128,13 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
 
       const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(null, successResponse.getResponse());
+      callback(undefined, successResponse.getResponse());
     })
     .catch((error: Error) => {
       const errorResponse = new ErrorResponse(error);
       const response = errorResponse.getResponse();
 
-      callback(null, response);
+      callback(undefined, response);
     });
 };
 
@@ -193,7 +192,7 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
         [event.methodArn]
       );
 
-      callback(null, authorizationResponse);
+      callback(undefined, authorizationResponse);
     })
     .catch((error) => {
       Logger.critical(error);
