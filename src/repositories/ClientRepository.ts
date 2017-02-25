@@ -2,7 +2,6 @@ import * as request from "request";
 import ClientEntity from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
-import ClientCreateResponse = AuthleteResponse.ClientResponse;
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
 import {Authlete} from "../config/Authlete";

@@ -205,3 +205,4 @@ tsconfig.json を参照して下さい。
 
 - http://www.typescriptlang.org/docs/handbook/tsconfig-json.html
 - http://json.schemastore.org/tsconfig
+- http://qiita.com/IganinTea/items/f88bea469bff56cfbda6

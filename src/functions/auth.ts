@@ -15,7 +15,6 @@ import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
-import NotFoundError from "../errors/NotFoundError";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
