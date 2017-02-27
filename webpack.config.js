@@ -1,11 +1,11 @@
 const fs = require('fs');
-const path = require("path");
-const paths = require("./paths");
+const path = require('path');
+const paths = require('./paths');
 const nodeExternals = require('webpack-node-externals');
 
 const handlers = fs.readdirSync(paths.appFunctions)
   .map(filename => ({
-    [path.basename(filename, ".ts")]: path.join(paths.appFunctions, filename),
+    [path.basename(filename, '.ts')]: path.join(paths.appFunctions, filename),
   }))
   .reduce(
     (finalObject, entry) => Object.assign(finalObject, entry), {}
@@ -13,35 +13,35 @@ const handlers = fs.readdirSync(paths.appFunctions)
 
 module.exports = {
   entry: handlers,
-  target:  "node",
+  target:  'node',
   externals: [nodeExternals()],
-  devtool: "source-map",
+  devtool: 'source-map',
 
   module: {
     loaders: [
       {
         test:   /\.tsx?$/,
-        loader: "ts-loader",
+        loader: 'ts-loader',
       },
 
       {
         test:   /\.json$/,
-        loader: "json-loader",
+        loader: 'json-loader',
       },
     ],
   },
 
   resolve: {
     extensions: [
-      ".ts",
-      ".js",
-      "",
+      '.ts',
+      '.js',
+      '',
     ],
   },
 
   output: {
-    libraryTarget: "commonjs",
+    libraryTarget: 'commonjs',
     path: paths.appBuild,
-    filename: "[name].js",
+    filename: '[name].js',
   },
 };
