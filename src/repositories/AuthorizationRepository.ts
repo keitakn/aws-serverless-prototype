@@ -179,7 +179,7 @@ export class AuthorizationRepository {
             new InternalServerError(error.message)
           );
         }
-      })
+      });
     });
   }
 }

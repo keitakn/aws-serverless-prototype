@@ -20,7 +20,7 @@ export namespace DynamoDbResponse {
       birthdate: string;
       created_at: number;
       updated_at: number;
-    }
+    };
   }
 
   /**
@@ -35,6 +35,6 @@ export namespace DynamoDbResponse {
       scopes: [string];
       created_at: number;
       updated_at: number;
-    }
+    };
   }
 }
