@@ -179,7 +179,7 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource
 ```
 
-# ローカル環境でデバッグを行う方法
+## ローカル環境でデバッグを行う方法
 
 [こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考に必要なテーブルをローカル内のDynamoDBに作成して下さい。
 
@@ -206,3 +206,34 @@ tsconfig.json を参照して下さい。
 - http://www.typescriptlang.org/docs/handbook/tsconfig-json.html
 - http://json.schemastore.org/tsconfig
 - http://qiita.com/IganinTea/items/f88bea469bff56cfbda6
+
+## TSLintの実行方法
+
+規約通りに書かれているかどうかをチェックする為に [TSLint](https://palantir.github.io/tslint/) を利用します。
+
+以下のコマンドを実行して下さい。
+
+```bash
+yarn run lint
+```
+
+問題がなければ下記のように結果が表示されます。
+
+```
+yarn run v0.19.1
+$ tslint -c tslint.json src/**/*.ts
+Done in 2.35s.
+```
+
+もし [TSLint](https://palantir.github.io/tslint/) のルールに違反する内容が含まれる場合は下記のようにエラーが表示されます。
+
+```
+yarn run v0.19.1
+$ tslint -c tslint.json src/**/*.ts
+
+src/functions/auth.ts[73, 8]: Missing semicolon
+error Command failed with exit code 2.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
+
+これらが表示された場合はソースコードを修正しエラーが出なくなるまで、修正を繰り返して下さい。

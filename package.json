@@ -4,6 +4,7 @@
   "description": "Serverless CRUD Prototype",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint -c tslint.json src/**/*.ts",
     "deploy": "serverless deploy"
   },
   "author": "keita-nishimoto",
