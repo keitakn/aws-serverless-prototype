@@ -40,6 +40,7 @@ echo export SLS_DEBUG=true >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
+export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com
 source ~/.bash_profile
 ```
 
@@ -47,7 +48,7 @@ source ~/.bash_profile
 - SLS_DEBUGは必須ではありませんがServerless Frameworkに問題が発生した場合に詳細なエラーが分かるので設定しておく事を推奨します。
 - AUTHLETE_API_KEYにはAuthleteのAPIキーを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - AUTHLETE_API_SECRETにはAuthleteのAPIシークレットを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
-
+- GATEWAY_BASE_URIはデプロイ後のエンドポイントURIを指定して下さい。（この変数はテストの実行時のみに利用されます。）
 
 ### Authleteのアクセストークン発行方法
 

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
+import {TestUtil} from "./TestUtil";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -36,9 +37,8 @@ export namespace AuthApi {
           "Content-type": "application/json"
         };
 
-        const baseUri    = process.env.GATEWAY_BASE_URI;
-        const stage      = process.env.DEPLOY_STAGE;
-        const requestUri = `${baseUri}/${stage}/auth/authorization/code`;
+        const baseUri = TestUtil.createGatewayUri();
+        const requestUri = `${baseUri}/auth/authorization/code`;
 
         axios.post(
           requestUri,
