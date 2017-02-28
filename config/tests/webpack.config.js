@@ -12,10 +12,8 @@ const testDirs = [
 
 let targetObject = {};
 
-for (let i = 0; i < testDirs.length; i++) {
-  fs.readdirSync(testDirs[i]).map((filename) => {
-    const testDir = testDirs[i];
-
+testDirs.map((testDir) => {
+  fs.readdirSync(testDir).map((filename) => {
     // src/tests/ と同じ階層構造でアウトプットしたいのでentryのキー名を階層構造で設定する
     const outputDir = testDir.substr(testDir.indexOf('tests') + 6);
     const keyName  = outputDir + '/' + path.basename(filename, '.test.ts');
@@ -23,7 +21,7 @@ for (let i = 0; i < testDirs.length; i++) {
 
     targetObject[keyName] = filePath;
   });
-}
+});
 
 module.exports = {
   entry: targetObject,
