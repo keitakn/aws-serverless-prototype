@@ -238,3 +238,45 @@ info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this comm
 ```
 
 これらが表示された場合はソースコードを修正しエラーが出なくなるまで、修正を繰り返して下さい。
+
+## テストの実行方法について
+
+### IntegrationTest
+
+テストコードは src/tests/integration 配下に作成します。
+
+※テストの作成単位はlambda関数1つにつき1つです。
+
+1. webpackを利用してテストコードをbuildします。以下のコマンドを実行して下さい。
+
+```bash
+./node_modules/.bin/webpack --config config/tests/webpack.config.js
+```
+
+2. 以下のコマンドを実行しテストを実行します。
+
+```bash
+./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+```
+
+この例では IssueAuthorizationCode を指定して実行しています。
+
+IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayにリクエストを送信している為、実行時間は長めになります。
+
+その為、-t でタイムアウトのオプションを設定しています。
+
+もしローカルサーバに対してテストを実行したい場合は下記のように実行します。
+
+1. ローカルサーバを起動します。
+
+```bash
+serverless webpack serve
+```
+
+2. 以下のコマンドでテストを実行します。
+
+```bash
+IS_LOCAL=true ./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+```
+
+※現状、テストの実行コマンドが冗長なので何らかの対策を考えます。
