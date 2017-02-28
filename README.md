@@ -40,6 +40,7 @@ echo export SLS_DEBUG=true >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
+export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com
 source ~/.bash_profile
 ```
 
@@ -47,7 +48,7 @@ source ~/.bash_profile
 - SLS_DEBUGは必須ではありませんがServerless Frameworkに問題が発生した場合に詳細なエラーが分かるので設定しておく事を推奨します。
 - AUTHLETE_API_KEYにはAuthleteのAPIキーを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - AUTHLETE_API_SECRETにはAuthleteのAPIシークレットを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
-
+- GATEWAY_BASE_URIはデプロイ後のエンドポイントURIを指定して下さい。（この変数はテストの実行時のみに利用されます。）
 
 ### Authleteのアクセストークン発行方法
 
@@ -237,3 +238,45 @@ info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this comm
 ```
 
 これらが表示された場合はソースコードを修正しエラーが出なくなるまで、修正を繰り返して下さい。
+
+## テストの実行方法について
+
+### IntegrationTest
+
+テストコードは src/tests/integration 配下に作成します。
+
+※テストの作成単位はlambda関数1つにつき1つです。
+
+1. webpackを利用してテストコードをbuildします。以下のコマンドを実行して下さい。
+
+```bash
+./node_modules/.bin/webpack --config config/tests/webpack.config.js
+```
+
+2. 以下のコマンドを実行しテストを実行します。
+
+```bash
+./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+```
+
+この例では IssueAuthorizationCode を指定して実行しています。
+
+IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayにリクエストを送信している為、実行時間は長めになります。
+
+その為、-t でタイムアウトのオプションを設定しています。
+
+もしローカルサーバに対してテストを実行したい場合は下記のように実行します。
+
+1. ローカルサーバを起動します。
+
+```bash
+serverless webpack serve
+```
+
+2. 以下のコマンドでテストを実行します。
+
+```bash
+IS_LOCAL=true ./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+```
+
+※現状、テストの実行コマンドが冗長なので何らかの対策を考えます。
