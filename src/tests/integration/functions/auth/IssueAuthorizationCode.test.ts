@@ -49,4 +49,25 @@ describe("IssueAuthorizationCode", () => {
       done();
     });
   });
+
+  /**
+   * 異常系テスト
+   * 登録されていないリダイレクトURIを指定
+   */
+  it("testFailRedirectUriNotRegistered", (done: Function) => {
+    const request: AuthApi.IssueAuthorizationCodeRequest = {
+      client_id: 2118736939631,
+      state: "neko123456789",
+      redirect_uri: `https://api.authlete.com/api/mock/redirection`,
+      subject: "98f46ad0-09e2-4324-910c-011df62e7307",
+      scopes: ["openid", "email", "prototype_users"]
+    };
+
+    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    }).catch((error) => {
+      assert.equal(error.response.status, 400);
+      assert.equal(error.response.data.code, 400);
+      done();
+    });
+  });
 });
