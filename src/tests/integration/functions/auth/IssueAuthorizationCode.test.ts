@@ -27,4 +27,26 @@ describe("IssueAuthorizationCode", () => {
       done();
     });
   });
+
+  /**
+   * 異常系テストケース
+   * クライアントIDが存在しない
+   */
+  it("testFailClientDoseNotExist", (done: Function) => {
+    const authleteApiKey = process.env.AUTHLETE_API_KEY;
+    const request: AuthApi.IssueAuthorizationCodeRequest = {
+      client_id: 1111111111111,
+      state: "neko123456789",
+      redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
+      subject: "98f46ad0-09e2-4324-910c-011df62e7307",
+      scopes: ["openid", "email", "prototype_users"]
+    };
+
+    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    }).catch((error) => {
+      assert.equal(error.response.status, 400);
+      assert.equal(error.response.data.code, 400);
+      done();
+    });
+  });
 });
