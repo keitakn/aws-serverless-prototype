@@ -38,15 +38,10 @@ export default class UserRepository implements UserRepositoryInterface {
         }
       };
 
-      this.dynamoDbDocumentClient.get(params, (error: Error, dbResponse: DynamoDbResponse.User) => {
-        try {
-          if (error) {
-            Logger.critical(error);
-            reject(
-              new InternalServerError(error.message)
-            );
-          }
-
+      this.dynamoDbDocumentClient
+        .get(params)
+        .promise()
+        .then((dbResponse: DynamoDbResponse.User) => {
           if (Object.keys(dbResponse).length === 0) {
             reject(new NotFoundError());
           }
@@ -61,13 +56,13 @@ export default class UserRepository implements UserRepositoryInterface {
           userEntity.updatedAt = dbResponse.Item.updated_at;
 
           resolve(userEntity);
-        } catch (error) {
+        })
+        .catch((error) => {
           Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
-        }
-      });
+        });
     });
   }
 
@@ -96,23 +91,18 @@ export default class UserRepository implements UserRepositoryInterface {
         Item: userCreateParams
       };
 
-      this.dynamoDbDocumentClient.put(params, (error: Error) => {
-        try {
-          if (error) {
-            Logger.critical(error);
-            reject(
-              new InternalServerError(error.message)
-            );
-          }
-
+      this.dynamoDbDocumentClient
+        .put(params)
+        .promise()
+        .then(() => {
           resolve(userEntity);
-        } catch (error) {
+        })
+        .catch((error) => {
           Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
-        }
-      });
+        });
     });
   }
 
