@@ -91,10 +91,8 @@ export class AuthorizationRepository {
           });
         })
         .catch((error: Error) => {
-          Logger.critical(error);
-          reject(
-            new InternalServerError(error.message)
-          );
+          Logger.error(error);
+          reject(error);
         });
     });
   }
