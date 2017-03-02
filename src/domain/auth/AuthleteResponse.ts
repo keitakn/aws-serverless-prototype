@@ -4,8 +4,7 @@
  * @author keita-nishimoto
  * @since 2017-02-16
  */
-export namespace AuthleteResponse
-{
+export namespace AuthleteResponse {
   /**
    * Introspectionレスポンスで返すべきHTTPステータスが設定される
    */
@@ -261,7 +260,7 @@ export namespace AuthleteResponse
     /**
      * リダイレクトURI
      */
-    redirectUris: [string]
+    redirectUris: [string];
 
     /**
      * OAuth 2.0 Response Type
@@ -274,6 +273,6 @@ export namespace AuthleteResponse
     extension: {
       // リクエスト可能なscope一覧
       requestableScopes: [string]
-    }
+    };
   }
 }

@@ -16,7 +16,7 @@ export default class PolicyDocument {
    * @param _version
    * @param _statement
    */
-  constructor(private _version: string, private _statement:[Statement]) {
+  constructor(private _version: string, private _statement: [Statement]) {
   }
 
   /**
