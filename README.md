@@ -40,7 +40,7 @@ echo export SLS_DEBUG=true >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
-export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com
+echo export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
