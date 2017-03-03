@@ -1,4 +1,6 @@
-import * as request from "request";
+import axios from "axios";
+import {AxiosResponse} from "axios";
+import {AxiosError} from "axios";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
@@ -22,46 +24,36 @@ export class AuthorizationRepository {
    * @returns {Promise<AuthorizationCodeEntity>}
    */
   issueAuthorizationCode(authorizationRequest: AuthorizationRequest.Request): Promise<AuthorizationCodeEntity> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise<AuthorizationCodeEntity>((resolve: Function, reject: Function) => {
       this.issueAuthorizationTicket(authorizationRequest)
         .then((authorizationResponse) => {
           const headers = {
             "Content-Type": "application/json"
           };
 
-          const params = {
+          const requestData = {
             ticket: authorizationResponse.ticket,
             subject: authorizationRequest.subject
           };
 
-          const options = {
-            url: "https://api.authlete.com/api/auth/authorization/issue",
-            method: "POST",
+          const requestConfig = {
+            headers: headers,
             auth: {
               username: Authlete.getApiKey(),
-              pass: Authlete.getApiSecret()
-            },
-            json: true,
-            headers: headers,
-            body: params
+              password: Authlete.getApiSecret()
+            }
           };
 
-          request(options, (error: Error, response: any, authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) => {
-            try {
-              if (error) {
-                Logger.critical(error);
-                reject(
-                  new InternalServerError(error.message)
-                );
-              }
-
-              if (response.statusCode !== 200) {
+          axios.post("https://api.authlete.com/api/auth/authorization/issue", requestData, requestConfig)
+            .then((response: AxiosResponse) => {
+              if (response.status !== 200) {
                 Logger.critical(response);
                 reject(
                   new InternalServerError()
                 );
               }
 
+              const authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse = response.data;
               const action = authorizationIssueResponse.action.toString();
 
               switch (action) {
@@ -81,14 +73,13 @@ export class AuthorizationRepository {
                   );
                   break;
               }
-
-            } catch (error) {
+            })
+            .catch((error: AxiosError) => {
               Logger.critical(error);
               reject(
                 new InternalServerError(error.message)
               );
-            }
-          });
+            });
         })
         .catch((error: Error) => {
           Logger.error(error);
@@ -104,9 +95,9 @@ export class AuthorizationRepository {
    * @returns {Promise<AuthleteResponse.Authorization>}
    */
   private issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteResponse.Authorization> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise<AuthleteResponse.Authorization>((resolve: Function, reject: Function) => {
       const headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/json"
       };
 
       const clientId    = authorizationRequest.clientId;
@@ -120,34 +111,29 @@ export class AuthorizationRepository {
         }
       });
 
-      const options = {
-        url: "https://api.authlete.com/api/auth/authorization",
-        method: "POST",
-        auth: {
-          username: Authlete.getApiKey(),
-          pass: Authlete.getApiSecret()
-        },
-        json: true,
-        headers: headers,
-        form: `parameters=client_id%3D${clientId}%26response_type%3Dcode%26state%3D${state}%26scope%3D${scopes}%26redirect_uri=${redirectUri}`
+      const requestData = {
+        parameters: `client_id=${clientId}&response_type=code&state=${state}&scope=${scopes}&redirect_uri=${redirectUri}`
       };
 
-      request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {
-        try {
-          if (error) {
-            Logger.critical(error);
-            reject(
-              new InternalServerError(error.message)
-            );
-          }
+      const requestConfig = {
+        headers: headers,
+        auth: {
+          username: Authlete.getApiKey(),
+          password: Authlete.getApiSecret()
+        }
+      };
 
-          if (response.statusCode !== 200) {
+      axios.post("https://api.authlete.com/api/auth/authorization", requestData, requestConfig)
+        .then((response: AxiosResponse) => {
+
+          if (response.status !== 200) {
             Logger.critical(response);
             reject(
               new InternalServerError()
             );
           }
 
+          const authorizationResponse: AuthleteResponse.Authorization = response.data;
           const action = authorizationResponse.action.toString();
           switch (action) {
             case "INTERACTION":
@@ -170,14 +156,13 @@ export class AuthorizationRepository {
               );
               break;
           }
-
-        } catch (error) {
+        })
+        .catch((error: AxiosError) => {
           Logger.critical(error);
           reject(
             new InternalServerError(error.message)
           );
-        }
-      });
+        });
     });
   }
 }

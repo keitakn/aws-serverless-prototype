@@ -1,6 +1,8 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
+import {AxiosError} from "axios";
 import {TestUtil} from "./TestUtil";
+import {Authlete} from "../../config/Authlete";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -24,6 +26,52 @@ export namespace AuthApi {
   export interface IssueTokenFromCodeRequest {
     code: string;
     redirect_uri: string;
+  }
+
+  /**
+   * チート発行出来るgrantType（REFRESH_TOKENは出来ない模様）
+   */
+  type GrantTypes = "AUTHORIZATION_CODE" | "IMPLICIT" | "PASSWORD" | "CLIENT_CREDENTIALS";
+
+  /**
+   * チート発行出来るgrantType
+   */
+  export namespace GrantTypesEnum {
+    export const AUTHORIZATION_CODE: GrantTypes = "AUTHORIZATION_CODE";
+    export const IMPLICIT: GrantTypes = "IMPLICIT";
+    export const PASSWORD: GrantTypes = "PASSWORD";
+    export const CLIENT_CREDENTIALS: GrantTypes = "CLIENT_CREDENTIALS";
+  }
+
+  /**
+   * アクセストークン発行（チート）のリクエスト
+   *
+   * @link https://www.authlete.com/documents/apis/reference#auth_token_create
+   */
+  export interface IssueAccessTokenInCheatApiRequest {
+    grantType: GrantTypes;
+    clientId: number;
+    subject?: string;
+    scopes?: [string];
+    accessTokenDuration?: any;
+    refreshTokenDuration?: any;
+    properties?: any;
+  }
+
+  /**
+   * アクセストークン発行（チート）のレスポンス
+   * 厳密には全ての型を定義している訳ではないがテストに使うだけなのでこれで十分
+   *
+   * @link https://www.authlete.com/documents/apis/reference#auth_token_create
+   */
+  export interface IssueAccessTokenInCheatApiResponse {
+    type: string;
+    resultCode: string;
+    resultMessage: string;
+    accessToken: string;
+    clientId: number;
+    grantType: GrantTypes;
+    scopes: [string];
   }
 
   /**
@@ -67,7 +115,7 @@ export namespace AuthApi {
      * @returns {Promise<AxiosResponse>}
      */
     static issueTokenFromCode(request: IssueTokenFromCodeRequest): Promise<AxiosResponse> {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
         };
@@ -84,6 +132,39 @@ export namespace AuthApi {
         }).catch((error) => {
           reject(error);
         });
+      });
+    }
+
+    /**
+     * AuthleteのチートAPIを使ってアクセストークンを発行する
+     * 任意のアクセストークンをお手軽に発行出来る。テスト用以外には利用しない事。
+     *
+     * @param request
+     * @link https://www.authlete.com/documents/apis/reference#auth_token_create
+     */
+    static issueAccessTokenInCheatApi(request: IssueAccessTokenInCheatApiRequest): Promise<IssueAccessTokenInCheatApiResponse> {
+
+      return new Promise<IssueAccessTokenInCheatApiResponse>((resolve: Function, reject: Function) => {
+        const headers = {
+          "Content-type": "application/json"
+        };
+
+        const requestConfig = {
+          headers: headers,
+          auth: {
+            username: Authlete.getApiKey(),
+            password: Authlete.getApiSecret()
+          }
+        };
+
+        axios.post("https://api.authlete.com/api/auth/token/create", request, requestConfig)
+          .then((response: AxiosResponse) => {
+            const tokenCreateResponse: IssueAccessTokenInCheatApiResponse = response.data;
+            resolve(tokenCreateResponse);
+          })
+          .catch((error: AxiosError) => {
+            reject(error);
+          });
       });
     }
   }

@@ -253,7 +253,7 @@ info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this comm
 ./node_modules/.bin/webpack --config config/tests/webpack.config.js
 ```
 
-2. 以下のコマンドを実行しテストを実行します。
+1. 以下のコマンドを実行しテストを実行します。
 
 ```bash
 ./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
@@ -265,7 +265,26 @@ IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayに�
 
 その為、-t でタイムアウトのオプションを設定しています。
 
-もしローカルサーバに対してテストを実行したい場合は下記のように実行します。
+※小ネタ
+
+テストの実行結果をかわいくしたい場合は下記のように "-R nyan" を指定します。
+
+```bash
+./node_modules/.bin/mocha -t 5000 -R nyan .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+```
+
+テストの実行結果を表示する画面にねこちゃんが出現します。
+
+```
+ 3   -_-__,------,
+ 0   -_-__|  /\_/\
+ 0   -_-_~|_( ^ .^)
+     -_-_ ""  ""
+
+  3 passing (4s)
+```
+
+ローカルサーバに対してテストを実行したい場合は下記のように実行します。
 
 1. ローカルサーバを起動します。
 
@@ -273,7 +292,7 @@ IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayに�
 serverless webpack serve
 ```
 
-2. 以下のコマンドでテストを実行します。
+1. 以下のコマンドでテストを実行します。
 
 ```bash
 IS_LOCAL=true ./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
