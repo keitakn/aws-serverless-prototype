@@ -247,16 +247,18 @@ info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this comm
 
 ※テストの作成単位はlambda関数1つにつき1つです。
 
-1. webpackを利用してテストコードをbuildします。以下のコマンドを実行して下さい。
+#### AWS上でIntegrationTestを実行する
+
+- webpackを利用してテストコードをbuildします。以下のコマンドを実行して下さい。
 
 ```bash
-./node_modules/.bin/webpack --config config/tests/webpack.config.js
+yarn run build:test
 ```
 
-1. 以下のコマンドを実行しテストを実行します。
+- 以下のコマンドを実行しテストを実行します。
 
 ```bash
-./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+yarn run test .tests/integration/functions/auth/IssueAuthorizationCode.test.js
 ```
 
 この例では IssueAuthorizationCode を指定して実行しています。
@@ -265,15 +267,17 @@ IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayに�
 
 その為、-t でタイムアウトのオプションを設定しています。
 
-※小ネタ
-
-テストの実行結果をかわいくしたい場合は下記のように "-R nyan" を指定します。
+特定のテストケースだけ実行したい場合は下記のようにオプション指定で実行します。
 
 ```bash
-./node_modules/.bin/mocha -t 5000 -R nyan .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+yarn run test -- -g testFailRedirectUriNotRegistered .tests/integration/functions/auth/IssueAuthorizationCode.test.js
 ```
 
-テストの実行結果を表示する画面にねこちゃんが出現します。
+上記の例では "testFailRedirectUriNotRegistered" というテストケースのみ実行しています。
+
+- 小ネタ
+
+テストの実行結果をかわいくする為に "-R nyan" を指定しています。テストの実行結果を表示する画面にねこちゃんが出現します。
 
 ```
  3   -_-__,------,
@@ -284,18 +288,24 @@ IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayに�
   3 passing (4s)
 ```
 
-ローカルサーバに対してテストを実行したい場合は下記のように実行します。
+#### ローカルサーバ上でIntegrationTestを実行する
 
-1. ローカルサーバを起動します。
+- ローカルサーバを起動します。
 
 ```bash
 serverless webpack serve
 ```
 
-1. 以下のコマンドでテストを実行します。
+- 以下のコマンドでテストを実行します。
 
 ```bash
-IS_LOCAL=true ./node_modules/.bin/mocha -t 5000 .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+IS_LOCAL=true yarn run test .tests/integration/functions/auth/IssueAuthorizationCode.test.js
 ```
 
-※現状、テストの実行コマンドが冗長なので何らかの対策を考えます。
+### UnitTest
+
+単体レベルのテストケースです。
+
+テストコードは src/tests/unit 配下に作成します。
+
+実行手順等はIntegrationTestと同様なので省略します。
