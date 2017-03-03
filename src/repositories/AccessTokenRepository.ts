@@ -1,8 +1,6 @@
-import * as request from "request";
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AxiosError} from "axios";
-import {Error} from "tslint/lib/error";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
@@ -78,40 +76,34 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    */
   issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
     return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
+
       const headers = {
         "Content-Type": "application/json"
       };
 
-      const options = {
-        url: "https://api.authlete.com/api/auth/token",
-        method: "POST",
+      const requestData = {
+        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+      };
+
+      const requestConfig = {
+        headers: headers,
         auth: {
           username: Authlete.getApiKey(),
-          pass: Authlete.getApiSecret()
-        },
-        json: true,
-        headers: headers,
-        body: {
-          parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+          password: Authlete.getApiSecret()
         }
       };
 
-      request(options, (error: Error, response: any, tokenResponse: AuthleteResponse.TokenResponse) => {
-        try {
-          if (error) {
-            Logger.critical(error);
-            reject(
-              new InternalServerError(error.message)
-            );
-          }
+      axios.post("https://api.authlete.com/api/auth/token", requestData, requestConfig)
+        .then((response: AxiosResponse) => {
 
-          if (response.statusCode !== 200) {
+          if (response.status !== 200) {
             console.error(response);
             reject(
               new InternalServerError()
             );
           }
 
+          const tokenResponse: AuthleteResponse.TokenResponse = response.data;
           const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
           accessTokenEntity.tokenResponse = tokenResponse;
 
@@ -137,12 +129,11 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
           }
 
           resolve(accessTokenEntity);
-
-        } catch (error) {
+        })
+        .catch((error: AxiosError) => {
           Logger.critical(error);
           reject(new InternalServerError());
-        }
-      });
+        });
     });
   }
 }
