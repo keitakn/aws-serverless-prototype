@@ -77,7 +77,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @returns {Promise<AccessTokenEntity>}
    */
   issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
       const headers = {
         "Content-Type": "application/json"
       };

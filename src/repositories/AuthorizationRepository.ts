@@ -25,7 +25,7 @@ export class AuthorizationRepository {
    * @returns {Promise<AuthorizationCodeEntity>}
    */
   issueAuthorizationCode(authorizationRequest: AuthorizationRequest.Request): Promise<AuthorizationCodeEntity> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise<AuthorizationCodeEntity>((resolve: Function, reject: Function) => {
       this.issueAuthorizationTicket(authorizationRequest)
         .then((authorizationResponse) => {
           const headers = {
@@ -96,7 +96,7 @@ export class AuthorizationRepository {
    * @returns {Promise<AuthleteResponse.Authorization>}
    */
   private issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteResponse.Authorization> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise<AuthleteResponse.Authorization>((resolve: Function, reject: Function) => {
       const headers = {
         "Content-Type": "application/x-www-form-urlencoded"
       };
