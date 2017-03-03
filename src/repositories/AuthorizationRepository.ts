@@ -1,4 +1,7 @@
 import * as request from "request";
+import axios from "axios";
+import {AxiosResponse} from "axios";
+import {AxiosError} from "axios";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
@@ -29,39 +32,29 @@ export class AuthorizationRepository {
             "Content-Type": "application/json"
           };
 
-          const params = {
+          const requestData = {
             ticket: authorizationResponse.ticket,
             subject: authorizationRequest.subject
           };
 
-          const options = {
-            url: "https://api.authlete.com/api/auth/authorization/issue",
-            method: "POST",
+          const requestConfig = {
+            headers: headers,
             auth: {
               username: Authlete.getApiKey(),
-              pass: Authlete.getApiSecret()
-            },
-            json: true,
-            headers: headers,
-            body: params
+              password: Authlete.getApiSecret()
+            }
           };
 
-          request(options, (error: Error, response: any, authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) => {
-            try {
-              if (error) {
-                Logger.critical(error);
-                reject(
-                  new InternalServerError(error.message)
-                );
-              }
-
-              if (response.statusCode !== 200) {
+          axios.post("https://api.authlete.com/api/auth/authorization/issue", requestData, requestConfig)
+            .then((response: AxiosResponse) => {
+              if (response.status !== 200) {
                 Logger.critical(response);
                 reject(
                   new InternalServerError()
                 );
               }
 
+              const authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse = response.data;
               const action = authorizationIssueResponse.action.toString();
 
               switch (action) {
@@ -81,14 +74,13 @@ export class AuthorizationRepository {
                   );
                   break;
               }
-
-            } catch (error) {
+            })
+            .catch((error: AxiosError) => {
               Logger.critical(error);
               reject(
                 new InternalServerError(error.message)
               );
-            }
-          });
+            });
         })
         .catch((error: Error) => {
           Logger.error(error);
@@ -132,6 +124,7 @@ export class AuthorizationRepository {
         form: `parameters=client_id%3D${clientId}%26response_type%3Dcode%26state%3D${state}%26scope%3D${scopes}%26redirect_uri=${redirectUri}`
       };
 
+      // axiosに統一したいがパラメータの送り方が特殊な為、requestを使って対応
       request(options, (error: Error, response: any, authorizationResponse: AuthleteResponse.Authorization) => {
         try {
           if (error) {
