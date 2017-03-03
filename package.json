@@ -5,6 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint -c tslint.json src/**/*.ts",
+    "build": "webpack",
+    "build:test": "webpack --config config/tests/webpack.config.js",
     "deploy": "serverless deploy"
   },
   "author": "keita-nishimoto",
