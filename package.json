@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Serverless CRUD Prototype",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -t 5000 -R nyan",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
     "build:test": "webpack --config config/tests/webpack.config.js",
