@@ -118,24 +118,26 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
   const authorizationRequest = requestBuilder.build();
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.issueAuthorizationCode(authorizationRequest)
-    .then((authorizationCodeEntity) => {
 
-      const responseBody = {
-        code: authorizationCodeEntity.code,
-        state: authorizationCodeEntity.state
-      };
+  (async () => {
+    const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(authorizationRequest);
 
-      const successResponse = new SuccessResponse(responseBody, 201);
+    return authorizationCodeEntity;
+  })().then((authorizationCodeEntity) => {
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
+    const responseBody = {
+      code: authorizationCodeEntity.code,
+      state: authorizationCodeEntity.state
+    };
+    const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(undefined, response);
-    });
+    callback(undefined, successResponse.getResponse());
+  }).catch((error: Error) => {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
+  });
 };
 
 /**
@@ -155,49 +157,48 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
     callback(new Error("Unauthorized"));
   }
 
-  introspect(accessToken)
-    .then((accessTokenEntity: AccessTokenEntity) => {
-      return hasRequiredScopes(event.methodArn, accessTokenEntity);
-    })
-    .then((accessTokenEntity) => {
+  (async () => {
+    const accessTokenEntity = await introspect(accessToken);
 
-      let effect = "";
-      switch (accessTokenEntity.extractHttpStats()) {
-        case "OK":
-          effect = "Allow";
-          if (accessTokenEntity.isAllowed === false) {
-            effect = "Deny";
-          }
-          break;
-        case "BAD_REQUEST":
-        case "FORBIDDEN":
+    return await hasRequiredScopes(event.methodArn, accessTokenEntity);
+  })().then((accessTokenEntity) => {
+
+    let effect = "";
+    switch (accessTokenEntity.extractHttpStats()) {
+      case "OK":
+        effect = "Allow";
+        if (accessTokenEntity.isAllowed === false) {
           effect = "Deny";
-          break;
-        case "UNAUTHORIZED":
-          callback(new Error("Unauthorized"));
-          break;
-        case "INTERNAL_SERVER_ERROR":
-          Logger.critical(accessTokenEntity.introspectionResponse);
-          callback(new Error("Internal Server Error"));
-          break;
-        default:
-          Logger.critical(accessTokenEntity.introspectionResponse);
-          callback(new Error("Internal Server Error"));
-          break;
-      }
+        }
+        break;
+      case "BAD_REQUEST":
+      case "FORBIDDEN":
+        effect = "Deny";
+        break;
+      case "UNAUTHORIZED":
+        callback(new Error("Unauthorized"));
+        break;
+      case "INTERNAL_SERVER_ERROR":
+        Logger.critical(accessTokenEntity.introspectionResponse);
+        callback(new Error("Internal Server Error"));
+        break;
+      default:
+        Logger.critical(accessTokenEntity.introspectionResponse);
+        callback(new Error("Internal Server Error"));
+        break;
+    }
 
-      const authorizationResponse = generatePolicy(
-        accessTokenEntity.introspectionResponse.subject,
-        effect,
-        [event.methodArn]
-      );
+    const authorizationResponse = generatePolicy(
+      accessTokenEntity.introspectionResponse.subject,
+      effect,
+      [event.methodArn]
+    );
 
-      callback(undefined, authorizationResponse);
-    })
-    .catch((error) => {
-      Logger.critical(error);
-      callback(error);
-    });
+    callback(undefined, authorizationResponse);
+  }).catch((error: Error) => {
+    Logger.critical(error);
+    callback(error);
+  });
 };
 
 /**
