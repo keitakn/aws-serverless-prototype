@@ -18,8 +18,13 @@ sourceMapSupport.install();
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
-export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const create = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -52,27 +57,24 @@ export const create = (event: LambdaExecutionEvent, context: lambda.Context, cal
   }
   const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
 
-  resourceRepository.save(resourceEntity)
-    .then((resourceEntity: ResourceEntity) => {
+  await resourceRepository.save(resourceEntity).then((resourceEntity: ResourceEntity) => {
+    const responseBody = {
+      id: resourceEntity.id,
+      http_method: resourceEntity.httpMethod,
+      resource_path: resourceEntity.resourcePath,
+      name: resourceEntity.name,
+      scopes: resourceEntity.scopes,
+      created_at: resourceEntity.createdAt,
+      updated_at: resourceEntity.updatedAt
+    };
 
-      const responseBody = {
-        id: resourceEntity.id,
-        http_method: resourceEntity.httpMethod,
-        resource_path: resourceEntity.resourcePath,
-        name: resourceEntity.name,
-        scopes: resourceEntity.scopes,
-        created_at: resourceEntity.createdAt,
-        updated_at: resourceEntity.updatedAt
-      };
+    const successResponse = new SuccessResponse(responseBody, 201);
 
-      const successResponse = new SuccessResponse(responseBody, 201);
+    callback(undefined, successResponse.getResponse());
+  }).catch((error: Error) => {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
+    callback(undefined, response);
+  });
 };
