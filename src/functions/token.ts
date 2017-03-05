@@ -16,7 +16,11 @@ sourceMapSupport.install();
  * @param callback
  * @returns {Promise<void>}
  */
-export const issueTokenFromCode = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
+export const issueTokenFromCode = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
