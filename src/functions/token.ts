@@ -15,7 +15,7 @@ sourceMapSupport.install();
  * @param context
  * @param callback
  */
-export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const issueTokenFromCode = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -30,20 +30,17 @@ export const issueTokenFromCode = (event: LambdaExecutionEvent, context: lambda.
   const redirectUri       = requestBody.redirect_uri;
 
   const accessTokenRepository = new AccessTokenRepository();
-  accessTokenRepository.issue(authorizationCode, redirectUri)
-    .then((accessTokenEntity) => {
+  await accessTokenRepository.issue(authorizationCode, redirectUri).then((accessTokenEntity) => {
+    const successResponse = new SuccessResponse(
+      accessTokenEntity.tokenResponse.responseContent,
+      201
+    );
 
-      const successResponse = new SuccessResponse(
-        accessTokenEntity.tokenResponse.responseContent,
-        201
-      );
+    callback(undefined, successResponse.getResponse(false));
+  }).catch((error: Error) => {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
 
-      callback(undefined, successResponse.getResponse(false));
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
+    callback(undefined, response);
+  });
 };
