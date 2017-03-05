@@ -13,36 +13,38 @@ sourceMapSupport.install();
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
-export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const find = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
   const clientId = parseInt(event.pathParameters.id);
   const clientRepository = new ClientRepository();
 
-  clientRepository.find(clientId)
-    .then((clientEntity) => {
+  await clientRepository.find(clientId).then((clientEntity) => {
+    const responseBody = {
+      client_id: clientEntity.id,
+      client_secret: clientEntity.secret,
+      client_name: clientEntity.name,
+      developer: clientEntity.developer,
+      application_type: clientEntity.applicationType,
+      redirect_uris: clientEntity.redirectUris,
+      grant_types: clientEntity.grantTypes,
+      scopes: clientEntity.scopes,
+      created_at: clientEntity.createdAt,
+      updated_at: clientEntity.updatedAt
+    };
 
-      const responseBody = {
-        client_id: clientEntity.id,
-        client_secret: clientEntity.secret,
-        client_name: clientEntity.name,
-        developer: clientEntity.developer,
-        application_type: clientEntity.applicationType,
-        redirect_uris: clientEntity.redirectUris,
-        grant_types: clientEntity.grantTypes,
-        scopes: clientEntity.scopes,
-        created_at: clientEntity.createdAt,
-        updated_at: clientEntity.updatedAt
-      };
+    const successResponse = new SuccessResponse(responseBody);
 
-      const successResponse = new SuccessResponse(responseBody);
+    callback(undefined, successResponse.getResponse());
+  }).catch((error: Error) => {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
+    callback(undefined, response);
+  });
 };
 
