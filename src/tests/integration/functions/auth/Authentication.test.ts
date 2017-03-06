@@ -15,7 +15,12 @@ describe("Authentication", () => {
   let accessToken: string;
 
   /**
-   * 事前にトークンを取得する
+   * テストに使うユーザーID
+   */
+  let userId: string;
+
+  /**
+   * 事前にトークンを取得しユーザーを作成する
    */
   beforeEach((done: Function) => {
     const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
@@ -29,6 +34,18 @@ describe("Authentication", () => {
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity) => {
       accessToken = accessTokenEntity.token;
+
+      const createUserRequest = {
+        email: "keita@gmail.com",
+        password: "password1234",
+        name: "keita",
+        gender: "male",
+        birthdate: "1990-01-01"
+      };
+
+      return UserApi.ApiClient.create(createUserRequest, accessToken);
+    }).then((response) => {
+      userId = response.data.id;
       done();
     });
   });
@@ -37,30 +54,21 @@ describe("Authentication", () => {
    * 正常系のテストケース
    */
   it("testSuccess", (done: Function) => {
-    const createUserRequest = {
-      email: "keita@gmail.com",
-      password: "password1234",
-      name: "keita",
-      gender: "male",
-      birthdate: "1990-01-01"
+    const password = "password1234";
+
+    const request = {
+      id: userId,
+      password: password
     };
 
-    UserApi.ApiClient
-      .create(createUserRequest, accessToken)
-      .then((response) => {
-        const userId   = response.data.id;
-        const password = createUserRequest.password;
-
-        const request = {
-          id: userId,
-          password: password
-        };
-
-        return AuthApi.ApiClient.authentication(request);
-      })
-      .then((response) => {
-        assert.equal(response.data.authenticated, true);
-        done();
-      });
+    AuthApi.ApiClient.authentication(request).then((response) => {
+      assert.equal(response.data.authenticated, true);
+      assert.equal(response.data.subject, userId);
+      assert.equal(response.data.claims.email, "keita@gmail.com");
+      assert.equal(response.data.claims.email_verified, 0);
+      assert.equal(response.data.claims.gender, "male");
+      assert.equal(response.data.claims.birthdate, "1990-01-01");
+      done();
+    });
   });
 });
