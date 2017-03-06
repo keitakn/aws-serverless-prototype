@@ -14,7 +14,6 @@ import PasswordService from "../domain/auth/PasswordService";
 import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
-import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -251,37 +250,35 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
  * @param accessTokenEntity
  * @returns {Promise<AccessTokenEntity>}
  */
-const hasRequiredScopes = (arn: string, accessTokenEntity: AccessTokenEntity) => {
-  // TODO メソッド名が微妙。一度に複数の事をやっているのもダメ。時間が出来たらリファクタ対象。 @keita-nishimoto
-  return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
+const hasRequiredScopes = async (
+  arn: string,
+  accessTokenEntity: AccessTokenEntity
+): Promise<AccessTokenEntity> => {
+  try {
     const resource = extractMethodAndPath(arn);
     const resourceId = `${resource.httpMethod}/${resource.resourcePath}`;
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
-    resourceRepository
-      .find(resourceId)
-      .then((resourceEntity: ResourceEntity) => {
+    const resourceEntity = await resourceRepository.find(resourceId);
 
-        // TODO 適切な書き方ではない（無駄にループを回している）のでリファクタリング @keita-koga
-        resourceEntity.scopes.map((scopeResourceHas) => {
-          accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
-            if (scopeResourceHas === scopeTokenHas) {
-              accessTokenEntity.isAllowed = true;
-            }
-          });
-        });
-
-        resolve(accessTokenEntity);
-      })
-      .catch((error: Error) => {
-        if (error.name === "NotFoundError") {
+    resourceEntity.scopes.map((scopeResourceHas) => {
+      accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
+        if (scopeResourceHas === scopeTokenHas) {
           accessTokenEntity.isAllowed = true;
-          resolve(accessTokenEntity);
-        } else {
-          reject(error);
+          return accessTokenEntity;
         }
       });
-  });
+    });
+
+    return accessTokenEntity;
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      accessTokenEntity.isAllowed = true;
+      return accessTokenEntity;
+    } else {
+      throw error;
+    }
+  }
 };
 
 /**
