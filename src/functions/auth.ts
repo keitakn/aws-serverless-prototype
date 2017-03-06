@@ -11,7 +11,6 @@ import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import UserRepository from "../repositories/UserRepository";
 import PasswordService from "../domain/auth/PasswordService";
-import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
@@ -30,9 +29,14 @@ sourceMapSupport.install();
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  * @link https://www.authlete.com/documents/definitive_guide/authentication_callback
  */
-export const authentication = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const authentication = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -49,38 +53,36 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
 
   const userId: string = requestBody.id;
   const password: string = requestBody.password;
-
   const userRepository = new UserRepository(dynamoDbDocumentClient);
-  userRepository.find(userId)
-    .then((userEntity: UserEntity) => {
 
-      const requestPassword = PasswordService.generatePasswordHash(password);
-      if (userEntity.verifyPassword(requestPassword) === false) {
-        throw new UnauthorizedError();
+  try {
+    const userEntity = await userRepository.find(userId);
+    const requestPassword = PasswordService.generatePasswordHash(password);
+    if (userEntity.verifyPassword(requestPassword) === false) {
+      throw new UnauthorizedError();
+    }
+
+    const responseBody = {
+      authenticated: true,
+      subject: userId,
+      claims: {
+        name: userEntity.name,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate
       }
+    };
 
-      const responseBody = {
-        authenticated: true,
-        subject: userId,
-        claims: {
-          name: userEntity.name,
-          email: userEntity.email,
-          email_verified: userEntity.emailVerified,
-          gender: userEntity.gender,
-          birthdate: userEntity.birthdate
-        }
-      };
+    const successResponse = new SuccessResponse(responseBody);
 
-      const successResponse = new SuccessResponse(responseBody);
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
+    callback(undefined, response);
+  }
 };
 
 /**
