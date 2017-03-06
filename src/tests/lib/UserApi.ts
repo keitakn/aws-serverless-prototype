@@ -41,7 +41,7 @@ export namespace UserApi {
           "Authorization": `Bearer ${accessToken}`
         };
 
-        const config = {
+        const requestConfig = {
           headers: headers
         };
         const baseUri = TestUtil.createGatewayUri();
@@ -50,7 +50,7 @@ export namespace UserApi {
         axios.post(
           requestUri,
           request,
-          config
+          requestConfig
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error: AxiosError) => {
