@@ -236,10 +236,10 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @param accessToken
  * @returns {Promise<AccessTokenEntity>}
  */
-const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
+const introspect = async (accessToken: string): Promise<AccessTokenEntity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
-  return accessTokenRepository.fetch(accessToken);
+  return await accessTokenRepository.fetch(accessToken);
 };
 
 /**
