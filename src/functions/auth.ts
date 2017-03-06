@@ -90,6 +90,7 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
 export const issueAuthorizationCode = async (
   event: LambdaExecutionEvent,
@@ -148,21 +149,24 @@ export const issueAuthorizationCode = async (
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
-export const authorization = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const authorization = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
+  try {
+    const authorizationHeader = event.authorizationToken;
+    const accessToken = extractAccessToken(authorizationHeader);
 
-  const authorizationHeader = event.authorizationToken;
-  const accessToken = extractAccessToken(authorizationHeader);
+    if (accessToken === "") {
+      callback(new Error("Unauthorized"));
+    }
 
-  if (accessToken === "") {
-    callback(new Error("Unauthorized"));
-  }
-
-  (async () => {
     const accessTokenEntity = await introspect(accessToken);
 
-    return await hasRequiredScopes(event.methodArn, accessTokenEntity);
-  })().then((accessTokenEntity) => {
+    await hasRequiredScopes(event.methodArn, accessTokenEntity);
 
     let effect = "";
     switch (accessTokenEntity.extractHttpStats()) {
@@ -196,10 +200,10 @@ export const authorization = (event: LambdaExecutionEvent, context: lambda.Conte
     );
 
     callback(undefined, authorizationResponse);
-  }).catch((error: Error) => {
+  } catch (error) {
     Logger.critical(error);
     callback(error);
-  });
+  }
 };
 
 /**
