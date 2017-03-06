@@ -91,7 +91,11 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
  * @param context
  * @param callback
  */
-export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const issueAuthorizationCode = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -119,25 +123,22 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
 
   const authorizationRepository = new AuthorizationRepository();
 
-  (async () => {
-    const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(authorizationRequest);
+  await authorizationRepository.issueAuthorizationCode(authorizationRequest)
+    .then((authorizationCodeEntity) => {
+      const responseBody = {
+        code: authorizationCodeEntity.code,
+        state: authorizationCodeEntity.state
+      };
+      const successResponse = new SuccessResponse(responseBody, 201);
 
-    return authorizationCodeEntity;
-  })().then((authorizationCodeEntity) => {
+      callback(undefined, successResponse.getResponse());
+    })
+    .catch((error: Error) => {
+      const errorResponse = new ErrorResponse(error);
+      const response = errorResponse.getResponse();
 
-    const responseBody = {
-      code: authorizationCodeEntity.code,
-      state: authorizationCodeEntity.state
-    };
-    const successResponse = new SuccessResponse(responseBody, 201);
-
-    callback(undefined, successResponse.getResponse());
-  }).catch((error: Error) => {
-    const errorResponse = new ErrorResponse(error);
-    const response = errorResponse.getResponse();
-
-    callback(undefined, response);
-  });
+      callback(undefined, response);
+    });
 };
 
 /**
