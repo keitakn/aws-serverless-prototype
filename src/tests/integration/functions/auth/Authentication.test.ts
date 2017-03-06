@@ -29,7 +29,6 @@ describe("Authentication", () => {
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity) => {
       accessToken = accessTokenEntity.token;
-      console.log(accessTokenEntity);
       done();
     });
   });
