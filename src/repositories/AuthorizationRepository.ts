@@ -7,6 +7,7 @@ import InternalServerError from "../errors/InternalServerError";
 import BadRequestError from "../errors/BadRequestError";
 import {Logger} from "../infrastructures/Logger";
 import {Authlete} from "../config/Authlete";
+import {AuthorizationRepositoryInterface} from "../domain/auth/AuthorizationRepositoryInterface";
 
 /**
  * AuthorizationRepository
@@ -14,7 +15,7 @@ import {Authlete} from "../config/Authlete";
  * @author keita-nishimoto
  * @since 2017-02-15
  */
-export class AuthorizationRepository {
+export class AuthorizationRepository implements AuthorizationRepositoryInterface {
 
   /**
    * 認可コードを発行する
