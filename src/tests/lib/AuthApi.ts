@@ -10,6 +10,14 @@ import {Authlete} from "../../config/Authlete";
 export namespace AuthApi {
 
   /**
+   * 認証のリクエスト
+   */
+  export interface AuthenticationRequest {
+    id: string;
+    password: string;
+  }
+
+  /**
    * 認可コード発行のリクエスト
    */
   export interface IssueAuthorizationCodeRequest {
@@ -81,6 +89,38 @@ export namespace AuthApi {
    * @since 2017-02-28
    */
   export class ApiClient {
+
+    /**
+     * 認証を行う
+     *
+     * @param request
+     * @returns {Promise<AxiosResponse>}
+     */
+    static authentication(request: AuthenticationRequest): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+        const headers = {
+          "Content-type": "application/json"
+        };
+
+        const requestConfig = {
+          headers: headers
+        };
+
+        const baseUri = TestUtil.createGatewayUri();
+        const requestUri = `${baseUri}/auth/authentication`;
+
+        axios.post(
+          requestUri,
+          request,
+          requestConfig
+        ).then((response: AxiosResponse) => {
+          resolve(response);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
     /**
      * 認可コードを発行する
      *
@@ -93,13 +133,17 @@ export namespace AuthApi {
           "Content-type": "application/json"
         };
 
+        const requestConfig = {
+          headers: headers
+        };
+
         const baseUri = TestUtil.createGatewayUri();
         const requestUri = `${baseUri}/auth/authorization/code`;
 
         axios.post(
           requestUri,
           request,
-          headers
+          requestConfig
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -120,13 +164,17 @@ export namespace AuthApi {
           "Content-type": "application/json"
         };
 
+        const requestConfig = {
+          headers: headers
+        };
+
         const baseUri = TestUtil.createGatewayUri();
         const requestUri = `${baseUri}/tokens/code`;
 
         axios.post(
           requestUri,
           request,
-          headers
+          requestConfig
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {

@@ -11,10 +11,8 @@ import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import UserRepository from "../repositories/UserRepository";
 import PasswordService from "../domain/auth/PasswordService";
-import UserEntity from "../domain/user/UserEntity";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
-import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -31,9 +29,14 @@ sourceMapSupport.install();
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  * @link https://www.authlete.com/documents/definitive_guide/authentication_callback
  */
-export const authentication = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const authentication = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -50,38 +53,36 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
 
   const userId: string = requestBody.id;
   const password: string = requestBody.password;
-
   const userRepository = new UserRepository(dynamoDbDocumentClient);
-  userRepository.find(userId)
-    .then((userEntity: UserEntity) => {
 
-      const requestPassword = PasswordService.generatePasswordHash(password);
-      if (userEntity.verifyPassword(requestPassword) === false) {
-        throw new UnauthorizedError();
+  try {
+    const userEntity = await userRepository.find(userId);
+    const requestPassword = PasswordService.generatePasswordHash(password);
+    if (userEntity.verifyPassword(requestPassword) === false) {
+      throw new UnauthorizedError();
+    }
+
+    const responseBody = {
+      authenticated: true,
+      subject: userId,
+      claims: {
+        name: userEntity.name,
+        email: userEntity.email,
+        email_verified: userEntity.emailVerified,
+        gender: userEntity.gender,
+        birthdate: userEntity.birthdate
       }
+    };
 
-      const responseBody = {
-        authenticated: true,
-        subject: userId,
-        claims: {
-          name: userEntity.name,
-          email: userEntity.email,
-          email_verified: userEntity.emailVerified,
-          gender: userEntity.gender,
-          birthdate: userEntity.birthdate
-        }
-      };
+    const successResponse = new SuccessResponse(responseBody);
 
-      const successResponse = new SuccessResponse(responseBody);
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
+    callback(undefined, response);
+  }
 };
 
 /**
@@ -90,8 +91,13 @@ export const authentication = (event: LambdaExecutionEvent, context: lambda.Cont
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
-export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const issueAuthorizationCode = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
 
   const environment = new Environment(event);
 
@@ -118,14 +124,13 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
   const authorizationRequest = requestBuilder.build();
 
   const authorizationRepository = new AuthorizationRepository();
-  authorizationRepository.issueAuthorizationCode(authorizationRequest)
-    .then((authorizationCodeEntity) => {
 
+  await authorizationRepository.issueAuthorizationCode(authorizationRequest)
+    .then((authorizationCodeEntity) => {
       const responseBody = {
         code: authorizationCodeEntity.code,
         state: authorizationCodeEntity.state
       };
-
       const successResponse = new SuccessResponse(responseBody, 201);
 
       callback(undefined, successResponse.getResponse());
@@ -145,59 +150,61 @@ export const issueAuthorizationCode = (event: LambdaExecutionEvent, context: lam
  * @param event
  * @param context
  * @param callback
+ * @returns {Promise<void>}
  */
-export const authorization = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const authorization = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
+  try {
+    const authorizationHeader = event.authorizationToken;
+    const accessToken = extractAccessToken(authorizationHeader);
 
-  const authorizationHeader = event.authorizationToken;
-  const accessToken = extractAccessToken(authorizationHeader);
+    if (accessToken === "") {
+      callback(new Error("Unauthorized"));
+    }
 
-  if (accessToken === "") {
-    callback(new Error("Unauthorized"));
-  }
+    const accessTokenEntity = await introspect(accessToken);
 
-  introspect(accessToken)
-    .then((accessTokenEntity: AccessTokenEntity) => {
-      return hasRequiredScopes(event.methodArn, accessTokenEntity);
-    })
-    .then((accessTokenEntity) => {
+    await hasRequiredScopes(event.methodArn, accessTokenEntity);
 
-      let effect = "";
-      switch (accessTokenEntity.extractHttpStats()) {
-        case "OK":
-          effect = "Allow";
-          if (accessTokenEntity.isAllowed === false) {
-            effect = "Deny";
-          }
-          break;
-        case "BAD_REQUEST":
-        case "FORBIDDEN":
+    let effect = "";
+    switch (accessTokenEntity.extractHttpStats()) {
+      case "OK":
+        effect = "Allow";
+        if (accessTokenEntity.isAllowed === false) {
           effect = "Deny";
-          break;
-        case "UNAUTHORIZED":
-          callback(new Error("Unauthorized"));
-          break;
-        case "INTERNAL_SERVER_ERROR":
-          Logger.critical(accessTokenEntity.introspectionResponse);
-          callback(new Error("Internal Server Error"));
-          break;
-        default:
-          Logger.critical(accessTokenEntity.introspectionResponse);
-          callback(new Error("Internal Server Error"));
-          break;
-      }
+        }
+        break;
+      case "BAD_REQUEST":
+      case "FORBIDDEN":
+        effect = "Deny";
+        break;
+      case "UNAUTHORIZED":
+        callback(new Error("Unauthorized"));
+        break;
+      case "INTERNAL_SERVER_ERROR":
+        Logger.critical(accessTokenEntity.introspectionResponse);
+        callback(new Error("Internal Server Error"));
+        break;
+      default:
+        Logger.critical(accessTokenEntity.introspectionResponse);
+        callback(new Error("Internal Server Error"));
+        break;
+    }
 
-      const authorizationResponse = generatePolicy(
-        accessTokenEntity.introspectionResponse.subject,
-        effect,
-        [event.methodArn]
-      );
+    const authorizationResponse = generatePolicy(
+      accessTokenEntity.introspectionResponse.subject,
+      effect,
+      [event.methodArn]
+    );
 
-      callback(undefined, authorizationResponse);
-    })
-    .catch((error) => {
-      Logger.critical(error);
-      callback(error);
-    });
+    callback(undefined, authorizationResponse);
+  } catch (error) {
+    Logger.critical(error);
+    callback(error);
+  }
 };
 
 /**
@@ -231,10 +238,10 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @param accessToken
  * @returns {Promise<AccessTokenEntity>}
  */
-const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
+const introspect = async (accessToken: string): Promise<AccessTokenEntity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
-  return accessTokenRepository.fetch(accessToken);
+  return await accessTokenRepository.fetch(accessToken);
 };
 
 /**
@@ -245,37 +252,35 @@ const introspect = (accessToken: string): Promise<AccessTokenEntity> => {
  * @param accessTokenEntity
  * @returns {Promise<AccessTokenEntity>}
  */
-const hasRequiredScopes = (arn: string, accessTokenEntity: AccessTokenEntity) => {
-  // TODO メソッド名が微妙。一度に複数の事をやっているのもダメ。時間が出来たらリファクタ対象。 @keita-nishimoto
-  return new Promise<AccessTokenEntity>((resolve: Function, reject: Function) => {
+const hasRequiredScopes = async (
+  arn: string,
+  accessTokenEntity: AccessTokenEntity
+): Promise<AccessTokenEntity> => {
+  try {
     const resource = extractMethodAndPath(arn);
     const resourceId = `${resource.httpMethod}/${resource.resourcePath}`;
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
-    resourceRepository
-      .find(resourceId)
-      .then((resourceEntity: ResourceEntity) => {
+    const resourceEntity = await resourceRepository.find(resourceId);
 
-        // TODO 適切な書き方ではない（無駄にループを回している）のでリファクタリング @keita-koga
-        resourceEntity.scopes.map((scopeResourceHas) => {
-          accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
-            if (scopeResourceHas === scopeTokenHas) {
-              accessTokenEntity.isAllowed = true;
-            }
-          });
-        });
-
-        resolve(accessTokenEntity);
-      })
-      .catch((error: Error) => {
-        if (error.name === "NotFoundError") {
+    resourceEntity.scopes.map((scopeResourceHas) => {
+      accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
+        if (scopeResourceHas === scopeTokenHas) {
           accessTokenEntity.isAllowed = true;
-          resolve(accessTokenEntity);
-        } else {
-          reject(error);
+          return accessTokenEntity;
         }
       });
-  });
+    });
+
+    return accessTokenEntity;
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      accessTokenEntity.isAllowed = true;
+      return accessTokenEntity;
+    } else {
+      throw error;
+    }
+  }
 };
 
 /**
