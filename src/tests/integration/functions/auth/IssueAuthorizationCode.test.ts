@@ -1,11 +1,13 @@
+import * as mocha from "mocha";
 import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi";
+
+typeof mocha;
 
 /**
  * 認可コード発行のテスト
  */
 describe("IssueAuthorizationCode", () => {
-
   /**
    * 正常系のテストケース
    */
