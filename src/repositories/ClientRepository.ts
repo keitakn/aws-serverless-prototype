@@ -1,6 +1,5 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
-import {AxiosError} from "axios";
 import ClientEntity from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
 import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
@@ -22,16 +21,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @param clientId
    * @returns {Promise<ClientEntity>}
    */
-  find(clientId: number): Promise<ClientEntity> {
-    return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-      this.fetchFromAPi(clientId)
-        .then((clientEntity) => {
-          resolve(clientEntity);
-        })
-        .catch((error: Error) => {
-          reject(error);
-        });
-    });
+  async find(clientId: number): Promise<ClientEntity> {
+    return await this.fetchFromAPi(clientId);
   }
 
   /**
@@ -40,9 +31,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @param clientId
    * @returns {Promise<ClientEntity>}
    */
-  private fetchFromAPi(clientId: number) {
-    return new Promise<ClientEntity>((resolve: Function, reject: Function) => {
-
+  private async fetchFromAPi(clientId: number): Promise<ClientEntity> {
+    try {
       const requestConfig = {
         auth: {
           username: Authlete.getApiKey(),
@@ -50,34 +40,32 @@ export default class ClientRepository implements ClientRepositoryInterface {
         }
       };
 
-      axios
-        .get(`https://api.authlete.com/api/client/get/${clientId}`, requestConfig)
-        .then((axiosResponse: AxiosResponse) => {
+      const axiosResponse: AxiosResponse = await axios.get(
+        `https://api.authlete.com/api/client/get/${clientId}`,
+        requestConfig
+      );
 
-          const clientResponse: AuthleteResponse.ClientResponse = axiosResponse.data;
-          const clientEntity = new ClientEntity(clientResponse.clientId, clientResponse.createdAt);
-          clientEntity.secret          = clientResponse.clientSecret;
-          clientEntity.name            = clientResponse.clientName;
-          clientEntity.developer       = clientResponse.developer;
-          clientEntity.applicationType = clientResponse.applicationType;
-          clientEntity.redirectUris    = clientResponse.redirectUris;
-          clientEntity.grantTypes      = clientResponse.grantTypes;
-          clientEntity.scopes          = clientResponse.extension.requestableScopes;
-          clientEntity.updatedAt       = clientResponse.modifiedAt;
+      const clientResponse: AuthleteResponse.ClientResponse = axiosResponse.data;
+      const clientEntity = new ClientEntity(clientResponse.clientId, clientResponse.createdAt);
+      clientEntity.secret          = clientResponse.clientSecret;
+      clientEntity.name            = clientResponse.clientName;
+      clientEntity.developer       = clientResponse.developer;
+      clientEntity.applicationType = clientResponse.applicationType;
+      clientEntity.redirectUris    = clientResponse.redirectUris;
+      clientEntity.grantTypes      = clientResponse.grantTypes;
+      clientEntity.scopes          = clientResponse.extension.requestableScopes;
+      clientEntity.updatedAt       = clientResponse.modifiedAt;
 
-          resolve(clientEntity);
-        })
-        .catch((error: AxiosError) => {
-          if (error.response != null) {
-            if (error.response.status === 404) {
-              reject(new NotFoundError());
-              return;
-            }
-          }
+      return clientEntity;
+    } catch (error) {
+      if (error.response != null) {
+        if (error.response.status === 404) {
+          throw new NotFoundError();
+        }
+      }
 
-          Logger.critical(error);
-          reject(error);
-        });
-    });
+      Logger.critical(error);
+      throw error;
+    }
   }
 }
