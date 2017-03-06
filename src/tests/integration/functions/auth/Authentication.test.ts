@@ -71,4 +71,43 @@ describe("Authentication", () => {
       done();
     });
   });
+
+  /**
+   * 異常系テストケース
+   * ユーザーが存在しない
+   */
+  it("testFailUserDoseNotExist", (done: Function) => {
+    const failUserId = "99999999-mono-9999-1234-mono99999999";
+    const password   = "password1234";
+
+    const request = {
+      id: failUserId,
+      password: password
+    };
+
+    AuthApi.ApiClient.authentication(request).catch((error) => {
+      assert.equal(error.response.status, 404);
+      assert.equal(error.response.data.code, 404);
+      done();
+    });
+  });
+
+  /**
+   * 異常系テストケース
+   * 認証失敗（パスワード間違え）
+   */
+  it("testFailAuthentication", (done: Function) => {
+    const password = "FailPassword";
+
+    const request = {
+      id: userId,
+      password: password
+    };
+
+    AuthApi.ApiClient.authentication(request).catch((error) => {
+      assert.equal(error.response.status, 401);
+      assert.equal(error.response.data.code, 401);
+      done();
+    });
+  });
 });
