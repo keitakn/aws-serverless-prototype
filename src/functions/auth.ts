@@ -162,7 +162,7 @@ export const issueAuthorizationCode = async (
     };
 
     const response = {
-      statusCode: this.statusCode,
+      statusCode: 422,
       headers: {
         "Access-Control-Allow-Origin" : "*"
       },
