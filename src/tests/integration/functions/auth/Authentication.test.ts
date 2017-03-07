@@ -22,14 +22,14 @@ describe("Authentication", () => {
   /**
    * 事前にトークンを取得しユーザーを作成する
    */
-  beforeEach((done: Function) => {
+  beforeEach(() => {
     const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthApi.GrantTypesEnum.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_users", "prototype_clients"]
     };
 
-    AuthApi.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
+    return AuthApi.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       const accessTokenRepository = new AccessTokenRepository();
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity) => {
@@ -46,14 +46,13 @@ describe("Authentication", () => {
       return UserApi.ApiClient.create(createUserRequest, accessToken);
     }).then((response) => {
       userId = response.data.id;
-      done();
     });
   });
 
   /**
    * 正常系のテストケース
    */
-  it("testSuccess", (done: Function) => {
+  it("testSuccess", () => {
     const password = "password1234";
 
     const request = {
@@ -61,14 +60,13 @@ describe("Authentication", () => {
       password: password
     };
 
-    AuthApi.ApiClient.authentication(request).then((response) => {
+    return AuthApi.ApiClient.authentication(request).then((response) => {
       assert.equal(response.data.authenticated, true);
       assert.equal(response.data.subject, userId);
       assert.equal(response.data.claims.email, "keita@gmail.com");
       assert.equal(response.data.claims.email_verified, 0);
       assert.equal(response.data.claims.gender, "male");
       assert.equal(response.data.claims.birthdate, "1990-01-01");
-      done();
     });
   });
 
@@ -76,7 +74,7 @@ describe("Authentication", () => {
    * 異常系テストケース
    * ユーザーが存在しない
    */
-  it("testFailUserDoseNotExist", (done: Function) => {
+  it("testFailUserDoseNotExist", () => {
     const failUserId = "99999999-mono-9999-1234-mono99999999";
     const password   = "password1234";
 
@@ -85,10 +83,9 @@ describe("Authentication", () => {
       password: password
     };
 
-    AuthApi.ApiClient.authentication(request).catch((error) => {
+    return AuthApi.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 404);
       assert.equal(error.response.data.code, 404);
-      done();
     });
   });
 
@@ -96,7 +93,7 @@ describe("Authentication", () => {
    * 異常系テストケース
    * 認証失敗（パスワード間違え）
    */
-  it("testFailAuthentication", (done: Function) => {
+  it("testFailAuthentication", () => {
     const password = "FailPassword";
 
     const request = {
@@ -104,10 +101,9 @@ describe("Authentication", () => {
       password: password
     };
 
-    AuthApi.ApiClient.authentication(request).catch((error) => {
+    return AuthApi.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 401);
       assert.equal(error.response.data.code, 401);
-      done();
     });
   });
 });

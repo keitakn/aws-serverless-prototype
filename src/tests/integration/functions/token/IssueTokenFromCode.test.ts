@@ -9,7 +9,7 @@ describe("IssueTokenFromCode", () => {
   /**
    * 正常系テスト
    */
-  it("testSuccess", (done: Function) => {
+  it("testSuccess", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const request: AuthApi.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
@@ -19,7 +19,7 @@ describe("IssueTokenFromCode", () => {
       scopes: ["openid", "email", "offline_access", "prototype_users"]
     };
 
-    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
         redirect_uri: request.redirect_uri
@@ -34,7 +34,6 @@ describe("IssueTokenFromCode", () => {
       assert.equal("Bearer", response.data.token_type);
       assert.equal(43, response.data.refresh_token.length);
       assert.equal(43, response.data.access_token.length);
-      done();
     });
   });
 
@@ -42,7 +41,7 @@ describe("IssueTokenFromCode", () => {
    * 異常系テスト
    * 認可コード発行時と違うリダイレクトURIをリクエストする
    */
-  it("testFailRedirectUriDoesNotMatch", (done: Function) => {
+  it("testFailRedirectUriDoesNotMatch", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const request: AuthApi.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
@@ -52,18 +51,15 @@ describe("IssueTokenFromCode", () => {
       scopes: ["openid", "email", "offline_access", "prototype_users"]
     };
 
-    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
         redirect_uri: "https://api.authlete.com/api/mock/redirection"
       };
-
       return AuthApi.ApiClient.issueTokenFromCode(tokenRequest);
-    }).then(() => {
     }).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
-      done();
     });
   });
 
@@ -71,18 +67,16 @@ describe("IssueTokenFromCode", () => {
    * 異常系テスト
    * 無効な認可コードをリクエストする
    */
-  it("testFailAuthorizationCodeDoesNotExist", (done: Function) => {
+  it("testFailAuthorizationCodeDoesNotExist", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const tokenRequest = {
       code: "vPHtD8zkhYOPUwcQmwt4WGEHs8qv5XSvyMYbOWFq4kU",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`
     };
 
-    AuthApi.ApiClient.issueTokenFromCode(tokenRequest).then(() => {
-    }).catch((error) => {
+    return AuthApi.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
-      done();
     });
   });
 });

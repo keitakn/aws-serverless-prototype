@@ -11,8 +11,7 @@ describe("IssueAuthorizationCode", () => {
   /**
    * 正常系のテストケース
    */
-  it("testSuccess", (done: Function) => {
-
+  it("testSuccess", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const request: AuthApi.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
@@ -22,11 +21,10 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
       assert.equal(response.status, 201);
       assert.equal(response.data.code.length, 43);
       assert.equal(response.data.state, request.state);
-      done();
     });
   });
 
@@ -34,7 +32,7 @@ describe("IssueAuthorizationCode", () => {
    * 異常系テストケース
    * クライアントIDが存在しない
    */
-  it("testFailClientDoseNotExist", (done: Function) => {
+  it("testFailClientDoseNotExist", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const request: AuthApi.IssueAuthorizationCodeRequest = {
       client_id: 1111111111111,
@@ -44,11 +42,9 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
-    }).catch((error) => {
+    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
-      done();
     });
   });
 
@@ -56,7 +52,7 @@ describe("IssueAuthorizationCode", () => {
    * 異常系テスト
    * 登録されていないリダイレクトURIを指定
    */
-  it("testFailRedirectUriNotRegistered", (done: Function) => {
+  it("testFailRedirectUriNotRegistered", () => {
     const request: AuthApi.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
       state: "neko123456789",
@@ -65,11 +61,9 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
-    }).catch((error) => {
+    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
-      done();
     });
   });
 });
