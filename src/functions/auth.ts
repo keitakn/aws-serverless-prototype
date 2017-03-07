@@ -17,6 +17,7 @@ import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
+import {DomainValidator} from "../domain/DomainValidator";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -106,6 +107,47 @@ export const issueAuthorizationCode = async (
     requestBody = event.body;
   } else {
     requestBody = JSON.parse(event.body);
+  }
+
+  // TODO 後でJSONSchemeを定義する場所を考える
+  const scheme = {
+    type: "object",
+    required: [
+      "client_id",
+      "state",
+      "redirect_uri",
+      "subject",
+      "scopes"
+    ],
+    properties: {
+      client_id: {"type": "integer"},
+      state: {"type": "string"},
+      redirect_uri: {"type": "string"},
+      subject: {"type": "string", "minLength": 36, "maxLength": 36},
+      scopes: {"type": "array"}
+    },
+    additionalProperties: false
+  };
+
+  const domainValidator = new DomainValidator(scheme);
+  const validatorResult = domainValidator.doValidate(requestBody);
+  if (validatorResult.errors.length !== 0) {
+    const responseBody = {
+      code: 422,
+      message: "Unprocessable Entity",
+      errors: validatorResult.errors
+    };
+
+    const response = {
+      statusCode: this.statusCode,
+      headers: {
+        "Access-Control-Allow-Origin" : "*"
+      },
+      body: JSON.stringify(responseBody)
+    };
+
+    callback(undefined, response);
+    return;
   }
 
   const clientId    = requestBody.client_id;
