@@ -120,11 +120,34 @@ export const issueAuthorizationCode = async (
       "scopes"
     ],
     properties: {
-      client_id: {"type": "integer"},
-      state: {"type": "string"},
-      redirect_uri: {"type": "string"},
-      subject: {"type": "string", "minLength": 36, "maxLength": 36},
-      scopes: {"type": "array"}
+      client_id: {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 9999999999999,
+        "exclusiveMaximum": true
+      },
+      state: {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 64
+      },
+      redirect_uri: {
+        "type": "string",
+        "format": "uri"
+      },
+      subject: {
+        "type": "string",
+        "minLength": 36,
+        "maxLength": 36
+      },
+      scopes: {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 32
+        }
+      }
     },
     additionalProperties: false
   };
