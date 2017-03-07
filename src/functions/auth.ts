@@ -125,22 +125,22 @@ export const issueAuthorizationCode = async (
 
   const authorizationRepository = new AuthorizationRepository();
 
-  await authorizationRepository.issueAuthorizationCode(authorizationRequest)
-    .then((authorizationCodeEntity) => {
-      const responseBody = {
-        code: authorizationCodeEntity.code,
-        state: authorizationCodeEntity.state
-      };
-      const successResponse = new SuccessResponse(responseBody, 201);
+  try {
+    const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(authorizationRequest);
 
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
+    const responseBody = {
+      code: authorizationCodeEntity.code,
+      state: authorizationCodeEntity.state
+    };
+    const successResponse = new SuccessResponse(responseBody, 201);
 
-      callback(undefined, response);
-    });
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
+  }
 };
 
 /**
