@@ -93,13 +93,9 @@ export const destroy = async (
   callback: lambda.Callback
 ): Promise<void> => {
   const environment = new Environment(event);
-
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
+  const resourceId = event.pathParameters.id;
+  console.log(environment);
+  console.log(resourceId);
 
   const successResponse = new SuccessResponse({}, 204);
 

@@ -20,12 +20,9 @@ describe("DestroyResource", () => {
     return ResourceApi.ApiClient.create(request).then((response) => {
       return response;
     }).then((response) => {
-      const request: ResourceApi.DestroyRequest = {
-        http_method: "POST",
-        resource_path: "tests"
-      };
+      const resourceId = "POST-tests";
 
-      return ResourceApi.ApiClient.destroy(request);
+      return ResourceApi.ApiClient.destroy(resourceId);
     }).then((response) => {
       assert.equal(response.status, 204);
     });

@@ -177,7 +177,7 @@ curl -kv \
   "scopes": ["email"]
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources
 ```
 
 ## ローカル環境でデバッグを行う方法

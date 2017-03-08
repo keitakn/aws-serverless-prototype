@@ -18,14 +18,6 @@ export namespace ResourceApi {
   }
 
   /**
-   * リソース削除のリクエスト
-   */
-  export interface DestroyRequest {
-    http_method: string;
-    resource_path: string;
-  }
-
-  /**
    * ApiClient
    *
    * @author keita-nishimoto
@@ -49,7 +41,7 @@ export namespace ResourceApi {
         };
 
         const baseUri = TestUtil.createGatewayUri();
-        const requestUri = `${baseUri}/resource`;
+        const requestUri = `${baseUri}/resources`;
 
         axios.post(
           requestUri,
@@ -66,22 +58,21 @@ export namespace ResourceApi {
     /**
      * リソース削除を削除する
      *
-     * @param request
+     * @param resourceId
      * @returns {Promise<AxiosResponse>}
      */
-    static destroy(request: DestroyRequest) {
+    static destroy(resourceId: string) {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
         };
 
         const requestConfig = {
-          headers: headers,
-          data: request
+          headers: headers
         };
 
         const baseUri = TestUtil.createGatewayUri();
-        const requestUri = `${baseUri}/resource`;
+        const requestUri = `${baseUri}/resources/${resourceId}`;
 
         axios.delete(
           requestUri,
