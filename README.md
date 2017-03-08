@@ -180,6 +180,22 @@ curl -kv \
 https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources
 ```
 
+### findResource
+
+```bash
+curl -kv \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
+```
+
+### destroyResource
+
+```bash
+curl -kv \
+-X DELETE \
+-H "Content-type: application/json" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
+```
+
 ## ローカル環境でデバッグを行う方法
 
 [こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考に必要なテーブルをローカル内のDynamoDBに作成して下さい。
