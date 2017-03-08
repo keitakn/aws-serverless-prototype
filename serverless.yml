@@ -68,6 +68,13 @@ functions:
           path: resource
           method: post
           cors: true
+  destroyResource:
+    handler: resource.destroy
+    events:
+      - http:
+          path: resource
+          method: delete
+          cors: true
   issueTokenFromCode:
     handler: token.issueTokenFromCode
     events:

@@ -78,3 +78,30 @@ export const create = async (
     callback(undefined, response);
   });
 };
+
+/**
+ * リソースを削除する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ * @returns {Promise<void>}
+ */
+export const destroy = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
+  const environment = new Environment(event);
+
+  let requestBody;
+  if (environment.isLocal() === true) {
+    requestBody = event.body;
+  } else {
+    requestBody = JSON.parse(event.body);
+  }
+
+  const successResponse = new SuccessResponse({}, 204);
+
+  callback(undefined, successResponse.getResponse());
+};
