@@ -1,5 +1,4 @@
 import {DomainValidator} from "../DomainValidator";
-import {ValidatorResult} from "jsonschema";
 
 /**
  * AuthValidationService
@@ -13,9 +12,9 @@ export class AuthValidationService {
    * auth.issueAuthorizationCodeのバリデーション
    *
    * @param request
-   * @returns {ValidatorResult}
+   * @returns {Object}
    */
-  static issueAuthorizationCodeValidate(request: Object): ValidatorResult {
+  static issueAuthorizationCodeValidate(request: Object): Object {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
@@ -61,6 +60,17 @@ export class AuthValidationService {
 
     const domainValidator = new DomainValidator(scheme);
 
-    return domainValidator.doValidate(request);
+    let validateResultObject: any = {};
+    const validatorResult = domainValidator.doValidate(request);
+    if (validatorResult.errors.length === 0) {
+      return validateResultObject;
+    }
+
+    validatorResult.errors.map((validationError) => {
+      const key = validationError.property.replace("instance.", "");
+      validateResultObject[key] = validationError.message;
+    });
+
+    return validateResultObject;
   }
 }

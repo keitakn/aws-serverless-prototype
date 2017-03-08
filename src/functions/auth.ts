@@ -109,12 +109,12 @@ export const issueAuthorizationCode = async (
     requestBody = JSON.parse(event.body);
   }
 
-  const validatorResult = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
-  if (validatorResult.errors.length !== 0) {
+  const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
+  if (Object.keys(validateResultObject).length !== 0) {
     const responseBody = {
       code: 422,
       message: "Unprocessable Entity",
-      errors: validatorResult.errors
+      errors: validateResultObject
     };
 
     const response = {
