@@ -58,6 +58,7 @@ export class AuthValidationService {
       additionalProperties: false
     };
 
+    // TODO これらの処理を毎回書くのは辛いので共通化する
     const domainValidator = new DomainValidator(scheme);
 
     let validateResultObject: any = {};
