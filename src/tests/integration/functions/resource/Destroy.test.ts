@@ -22,14 +22,37 @@ describe("DestroyResource", () => {
 
   /**
    * 正常系のテストケース
+   *
+   * 削除対象のリソースが存在し、削除に成功
    */
-  it("testSuccess", () => {
+  it("testSuccessDestroy", () => {
     const resourceId = "POST_tests";
+
+    return (async () => {
+      const resourceResponse = await ResourceApi.ApiClient.find(resourceId);
+      assert.equal(resourceResponse.status, 200);
+
+      const destroyResponse = await ResourceApi.ApiClient.destroy(resourceId);
+      assert.equal(destroyResponse.status, 204);
+
+      await ResourceApi.ApiClient.find(resourceId);
+
+    })().catch((error) => {
+      assert.equal(error.response.status, 404);
+      assert.equal(error.response.data.code, 404);
+    });
+  });
+
+  /**
+   * 正常系のテストケース
+   *
+   * 削除対象のリソースが存在しない
+   */
+  it("testSuccessDoseNotExistResourceDestroy", () => {
+    const resourceId = "GET_tests";
 
     return ResourceApi.ApiClient.destroy(resourceId).then((response) => {
       assert.equal(response.status, 204);
-      return ResourceApi.ApiClient.find(resourceId);
-    }).then((response) => {
     });
   });
 });

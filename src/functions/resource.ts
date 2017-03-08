@@ -138,14 +138,25 @@ export const destroy = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-  const environment = new Environment(event);
-  if (environment.isLocal() === true) {
-    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-      environment.isLocal()
-    );
+  try {
+    const resourceId = event.pathParameters.id.replace("_", "/");
+    const environment = new Environment(event);
+    const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+
+    await resourceRepository.destroy(resourceId);
+
+    const successResponse = new SuccessResponse({}, 204);
+
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
   }
-
-  const successResponse = new SuccessResponse({}, 204);
-
-  callback(undefined, successResponse.getResponse());
 };

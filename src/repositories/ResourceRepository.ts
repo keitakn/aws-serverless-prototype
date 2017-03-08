@@ -26,7 +26,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * リソースを取得する
    *
    * @param resourceId
-   * @returns {Promise<DocumentClient.GetItemOutput>}
+   * @returns {Promise<ResourceEntity>}
    */
   find(resourceId: string): Promise<ResourceEntity> {
     return new Promise<ResourceEntity>((resolve: Function, reject: Function) => {
@@ -97,6 +97,34 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           reject(
             new InternalServerError(error.message)
           );
+        });
+    });
+  }
+
+  /**
+   * リソースを削除する
+   *
+   * @param resourceId
+   * @returns {Promise<void>}
+   */
+  destroy(resourceId: string): Promise<void> {
+    return new Promise<void>((resolve: Function, reject: Function) => {
+      const params = {
+        TableName: this.getResourcesTableName(),
+        Key: {
+          id: resourceId
+        }
+      };
+
+      this.dynamoDbDocumentClient
+        .delete(params)
+        .promise()
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          Logger.critical(error);
+          reject(error);
         });
     });
   }
