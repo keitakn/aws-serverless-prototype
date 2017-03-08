@@ -17,7 +17,7 @@ import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
-import {DomainValidator} from "../domain/DomainValidator";
+import {AuthValidationService} from "../domain/auth/AuthValidationService";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -109,51 +109,7 @@ export const issueAuthorizationCode = async (
     requestBody = JSON.parse(event.body);
   }
 
-  // TODO 後でJSONSchemeを定義する場所を考える
-  const scheme = {
-    type: "object",
-    required: [
-      "client_id",
-      "state",
-      "redirect_uri",
-      "subject",
-      "scopes"
-    ],
-    properties: {
-      client_id: {
-        "type": "number",
-        "minimum": 1,
-        "maximum": 9999999999999,
-        "exclusiveMaximum": true
-      },
-      state: {
-        "type": "string",
-        "minLength": 8,
-        "maxLength": 64
-      },
-      redirect_uri: {
-        "type": "string",
-        "format": "uri"
-      },
-      subject: {
-        "type": "string",
-        "minLength": 36,
-        "maxLength": 36
-      },
-      scopes: {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "minLength": 5,
-          "maxLength": 32
-        }
-      }
-    },
-    additionalProperties: false
-  };
-
-  const domainValidator = new DomainValidator(scheme);
-  const validatorResult = domainValidator.doValidate(requestBody);
+  const validatorResult = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
   if (validatorResult.errors.length !== 0) {
     const responseBody = {
       code: 422,

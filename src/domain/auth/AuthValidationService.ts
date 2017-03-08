@@ -1,0 +1,66 @@
+import {DomainValidator} from "../DomainValidator";
+import {ValidatorResult} from "jsonschema";
+
+/**
+ * AuthValidationService
+ *s
+ * @author keita-nishimoto
+ * @since 2017-03-08
+ */
+export class AuthValidationService {
+
+  /**
+   * auth.issueAuthorizationCodeのバリデーション
+   *
+   * @param request
+   * @returns {ValidatorResult}
+   */
+  static issueAuthorizationCodeValidate(request: Object): ValidatorResult {
+    // TODO schemeはどこか別ファイル等に定義してまとめる
+    const scheme = {
+      type: "object",
+      required: [
+        "client_id",
+        "state",
+        "redirect_uri",
+        "subject",
+        "scopes"
+      ],
+      properties: {
+        client_id: {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 9999999999999,
+          "exclusiveMaximum": true
+        },
+        state: {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 64
+        },
+        redirect_uri: {
+          "type": "string",
+          "format": "uri"
+        },
+        subject: {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        scopes: {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 32
+          }
+        }
+      },
+      additionalProperties: false
+    };
+
+    const domainValidator = new DomainValidator(scheme);
+
+    return domainValidator.doValidate(request);
+  }
+}
