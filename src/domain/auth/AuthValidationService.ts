@@ -67,7 +67,13 @@ export class AuthValidationService {
     }
 
     validatorResult.errors.map((validationError) => {
-      const key = validationError.property.replace("instance.", "");
+      let key = "";
+      if (validationError.property === "instance") {
+        key = validationError.argument;
+      } else {
+        key = validationError.property.replace("instance.", "");
+      }
+
       validateResultObject[key] = validationError.message;
     });
 
