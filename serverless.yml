@@ -65,8 +65,22 @@ functions:
     handler: resource.create
     events:
       - http:
-          path: resource
+          path: resources
           method: post
+          cors: true
+  findResource:
+    handler: resource.find
+    events:
+      - http:
+          path: resources/{id}
+          method: get
+          cors: true
+  destroyResource:
+    handler: resource.destroy
+    events:
+      - http:
+          path: resources/{id}
+          method: delete
           cors: true
   issueTokenFromCode:
     handler: token.issueTokenFromCode

@@ -177,7 +177,23 @@ curl -kv \
   "scopes": ["email"]
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resource
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources
+```
+
+### findResource
+
+```bash
+curl -kv \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
+```
+
+### destroyResource
+
+```bash
+curl -kv \
+-X DELETE \
+-H "Content-type: application/json" \
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 ```
 
 ## ローカル環境でデバッグを行う方法

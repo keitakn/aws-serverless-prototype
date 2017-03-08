@@ -8,6 +8,7 @@ const nodeExternals = require('webpack-node-externals');
 const testDirs = [
   paths.integrationAuthTests,
   paths.integrationTokenTests,
+  paths.integrationResourceTests,
   paths.unitAccessTokenRepositoryTest,
   paths.unitAuthValidationServiceTest
 ];

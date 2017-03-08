@@ -78,3 +78,85 @@ export const create = async (
     callback(undefined, response);
   });
 };
+
+/**
+ * リソースの取得をする
+ *
+ * @param event
+ * @param context
+ * @param callback
+ * @returns {Promise<void>}
+ */
+export const find = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
+  try {
+    const environment = new Environment(event);
+    const resourceId = event.pathParameters.id.replace("_", "/");
+
+    const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+
+    const resourceEntity = await resourceRepository.find(resourceId);
+    const responseBody = {
+      id: resourceEntity.id,
+      http_method: resourceEntity.httpMethod,
+      resource_path: resourceEntity.resourcePath,
+      name: resourceEntity.name,
+      scopes: resourceEntity.scopes,
+      created_at: resourceEntity.createdAt,
+      updated_at: resourceEntity.updatedAt
+    };
+
+    const successResponse = new SuccessResponse(responseBody);
+
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
+  }
+};
+
+/**
+ * リソースを削除する
+ *
+ * @param event
+ * @param context
+ * @param callback
+ * @returns {Promise<void>}
+ */
+export const destroy = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
+  try {
+    const resourceId = event.pathParameters.id.replace("_", "/");
+    const environment = new Environment(event);
+    const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+
+    await resourceRepository.destroy(resourceId);
+
+    const successResponse = new SuccessResponse({}, 204);
+
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
+  }
+};
