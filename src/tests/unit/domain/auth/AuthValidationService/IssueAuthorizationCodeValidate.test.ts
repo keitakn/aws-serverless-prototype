@@ -11,44 +11,42 @@ describe("IssueAuthorizationCodeValidate", () => {
    * 必須パラメータが設定されていない
    */
   it("testValidationUnsetRequiredParams", () => {
-    const requests = [
-      {foo: "bar"}
-    ];
+    const request = {
+      foo: "bar"
+    };
 
-    requests.map((request) => {
-      const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
 
-      assert.property(
-        validateResultObject,
-        "client_id"
-      );
+    assert.property(
+      validateResultObject,
+      "client_id"
+    );
 
-      assert.property(
-        validateResultObject,
-        "state"
-      );
+    assert.property(
+      validateResultObject,
+      "state"
+    );
 
-      assert.property(
-        validateResultObject,
-        "redirect_uri"
-      );
+    assert.property(
+      validateResultObject,
+      "redirect_uri"
+    );
 
-      assert.property(
-        validateResultObject,
-        "subject"
-      );
+    assert.property(
+      validateResultObject,
+      "subject"
+    );
 
-      assert.property(
-        validateResultObject,
-        "scopes"
-      );
+    assert.property(
+      validateResultObject,
+      "scopes"
+    );
 
-      // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
-      assert.property(
-        validateResultObject,
-        "foo"
-      );
-    });
+    // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
+    assert.property(
+      validateResultObject,
+      "foo"
+    );
   });
 
   /**
