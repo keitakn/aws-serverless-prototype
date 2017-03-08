@@ -88,6 +88,14 @@ describe("IssueAuthorizationCodeValidate", () => {
         redirect_uri: null,
         subject: null,
         scopes: [null]
+      },
+      {
+        // 空文字を指定
+        client_id: "",
+        state: "",
+        redirect_uri: "",
+        subject: "",
+        scopes: [""]
       }
     ];
 
@@ -118,5 +126,66 @@ describe("IssueAuthorizationCodeValidate", () => {
         "scopes[0]"
       );
     });
+  });
+
+  /**
+   * バリデーションテスト
+   * バリデーションを通過するパラメータが含まれている場合はエラーから除外されている事を確認
+   */
+  it("testValidationNotContainsPartError", () => {
+    const request = {
+      client_id: 0,
+      redirect_uri: "https://example.com/oauth2/callback",
+      scopes: [""]
+    };
+
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
+
+    assert.property(
+      validateResultObject,
+      "client_id"
+    );
+
+    assert.property(
+      validateResultObject,
+      "state"
+    );
+
+    assert.notProperty(
+      validateResultObject,
+      "redirect_uri"
+    );
+
+    assert.property(
+      validateResultObject,
+      "subject"
+    );
+
+    assert.property(
+      validateResultObject,
+      "scopes[0]"
+    );
+  });
+
+  /**
+   * バリデーションテスト
+   * バリデーション結果にエラーが1つも含まれない場合
+   */
+  it("testValidationNotContainsError", () => {
+    const request = {
+      client_id: 1,
+      state: "12345678",
+      redirect_uri: "https://example.com/oauth2/callback",
+      subject: "98f46ad0-09e2-4324-910c-011df62e7307",
+      scopes: ["email", "openid"]
+    };
+
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
+
+    // 空のオブジェクトである事はエラーが1つもない事を示す
+    assert.equal(
+      Object.keys(validateResultObject).length,
+      0
+    );
   });
 });
