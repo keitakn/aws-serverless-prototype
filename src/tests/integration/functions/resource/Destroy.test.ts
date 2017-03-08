@@ -7,9 +7,9 @@ import {ResourceApi} from "../../../lib/ResourceApi";
 describe("DestroyResource", () => {
 
   /**
-   * 正常系のテストケース
+   * 事前にリソース登録を行っておく
    */
-  it("testSuccess", () => {
+  beforeEach(() => {
     const request: ResourceApi.CreateRequest = {
       http_method: "POST",
       resource_path: "tests",
@@ -17,13 +17,16 @@ describe("DestroyResource", () => {
       scopes: ["test"]
     };
 
-    return ResourceApi.ApiClient.create(request).then((response) => {
-      return response;
-    }).then((response) => {
-      const resourceId = "POST-tests";
+    return ResourceApi.ApiClient.create(request).then(() => {});
+  });
 
-      return ResourceApi.ApiClient.destroy(resourceId);
-    }).then((response) => {
+  /**
+   * 正常系のテストケース
+   */
+  it("testSuccess", () => {
+    const resourceId = "POST-tests";
+
+    return ResourceApi.ApiClient.destroy(resourceId).then((response) => {
       assert.equal(response.status, 204);
     });
   });
