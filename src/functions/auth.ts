@@ -17,6 +17,7 @@ import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
+import {AuthValidationService} from "../domain/auth/AuthValidationService";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -106,6 +107,26 @@ export const issueAuthorizationCode = async (
     requestBody = event.body;
   } else {
     requestBody = JSON.parse(event.body);
+  }
+
+  const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
+  if (Object.keys(validateResultObject).length !== 0) {
+    const responseBody = {
+      code: 422,
+      message: "Unprocessable Entity",
+      errors: validateResultObject
+    };
+
+    const response = {
+      statusCode: 422,
+      headers: {
+        "Access-Control-Allow-Origin" : "*"
+      },
+      body: JSON.stringify(responseBody)
+    };
+
+    callback(undefined, response);
+    return;
   }
 
   const clientId    = requestBody.client_id;

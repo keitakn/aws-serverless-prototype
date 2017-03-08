@@ -66,4 +66,53 @@ describe("IssueAuthorizationCode", () => {
       assert.equal(error.response.data.code, 400);
     });
   });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const request: AuthApi.IssueAuthorizationCodeRequest = {
+      client_id: 0,
+      state: "1234567",
+      redirect_uri: "url",
+      subject: "98f46ad0-09e2-4324-910c-011df62e73071",
+      scopes: ["food", "98f46ad0-09e2-4324-910c-011df62e73071"]
+    };
+
+    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "client_id"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "state"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "redirect_uri"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "subject"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "scopes[0]"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "scopes[1]"
+      );
+    });
+  });
 });
