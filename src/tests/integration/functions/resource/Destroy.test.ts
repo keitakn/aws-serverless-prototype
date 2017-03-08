@@ -24,10 +24,12 @@ describe("DestroyResource", () => {
    * 正常系のテストケース
    */
   it("testSuccess", () => {
-    const resourceId = "POST-tests";
+    const resourceId = "POST_tests";
 
     return ResourceApi.ApiClient.destroy(resourceId).then((response) => {
       assert.equal(response.status, 204);
+      return ResourceApi.ApiClient.find(resourceId);
+    }).then((response) => {
     });
   });
 });

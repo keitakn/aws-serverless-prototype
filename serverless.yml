@@ -68,6 +68,13 @@ functions:
           path: resources
           method: post
           cors: true
+  findResource:
+    handler: resource.find
+    events:
+      - http:
+          path: resources/{id}
+          method: get
+          cors: true
   destroyResource:
     handler: resource.destroy
     events:

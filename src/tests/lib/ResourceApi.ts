@@ -30,7 +30,7 @@ export namespace ResourceApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: CreateRequest) {
+    static create(request: CreateRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
@@ -56,12 +56,42 @@ export namespace ResourceApi {
     }
 
     /**
+     * リソースを取得する
+     *
+     * @param resourceId
+     * @returns {Promise<AxiosResponse>}
+     */
+    static find(resourceId: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+        const headers = {
+          "Content-type": "application/json"
+        };
+
+        const requestConfig = {
+          headers: headers
+        };
+
+        const baseUri = TestUtil.createGatewayUri();
+        const requestUri = `${baseUri}/resources/${resourceId}`;
+
+        axios.get(
+          requestUri,
+          requestConfig
+        ).then((response: AxiosResponse) => {
+          resolve(response);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+
+    /**
      * リソース削除を削除する
      *
      * @param resourceId
      * @returns {Promise<AxiosResponse>}
      */
-    static destroy(resourceId: string) {
+    static destroy(resourceId: string): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
