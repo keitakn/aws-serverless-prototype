@@ -38,25 +38,24 @@ export const authentication = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-
-  const environment = new Environment(event);
-
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-
-    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-      environment.isLocal()
-    );
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
-
-  const userId: string = requestBody.id;
-  const password: string = requestBody.password;
-  const userRepository = new UserRepository(dynamoDbDocumentClient);
-
   try {
+    const environment = new Environment(event);
+
+    let requestBody;
+    if (environment.isLocal() === true) {
+      requestBody = event.body;
+
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    } else {
+      requestBody = JSON.parse(event.body);
+    }
+
+    const userId = requestBody.id;
+    const password = requestBody.password;
+    const userRepository = new UserRepository(dynamoDbDocumentClient);
+
     const userEntity = await userRepository.find(userId);
     const requestPassword = PasswordService.generatePasswordHash(password);
     if (userEntity.verifyPassword(requestPassword) === false) {
@@ -99,54 +98,53 @@ export const issueAuthorizationCode = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-
-  const environment = new Environment(event);
-
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
-
-  const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
-  if (Object.keys(validateResultObject).length !== 0) {
-    const responseBody = {
-      code: 422,
-      message: "Unprocessable Entity",
-      errors: validateResultObject
-    };
-
-    const response = {
-      statusCode: 422,
-      headers: {
-        "Access-Control-Allow-Origin" : "*"
-      },
-      body: JSON.stringify(responseBody)
-    };
-
-    callback(undefined, response);
-    return;
-  }
-
-  const clientId    = requestBody.client_id;
-  const state       = requestBody.state;
-  const redirectUri = requestBody.redirect_uri;
-  const subject     = requestBody.subject;
-  const scopes      = requestBody.scopes;
-
-  const requestBuilder = new AuthorizationRequest.RequestBuilder();
-  requestBuilder.clientId    = clientId;
-  requestBuilder.state       = state;
-  requestBuilder.redirectUri = redirectUri;
-  requestBuilder.subject     = subject;
-  requestBuilder.scopes      = scopes;
-
-  const authorizationRequest = requestBuilder.build();
-
-  const authorizationRepository = new AuthorizationRepository();
-
   try {
+    const environment = new Environment(event);
+
+    let requestBody;
+    if (environment.isLocal() === true) {
+      requestBody = event.body;
+    } else {
+      requestBody = JSON.parse(event.body);
+    }
+
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const responseBody = {
+        code: 422,
+        message: "Unprocessable Entity",
+        errors: validateResultObject
+      };
+
+      const response = {
+        statusCode: 422,
+        headers: {
+          "Access-Control-Allow-Origin" : "*"
+        },
+        body: JSON.stringify(responseBody)
+      };
+
+      callback(undefined, response);
+      return;
+    }
+
+    const clientId    = requestBody.client_id;
+    const state       = requestBody.state;
+    const redirectUri = requestBody.redirect_uri;
+    const subject     = requestBody.subject;
+    const scopes      = requestBody.scopes;
+
+    const requestBuilder = new AuthorizationRequest.RequestBuilder();
+    requestBuilder.clientId    = clientId;
+    requestBuilder.state       = state;
+    requestBuilder.redirectUri = redirectUri;
+    requestBuilder.subject     = subject;
+    requestBuilder.scopes      = scopes;
+
+    const authorizationRequest = requestBuilder.build();
+
+    const authorizationRepository = new AuthorizationRepository();
+
     const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(authorizationRequest);
 
     const responseBody = {
