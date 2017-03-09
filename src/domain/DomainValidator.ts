@@ -49,6 +49,6 @@ export class DomainValidator {
    * @returns {ValidatorResult}
    */
   doValidate(request: Object): ValidatorResult {
-    return this.validator.validate(request, this.scheme)
+    return this.validator.validate(request, this.scheme);
   }
 }

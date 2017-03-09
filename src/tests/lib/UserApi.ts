@@ -32,6 +32,7 @@ export namespace UserApi {
      * ユーザーを作成する
      *
      * @param request
+     * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
     static create(request: CreateUserRequest, accessToken: string): Promise<AxiosResponse> {
@@ -63,15 +64,26 @@ export namespace UserApi {
      * ユーザーを取得する
      *
      * @param userId
+     * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
-    static find(userId: string): Promise<AxiosResponse> {
+    static find(userId: string, accessToken: string): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+        const headers = {
+          "Content-type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        };
+
+        const requestConfig = {
+          headers: headers
+        };
+
         const baseUri = TestUtil.createGatewayUri();
         const requestUri = `${baseUri}/users/${userId}`;
 
         axios.get(
-          requestUri
+          requestUri,
+          requestConfig
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error: AxiosError) => {

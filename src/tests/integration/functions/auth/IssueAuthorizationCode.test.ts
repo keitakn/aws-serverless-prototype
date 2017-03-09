@@ -18,7 +18,7 @@ describe("IssueAuthorizationCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "prototype_users"]
+      scopes: ["openid", "email", "prototype_clients"]
     };
 
     return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
