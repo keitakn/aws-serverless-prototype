@@ -188,11 +188,10 @@ export const authorization = async (
 
     const accessTokenEntity = await introspect(accessToken);
 
-    await hasRequiredScopes(event.methodArn, accessTokenEntity);
-
     let effect = "";
     switch (accessTokenEntity.extractHttpStats()) {
       case "OK":
+        await hasRequiredScopes(event.methodArn, accessTokenEntity);
         effect = "Allow";
         if (accessTokenEntity.isAllowed === false) {
           effect = "Deny";
