@@ -43,7 +43,7 @@ export default class UserRepository implements UserRepositoryInterface {
         .promise()
         .then((dbResponse: DynamoDbResponse.User) => {
           if (Object.keys(dbResponse).length === 0) {
-            reject(new NotFoundError());
+            return reject(new NotFoundError());
           }
 
           const userEntity = new UserEntity(dbResponse.Item.id, dbResponse.Item.created_at);
@@ -55,11 +55,11 @@ export default class UserRepository implements UserRepositoryInterface {
           userEntity.birthdate = dbResponse.Item.birthdate;
           userEntity.updatedAt = dbResponse.Item.updated_at;
 
-          resolve(userEntity);
+          return resolve(userEntity);
         })
         .catch((error) => {
           Logger.critical(error);
-          reject(
+          return reject(
             new InternalServerError(error.message)
           );
         });
@@ -95,11 +95,11 @@ export default class UserRepository implements UserRepositoryInterface {
         .put(params)
         .promise()
         .then(() => {
-          resolve(userEntity);
+          return resolve(userEntity);
         })
         .catch((error) => {
           Logger.critical(error);
-          reject(
+          return reject(
             new InternalServerError(error.message)
           );
         });
