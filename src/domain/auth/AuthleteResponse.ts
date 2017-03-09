@@ -270,7 +270,7 @@ export namespace AuthleteResponse {
     /**
      * クライアントが持てる拡張情報
      */
-    extension: {
+    extension?: {
       // リクエスト可能なscope一覧
       requestableScopes: [string]
     };
