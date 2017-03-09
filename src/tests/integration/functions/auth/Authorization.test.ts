@@ -1,7 +1,5 @@
 import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi";
-import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
-import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
 import {ClientApi} from "../../../lib/ClientApi";
 import {ResourceApi} from "../../../lib/ResourceApi";
 
@@ -37,11 +35,8 @@ describe("Authorization", () => {
       scopes: ["prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((response) => {
-      const accessTokenRepository = new AccessTokenRepository();
-      return accessTokenRepository.fetch(response.accessToken);
-    }).then((accessTokenEntity: AccessTokenEntity) => {
-      return ClientApi.ApiClient.find(tokenRequest.clientId, accessTokenEntity.token);
+    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
+      return ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
@@ -60,11 +55,8 @@ describe("Authorization", () => {
       scopes: ["prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((response) => {
-      const accessTokenRepository = new AccessTokenRepository();
-      return accessTokenRepository.fetch(response.accessToken);
-    }).then((accessTokenEntity: AccessTokenEntity) => {
-      return ClientApi.ApiClient.find(tokenRequest.clientId, accessTokenEntity.token);
+    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
+      return ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
