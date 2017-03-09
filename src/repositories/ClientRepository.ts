@@ -53,8 +53,13 @@ export default class ClientRepository implements ClientRepositoryInterface {
       clientEntity.applicationType = clientResponse.applicationType;
       clientEntity.redirectUris    = clientResponse.redirectUris;
       clientEntity.grantTypes      = clientResponse.grantTypes;
-      clientEntity.scopes          = clientResponse.extension.requestableScopes;
       clientEntity.updatedAt       = clientResponse.modifiedAt;
+
+      if ("extension" in clientResponse) {
+        if (clientResponse.extension != null) {
+          clientEntity.scopes = clientResponse.extension.requestableScopes;
+        }
+      }
 
       return clientEntity;
     } catch (error) {
