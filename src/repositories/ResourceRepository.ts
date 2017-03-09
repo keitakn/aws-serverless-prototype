@@ -42,7 +42,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         .promise()
         .then((dbResponse: DynamoDbResponse.Resource) => {
           if (Object.keys(dbResponse).length === 0) {
-            reject(new NotFoundError());
+            return reject(new NotFoundError());
           }
 
           const resourceEntity = new ResourceEntity(dbResponse.Item.id, dbResponse.Item.created_at);
@@ -56,7 +56,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         })
         .catch((error: Error) => {
           Logger.critical(error);
-          reject(
+          return reject(
             new InternalServerError(error.message)
           );
         });
@@ -90,11 +90,11 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         .put(params)
         .promise()
         .then(() => {
-          resolve(resourceEntity);
+          return resolve(resourceEntity);
         })
         .catch((error: Error) => {
           Logger.critical(error);
-          reject(
+          return reject(
             new InternalServerError(error.message)
           );
         });
@@ -120,11 +120,11 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         .delete(params)
         .promise()
         .then(() => {
-          resolve();
+          return resolve();
         })
         .catch((error) => {
           Logger.critical(error);
-          reject(error);
+          return reject(error);
         });
     });
   }
