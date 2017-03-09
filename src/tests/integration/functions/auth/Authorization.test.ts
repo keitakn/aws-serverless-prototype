@@ -88,4 +88,17 @@ describe("Authorization", () => {
       assert.equal(response.data.client_id, tokenRequest.clientId);
     });
   });
+
+  /**
+   * 異常系テストケース
+   * 存在しないアクセストークンを指定
+   * Authlete Introspection APIからBAD_REQUESTが返ってくるパターン
+   */
+  it("testFailAccessTokenDoseNotExist", () => {
+    const clientId    = 1957483863470;
+    const accessToken = "s8knBIweyLgtsSSexBhwLwQgo-BhKKLOo_v3l0uGX_Y";
+    return ClientApi.ApiClient.find(clientId, accessToken).catch((error) => {
+      assert.equal(error.response.status, 403);
+    });
+  });
 });
