@@ -18,7 +18,7 @@ describe("Authorization", () => {
       http_method: "GET",
       resource_path: "clients",
       name: "Find Client.",
-      scopes: ["prototype_clients"]
+      scopes: ["prototype_clients", "prototype_clients_find"]
     };
 
     return ResourceApi.ApiClient.create(createRequest);
@@ -52,7 +52,7 @@ describe("Authorization", () => {
       grantType: AuthApi.GrantTypesEnum.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
-      scopes: ["prototype_clients"]
+      scopes: ["prototype_clients_find"]
     };
 
     return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
