@@ -10,7 +10,6 @@ interface AccessTokenEntityInterface {
   token: string;
   introspectionResponse: AuthleteResponse.IntrospectionResponse;
   tokenResponse: AuthleteResponse.TokenResponse;
-  isAllowed: boolean;
   extractHttpStats(): string;
   extractTokenAction(): string;
 }
@@ -38,12 +37,8 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    * constructor
    *
    * @param _token
-   * @param _isAllowed
    */
-  constructor(
-    private _token: string,
-    private _isAllowed: boolean = false
-  ) {
+  constructor(private _token: string) {
   }
 
   /**
@@ -79,20 +74,6 @@ export default class AccessTokenEntity implements AccessTokenEntityInterface {
    */
   set tokenResponse(value: AuthleteResponse.TokenResponse) {
     this._tokenResponse = value;
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  get isAllowed(): boolean {
-    return this._isAllowed;
-  }
-
-  /**
-   * @param value
-   */
-  set isAllowed(value: boolean) {
-    this._isAllowed = value;
   }
 
   /**

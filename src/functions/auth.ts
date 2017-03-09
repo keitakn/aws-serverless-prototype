@@ -191,9 +191,9 @@ export const authorization = async (
     let effect = "";
     switch (accessTokenEntity.extractHttpStats()) {
       case "OK":
-        await hasRequiredScopes(event.methodArn, accessTokenEntity);
+        const hasScope = await hasRequiredScope(event.methodArn, accessTokenEntity);
         effect = "Allow";
-        if (accessTokenEntity.isAllowed === false) {
+        if (hasScope === false) {
           effect = "Deny";
         }
         break;
@@ -266,16 +266,15 @@ const introspect = async (accessToken: string): Promise<AccessTokenEntity> => {
 
 /**
  * ARNからscopeを持っているか確認する
- * 結果はAccessTokenEntity.isAllowed にセットされる
  *
  * @param arn
  * @param accessTokenEntity
- * @returns {Promise<AccessTokenEntity>}
+ * @returns {Promise<boolean>}
  */
-const hasRequiredScopes = async (
+const hasRequiredScope = async (
   arn: string,
   accessTokenEntity: AccessTokenEntity
-): Promise<AccessTokenEntity> => {
+): Promise<boolean> => {
   try {
     const resource = extractMethodAndPath(arn);
     const resourceId = `${resource.httpMethod}/${resource.resourcePath}`;
@@ -283,20 +282,24 @@ const hasRequiredScopes = async (
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
     const resourceEntity = await resourceRepository.find(resourceId);
 
+    let hasScope = false;
     resourceEntity.scopes.map((scopeResourceHas) => {
+      if (hasScope === true) {
+        return;
+      }
+
       accessTokenEntity.introspectionResponse.scopes.map((scopeTokenHas) => {
         if (scopeResourceHas === scopeTokenHas) {
-          accessTokenEntity.isAllowed = true;
-          return accessTokenEntity;
+          hasScope = true;
+          return;
         }
       });
     });
 
-    return accessTokenEntity;
+    return hasScope;
   } catch (error) {
     if (error.name === "NotFoundError") {
-      accessTokenEntity.isAllowed = true;
-      return accessTokenEntity;
+      return true;
     } else {
       throw error;
     }
