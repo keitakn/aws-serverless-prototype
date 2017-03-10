@@ -85,38 +85,39 @@ export const create = async (event: LambdaExecutionEvent, context: lambda.Contex
  * @param context
  * @param callback
  */
-export const find = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const find = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
-  const userId = event.pathParameters.id;
-  const environment = new Environment(event);
-  if (environment.isLocal() === true) {
-    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-      environment.isLocal()
-    );
+  try {
+    const userId = event.pathParameters.id;
+    const environment = new Environment(event);
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+
+    const userRepository = new UserRepository(dynamoDbDocumentClient);
+
+    const userEntity = await userRepository.find(userId);
+
+    const responseBody = {
+      id: userEntity.id,
+      email: userEntity.email,
+      email_verified: userEntity.emailVerified,
+      name: userEntity.name,
+      gender: userEntity.gender,
+      birthdate: userEntity.birthdate,
+      created_at: userEntity.createdAt,
+      updated_at: userEntity.updatedAt
+    };
+
+    const successResponse = new SuccessResponse(responseBody);
+
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
   }
-
-  const userRepository = new UserRepository(dynamoDbDocumentClient);
-  userRepository.find(userId)
-    .then((userEntity) => {
-      const responseBody = {
-        id: userEntity.id,
-        email: userEntity.email,
-        email_verified: userEntity.emailVerified,
-        name: userEntity.name,
-        gender: userEntity.gender,
-        birthdate: userEntity.birthdate,
-        created_at: userEntity.createdAt,
-        updated_at: userEntity.updatedAt
-      };
-
-      const successResponse = new SuccessResponse(responseBody);
-
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
 };
