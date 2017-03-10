@@ -21,62 +21,61 @@ let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentC
  * @param context
  * @param callback
  */
-export const create = (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): void => {
+export const create = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
-  const environment = new Environment(event);
+  try {
+    const environment = new Environment(event);
 
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
+    let requestBody;
+    if (environment.isLocal() === true) {
+      requestBody = event.body;
+    } else {
+      requestBody = JSON.parse(event.body);
+    }
+
+    const nowDateTime = new Date().getTime();
+
+    const userEntity = new UserEntity(uuid.v4(), nowDateTime);
+    const passwordHash = PasswordService.generatePasswordHash(requestBody.password);
+
+    userEntity.email = requestBody.email;
+    userEntity.emailVerified = 0;
+    userEntity.passwordHash = passwordHash;
+    userEntity.name = requestBody.name;
+    userEntity.gender = requestBody.gender;
+    userEntity.birthdate = requestBody.birthdate;
+    userEntity.updatedAt = nowDateTime;
+
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+
+    const userRepository = new UserRepository(dynamoDbDocumentClient);
+    await userRepository.save(userEntity);
+
+    const responseBody = {
+      id: userEntity.id,
+      email: userEntity.email,
+      email_verified: userEntity.emailVerified,
+      password_hash: userEntity.passwordHash.passwordHash,
+      name: userEntity.name,
+      gender: userEntity.gender,
+      birthdate: userEntity.birthdate,
+      created_at: userEntity.createdAt,
+      updated_at: userEntity.updatedAt
+    };
+
+    const successResponse = new SuccessResponse(responseBody, 201);
+
+    callback(undefined, successResponse.getResponse());
+  } catch (error) {
+    const errorResponse = new ErrorResponse(error);
+    const response = errorResponse.getResponse();
+
+    callback(undefined, response);
   }
-
-  const nowDateTime = new Date().getTime();
-
-  const userEntity = new UserEntity(uuid.v4(), nowDateTime);
-  const passwordHash = PasswordService.generatePasswordHash(requestBody.password);
-
-  userEntity.email = requestBody.email;
-  userEntity.emailVerified = 0;
-  userEntity.passwordHash = passwordHash;
-  userEntity.name = requestBody.name;
-  userEntity.gender = requestBody.gender;
-  userEntity.birthdate = requestBody.birthdate;
-  userEntity.updatedAt = nowDateTime;
-
-  if (environment.isLocal() === true) {
-    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-      environment.isLocal()
-    );
-  }
-
-  const userRepository = new UserRepository(dynamoDbDocumentClient);
-  userRepository.save(userEntity)
-    .then((userEntity: UserEntity) => {
-
-      const responseBody = {
-        id: userEntity.id,
-        email: userEntity.email,
-        email_verified: userEntity.emailVerified,
-        password_hash: userEntity.passwordHash.passwordHash,
-        name: userEntity.name,
-        gender: userEntity.gender,
-        birthdate: userEntity.birthdate,
-        created_at: userEntity.createdAt,
-        updated_at: userEntity.updatedAt
-      };
-
-      const successResponse = new SuccessResponse(responseBody, 201);
-
-      callback(undefined, successResponse.getResponse());
-    })
-    .catch((error: Error) => {
-      const errorResponse = new ErrorResponse(error);
-      const response = errorResponse.getResponse();
-
-      callback(undefined, response);
-    });
 };
 
 /**
