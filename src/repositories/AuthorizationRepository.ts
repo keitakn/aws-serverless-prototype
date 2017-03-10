@@ -52,7 +52,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
 
       if (response.status !== 200) {
         Logger.critical(response);
-        throw new InternalServerError();
+        return Promise.reject(
+          new InternalServerError()
+        );
       }
 
       const authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse = response.data;
@@ -67,7 +69,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
           );
         default:
           Logger.critical(authorizationIssueResponse);
-          throw new InternalServerError(authorizationIssueResponse.resultMessage);
+          return Promise.reject(
+            new InternalServerError(authorizationIssueResponse.resultMessage)
+          );
       }
     } catch (error) {
       Logger.critical(error);
@@ -113,7 +117,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
       const response: AxiosResponse = await axios.post("https://api.authlete.com/api/auth/authorization", requestData, requestConfig);
       if (response.status !== 200) {
         Logger.critical(response);
-        throw new InternalServerError();
+        return Promise.reject(
+          new InternalServerError()
+        );
       }
 
       const authorizationResponse: AuthleteResponse.Authorization = response.data;
@@ -127,10 +133,14 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
           );
         case "INTERNAL_SERVER_ERROR":
           Logger.critical(authorizationResponse);
-          throw new InternalServerError(authorizationResponse.resultMessage);
+          return Promise.reject(
+            new InternalServerError(authorizationResponse.resultMessage)
+          );
         default:
           Logger.critical(authorizationResponse);
-          throw new InternalServerError(authorizationResponse.resultMessage);
+          return Promise.reject(
+            new InternalServerError(authorizationResponse.resultMessage)
+          );
       }
     } catch (error) {
       Logger.critical(error);

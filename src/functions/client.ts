@@ -20,10 +20,12 @@ export const find = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-  const clientId = parseInt(event.pathParameters.id);
-  const clientRepository = new ClientRepository();
+  try {
+    const clientId = parseInt(event.pathParameters.id);
+    const clientRepository = new ClientRepository();
 
-  await clientRepository.find(clientId).then((clientEntity) => {
+    const clientEntity = await clientRepository.find(clientId);
+
     const responseBody = {
       client_id: clientEntity.id,
       client_secret: clientEntity.secret,
@@ -40,11 +42,11 @@ export const find = async (
     const successResponse = new SuccessResponse(responseBody);
 
     callback(undefined, successResponse.getResponse());
-  }).catch((error: Error) => {
+  } catch (error) {
     const errorResponse = new ErrorResponse(error);
     const response = errorResponse.getResponse();
 
     callback(undefined, response);
-  });
+  }
 };
 

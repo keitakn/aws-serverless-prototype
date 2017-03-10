@@ -25,39 +25,40 @@ export const create = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
+  try {
+    const environment = new Environment(event);
 
-  const environment = new Environment(event);
+    let requestBody;
+    if (environment.isLocal() === true) {
+      requestBody = event.body;
+    } else {
+      requestBody = JSON.parse(event.body);
+    }
 
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
+    const httpMethod   = requestBody.http_method;
+    const resourcePath = requestBody.resource_path;
+    const name         = requestBody.name;
+    const scopes       = requestBody.scopes;
 
-  const httpMethod   = requestBody.http_method;
-  const resourcePath = requestBody.resource_path;
-  const name         = requestBody.name;
-  const scopes       = requestBody.scopes;
+    const nowDateTime = new Date().getTime();
+    const resourceId  = `${httpMethod}/${resourcePath}`;
 
-  const nowDateTime = new Date().getTime();
-  const resourceId  = `${httpMethod}/${resourcePath}`;
+    const resourceEntity = new ResourceEntity(resourceId, nowDateTime);
+    resourceEntity.httpMethod = httpMethod;
+    resourceEntity.resourcePath = resourcePath;
+    resourceEntity.name = name;
+    resourceEntity.scopes = scopes;
+    resourceEntity.updatedAt = nowDateTime;
 
-  const resourceEntity = new ResourceEntity(resourceId, nowDateTime);
-  resourceEntity.httpMethod = httpMethod;
-  resourceEntity.resourcePath = resourcePath;
-  resourceEntity.name = name;
-  resourceEntity.scopes = scopes;
-  resourceEntity.updatedAt = nowDateTime;
+    if (environment.isLocal() === true) {
+      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
+        environment.isLocal()
+      );
+    }
+    const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
 
-  if (environment.isLocal() === true) {
-    dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-      environment.isLocal()
-    );
-  }
-  const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
+    await resourceRepository.save(resourceEntity);
 
-  await resourceRepository.save(resourceEntity).then((resourceEntity: ResourceEntity) => {
     const responseBody = {
       id: resourceEntity.id,
       http_method: resourceEntity.httpMethod,
@@ -71,16 +72,16 @@ export const create = async (
     const successResponse = new SuccessResponse(responseBody, 201);
 
     callback(undefined, successResponse.getResponse());
-  }).catch((error: Error) => {
+  } catch (error) {
     const errorResponse = new ErrorResponse(error);
     const response = errorResponse.getResponse();
 
     callback(undefined, response);
-  });
+  }
 };
 
 /**
- * リソースの取得をする
+ * リソースを取得する
  *
  * @param event
  * @param context
