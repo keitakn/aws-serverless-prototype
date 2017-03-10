@@ -21,31 +21,33 @@ export const issueTokenFromCode = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
+  try {
+    const environment = new Environment(event);
 
-  const environment = new Environment(event);
+    let requestBody;
+    if (environment.isLocal() === true) {
+      requestBody = event.body;
+    } else {
+      requestBody = JSON.parse(event.body);
+    }
 
-  let requestBody;
-  if (environment.isLocal() === true) {
-    requestBody = event.body;
-  } else {
-    requestBody = JSON.parse(event.body);
-  }
+    const authorizationCode = requestBody.code;
+    const redirectUri       = requestBody.redirect_uri;
 
-  const authorizationCode = requestBody.code;
-  const redirectUri       = requestBody.redirect_uri;
+    const accessTokenRepository = new AccessTokenRepository();
 
-  const accessTokenRepository = new AccessTokenRepository();
-  await accessTokenRepository.issue(authorizationCode, redirectUri).then((accessTokenEntity) => {
+    const accessTokenEntity = await accessTokenRepository.issue(authorizationCode, redirectUri);
+
     const successResponse = new SuccessResponse(
       accessTokenEntity.tokenResponse.responseContent,
       201
     );
 
     callback(undefined, successResponse.getResponse(false));
-  }).catch((error: Error) => {
+  } catch (error) {
     const errorResponse = new ErrorResponse(error);
     const response = errorResponse.getResponse();
 
     callback(undefined, response);
-  });
+  }
 };
