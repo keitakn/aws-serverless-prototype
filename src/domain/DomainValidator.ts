@@ -1,6 +1,5 @@
 import {Validator} from "jsonschema";
 import {Schema} from "jsonschema";
-import {ValidatorResult} from "jsonschema";
 
 /**
  * DomainValidator
@@ -44,11 +43,30 @@ export class DomainValidator {
 
   /**
    * Validateを実行する
+   * リクエストパラメータに問題がない場合は空のObjectを返す
+   * リクエストパラメータに問題がある場合はエラーObjectを返す
    *
    * @param request
-   * @returns {ValidatorResult}
+   * @returns {Object}
    */
-  doValidate(request: Object): ValidatorResult {
-    return this.validator.validate(request, this.scheme);
+  doValidate(request: Object): Object {
+    let validateResultObject: any = {};
+    const validatorResult = this.validator.validate(request, this.scheme);
+    if (validatorResult.errors.length === 0) {
+      return validateResultObject;
+    }
+
+    validatorResult.errors.map((validationError) => {
+      let key = "";
+      if (validationError.property === "instance") {
+        key = validationError.argument;
+      } else {
+        key = validationError.property.replace("instance.", "");
+      }
+
+      validateResultObject[key] = validationError.message;
+    });
+
+    return validateResultObject;
   }
 }

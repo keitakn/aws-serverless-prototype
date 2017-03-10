@@ -58,26 +58,8 @@ export class AuthValidationService {
       additionalProperties: false
     };
 
-    // TODO これらの処理を毎回書くのは辛いので共通化する
     const domainValidator = new DomainValidator(scheme);
 
-    let validateResultObject: any = {};
-    const validatorResult = domainValidator.doValidate(request);
-    if (validatorResult.errors.length === 0) {
-      return validateResultObject;
-    }
-
-    validatorResult.errors.map((validationError) => {
-      let key = "";
-      if (validationError.property === "instance") {
-        key = validationError.argument;
-      } else {
-        key = validationError.property.replace("instance.", "");
-      }
-
-      validateResultObject[key] = validationError.message;
-    });
-
-    return validateResultObject;
+    return domainValidator.doValidate(request);
   }
 }
