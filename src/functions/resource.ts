@@ -81,7 +81,7 @@ export const create = async (
 };
 
 /**
- * リソースの取得をする
+ * リソースを取得する
  *
  * @param event
  * @param context
