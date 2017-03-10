@@ -21,7 +21,11 @@ let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentC
  * @param context
  * @param callback
  */
-export const create = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
+export const create = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
     const environment = new Environment(event);
@@ -85,7 +89,11 @@ export const create = async (event: LambdaExecutionEvent, context: lambda.Contex
  * @param context
  * @param callback
  */
-export const find = async (event: LambdaExecutionEvent, context: lambda.Context, callback: lambda.Callback): Promise<void> => {
+export const find = async (
+  event: LambdaExecutionEvent,
+  context: lambda.Context,
+  callback: lambda.Callback
+): Promise<void> => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
     const userId = event.pathParameters.id;
