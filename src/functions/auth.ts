@@ -35,14 +35,14 @@ sourceMapSupport.install();
  * @link https://www.authlete.com/documents/definitive_guide/authentication_callback
  */
 export const authentication = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
+    const environment = new Environment<lambda.APIGatewayEvent>(event);
 
-    let requestBody;
+    let requestBody: any;
     if (environment.isLocal() === true) {
       requestBody = event.body;
 
@@ -50,7 +50,8 @@ export const authentication = async (
         environment.isLocal()
       );
     } else {
-      requestBody = JSON.parse(event.body);
+      const eventBody: any = event.body;
+      requestBody = JSON.parse(eventBody);
     }
 
     const userId = requestBody.id;
@@ -95,7 +96,7 @@ export const authentication = async (
  * @returns {Promise<void>}
  */
 export const issueAuthorizationCode = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
@@ -106,13 +107,15 @@ export const issueAuthorizationCode = async (
     if (environment.isLocal() === true) {
       requestBody = event.body;
     } else {
-      requestBody = JSON.parse(event.body);
+      const eventBody: any = event.body;
+      requestBody = JSON.parse(eventBody);
     }
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
+      return;
     }
 
     const clientId    = requestBody.client_id;
