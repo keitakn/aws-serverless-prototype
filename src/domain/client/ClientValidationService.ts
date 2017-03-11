@@ -1,10 +1,10 @@
 import {DomainValidator} from "../DomainValidator";
 
 /**
- * AuthValidationService
+ * ClientValidationService
  *
  * @author keita-nishimoto
- * @since 2017-03-08
+ * @since 2017-03-13
  */
 export class ClientValidationService {
 
@@ -14,7 +14,7 @@ export class ClientValidationService {
    * @param request
    * @returns {Object}
    */
-  static findValidate(request: any): Object {
+  static findValidate(request: Object): Object {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
