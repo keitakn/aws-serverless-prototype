@@ -1,4 +1,4 @@
-import {LambdaExecutionEvent} from "../../types";
+import {LambdaEvent} from "../types/aws/types";
 
 /**
  * Environment
@@ -6,18 +6,18 @@ import {LambdaExecutionEvent} from "../../types";
  * @author keita-nishimoto
  * @since 2017-02-01
  */
-export default class Environment {
+export default class Environment<T extends LambdaEvent> {
 
   /**
    * constructor
    */
-  constructor(private _event: LambdaExecutionEvent) {
+  constructor(private _event: T) {
   }
 
   /**
    * @returns {LambdaExecutionEvent}
    */
-  get event(): LambdaExecutionEvent {
+  get event(): T {
     return this._event;
   }
 
