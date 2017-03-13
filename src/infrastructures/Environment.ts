@@ -15,7 +15,7 @@ export default class Environment<T extends LambdaEvent> {
   }
 
   /**
-   * @returns {LambdaExecutionEvent}
+   * @returns {T}
    */
   get event(): T {
     return this._event;

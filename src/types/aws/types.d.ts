@@ -7,3 +7,15 @@
 export interface LambdaEvent {
   headers: {[name: string]: string};
 }
+
+/**
+ * Amazon API Gateway Custom Authorizers.eventのインターフェース
+ *
+ * @author keita-nishimoto
+ * @since 2016-03-13
+ */
+export interface LambdaApiGatewayCustomAuthorizerEvent {
+  type: string;
+  authorizationToken: string;
+  methodArn: string;
+}
