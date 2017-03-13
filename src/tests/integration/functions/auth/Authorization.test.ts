@@ -14,7 +14,7 @@ describe("Authorization", () => {
    * 事後処理でテスト用に削除したリソースを再登録する
    */
   afterEach(() => {
-    const createRequest: ResourceApi.CreateRequest = {
+    const createRequest: ResourceRequest.CreateRequest = {
       http_method: "GET",
       resource_path: "clients",
       name: "Find Client.",
