@@ -8,16 +8,6 @@ import {TestUtil} from "./TestUtil";
 export namespace ResourceApi {
 
   /**
-   * リソース作成のリクエスト
-   */
-  export interface CreateRequest {
-    http_method: string;
-    resource_path: string;
-    name: string;
-    scopes: [string];
-  }
-
-  /**
    * ApiClient
    *
    * @author keita-nishimoto
