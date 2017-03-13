@@ -16,6 +16,7 @@ module.exports = {
   integrationAuthTests: resolveApp('src/tests/integration/functions/auth'),
   integrationTokenTests: resolveApp('src/tests/integration/functions/token'),
   integrationResourceTests: resolveApp('src/tests/integration/functions/resource'),
+  integrationUserTests: resolveApp('src/tests/integration/functions/user'),
   unitAccessTokenRepositoryTest: resolveApp('src/tests/unit/repositories/AccessTokenRepository'),
   unitAuthValidationServiceTest: resolveApp('src/tests/unit/domain/auth/AuthValidationService'),
   appPackageJson: resolveApp('package.json'),
