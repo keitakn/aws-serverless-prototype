@@ -10,7 +10,7 @@ describe("DestroyResource", () => {
    * 事前にリソース登録を行っておく
    */
   beforeEach(() => {
-    const request: ResourceApi.CreateRequest = {
+    const request: ResourceRequest.CreateRequest = {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",

@@ -8,16 +8,6 @@ import {TestUtil} from "./TestUtil";
 export namespace ResourceApi {
 
   /**
-   * リソース作成のリクエスト
-   */
-  export interface CreateRequest {
-    http_method: string;
-    resource_path: string;
-    name: string;
-    scopes: [string];
-  }
-
-  /**
    * ApiClient
    *
    * @author keita-nishimoto
@@ -30,7 +20,7 @@ export namespace ResourceApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: CreateRequest): Promise<AxiosResponse> {
+    static create(request: ResourceRequest.CreateRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
