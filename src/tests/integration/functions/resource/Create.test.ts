@@ -7,7 +7,7 @@ import {ResourceApi} from "../../../lib/ResourceApi";
 describe("CreateResource", () => {
 
   /**
-   * 事前にリソース登録を行っておく
+   * 事前にテスト用のリソースを削除しておく
    */
   beforeEach(() => {
     const resourceId = "POST_tests";
