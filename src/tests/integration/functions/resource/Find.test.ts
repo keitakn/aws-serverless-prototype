@@ -23,7 +23,7 @@ describe("FindResource", () => {
   /**
    * 正常系のテストケース
    */
-  it("testSuccessDestroy", () => {
+  it("testSuccess", () => {
     const resourceId = "POST_tests";
 
     return (async () => {
@@ -43,7 +43,7 @@ describe("FindResource", () => {
    *
    * リソースが存在しない
    */
-  it("testSuccessDoseNotExistResourceDestroy", () => {
+  it("testSuccessDoseNotExistResource", () => {
     const resourceId = "GET_no";
 
     return ResourceApi.ApiClient.find(resourceId).catch((error) => {
