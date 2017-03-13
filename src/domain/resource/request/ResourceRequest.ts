@@ -7,6 +7,16 @@
  */
 namespace ResourceRequest {
   /**
+   * リソース作成のリクエスト
+   */
+  export interface CreateRequest {
+    http_method: string;
+    resource_path: string;
+    name: string;
+    scopes: [string];
+  }
+
+  /**
    * リソース取得のリクエスト
    */
   export interface FindRequest {

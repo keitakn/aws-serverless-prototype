@@ -30,7 +30,7 @@ export namespace ResourceApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: CreateRequest): Promise<AxiosResponse> {
+    static create(request: ResourceRequest.CreateRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
