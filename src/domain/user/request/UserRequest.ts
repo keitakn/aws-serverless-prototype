@@ -7,6 +7,17 @@
  */
 namespace UserRequest {
   /**
+   * ユーザー作成のリクエスト
+   */
+  export interface CreateRequest {
+    email: string;
+    password: string;
+    name: string;
+    gender: string;
+    birthdate: string;
+  }
+
+  /**
    * ユーザー取得のリクエスト
    */
   export interface FindRequest {

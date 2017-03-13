@@ -9,6 +9,7 @@ const testDirs = [
   paths.integrationAuthTests,
   paths.integrationTokenTests,
   paths.integrationResourceTests,
+  paths.integrationUserTests,
   paths.unitAccessTokenRepositoryTest,
   paths.unitAuthValidationServiceTest
 ];

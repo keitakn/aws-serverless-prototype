@@ -9,19 +9,6 @@ import {TestUtil} from "./TestUtil";
 export namespace UserApi {
 
   /**
-   * ユーザー作成のリクエスト
-   *
-   * @link https://www.authlete.com/documents/apis/reference#auth_token_create
-   */
-  export interface CreateUserRequest {
-    email: string;
-    password: string;
-    name: string;
-    gender: string;
-    birthdate: string;
-  }
-
-  /**
    * ApiClient
    *
    * @author keita-nishimoto
@@ -35,7 +22,7 @@ export namespace UserApi {
      * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: CreateUserRequest, accessToken: string): Promise<AxiosResponse> {
+    static create(request: UserRequest.CreateRequest, accessToken: string): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json",
