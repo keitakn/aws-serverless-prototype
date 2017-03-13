@@ -21,7 +21,7 @@ describe("CreateResource", () => {
   /**
    * 正常系のテストケース
    */
-  it("testSuccessDestroy", () => {
+  it("testSuccessCreate", () => {
     const createRequest: ResourceRequest.CreateRequest = {
       http_method: "POST",
       resource_path: "tests",
