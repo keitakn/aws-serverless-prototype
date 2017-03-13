@@ -1,6 +1,5 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import {LambdaExecutionEvent} from "../../types";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceRepository} from "../repositories/ResourceRepository";
@@ -21,7 +20,7 @@ sourceMapSupport.install();
  * @returns {Promise<void>}
  */
 export const create = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
@@ -32,7 +31,8 @@ export const create = async (
     if (environment.isLocal() === true) {
       requestBody = event.body;
     } else {
-      requestBody = JSON.parse(event.body);
+      const eventBody: any = event.body;
+      requestBody = JSON.parse(eventBody);
     }
 
     const httpMethod   = requestBody.http_method;
@@ -89,13 +89,15 @@ export const create = async (
  * @returns {Promise<void>}
  */
 export const find = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
-    const resourceId = event.pathParameters.id.replace("_", "/");
+
+    const request = extractRequest(event);
+    const resourceId = request.resource_id;
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
     if (environment.isLocal() === true) {
@@ -135,13 +137,15 @@ export const find = async (
  * @returns {Promise<void>}
  */
 export const destroy = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const resourceId = event.pathParameters.id.replace("_", "/");
     const environment = new Environment(event);
+    const request = extractRequest(event);
+    const resourceId = request.resource_id;
+
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -160,4 +164,22 @@ export const destroy = async (
 
     callback(undefined, response);
   }
+};
+
+/**
+ * APIGatewayEventからリクエストパラメータを取り出す
+ *
+ * @param event
+ * @returns {any}
+ */
+const extractRequest = (event: lambda.APIGatewayEvent): ResourceRequest.FindRequest => {
+  if (event.pathParameters != null) {
+    return {
+      resource_id: event.pathParameters.id.replace("_", "/")
+    };
+  }
+
+  return {
+    resource_id: ""
+  };
 };
