@@ -1,6 +1,5 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import {LambdaExecutionEvent} from "../../types";
 import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
@@ -17,7 +16,7 @@ sourceMapSupport.install();
  * @returns {Promise<void>}
  */
 export const issueTokenFromCode = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
@@ -28,7 +27,8 @@ export const issueTokenFromCode = async (
     if (environment.isLocal() === true) {
       requestBody = event.body;
     } else {
-      requestBody = JSON.parse(event.body);
+      const eventBody: any = event.body;
+      requestBody = JSON.parse(eventBody);
     }
 
     const authorizationCode = requestBody.code;

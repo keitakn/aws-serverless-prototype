@@ -1,7 +1,6 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import * as uuid from "uuid";
-import {LambdaExecutionEvent} from "../../types";
 import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
@@ -22,7 +21,7 @@ let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentC
  * @param callback
  */
 export const create = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
@@ -34,7 +33,8 @@ export const create = async (
     if (environment.isLocal() === true) {
       requestBody = event.body;
     } else {
-      requestBody = JSON.parse(event.body);
+      const eventBody: any = event.body;
+      requestBody = JSON.parse(eventBody);
     }
 
     const nowDateTime = new Date().getTime();
@@ -90,13 +90,14 @@ export const create = async (
  * @param callback
  */
 export const find = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
-    const userId = event.pathParameters.id;
+    const request = extractRequest(event);
+    const userId = request.subject;
     const environment = new Environment(event);
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -128,4 +129,22 @@ export const find = async (
 
     callback(undefined, response);
   }
+};
+
+/**
+ * APIGatewayEventからリクエストパラメータを取り出す
+ *
+ * @param event
+ * @returns {{client_id: number}}
+ */
+const extractRequest = (event: lambda.APIGatewayEvent): UserRequest.FindRequest => {
+  if (event.pathParameters != null) {
+    return {
+      subject: event.pathParameters.id
+    };
+  }
+
+  return {
+    subject: ""
+  };
 };

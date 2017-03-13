@@ -1,9 +1,11 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import {LambdaExecutionEvent} from "../../types";
 import ErrorResponse from "../domain/ErrorResponse";
 import ClientRepository from "../repositories/ClientRepository";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {ClientValidationService} from "../domain/client/ClientValidationService";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {ClientRequest} from "../domain/client/request/ClientRequest";
 
 sourceMapSupport.install();
 
@@ -16,12 +18,21 @@ sourceMapSupport.install();
  * @returns {Promise<void>}
  */
 export const find = async (
-  event: LambdaExecutionEvent,
+  event: lambda.APIGatewayEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const clientId = parseInt(event.pathParameters.id);
+    const request = extractRequest(event);
+
+    const validateResultObject = ClientValidationService.findValidate(request);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
+    }
+
+    const clientId = request.client_id;
     const clientRepository = new ClientRepository();
 
     const clientEntity = await clientRepository.find(clientId);
@@ -48,5 +59,23 @@ export const find = async (
 
     callback(undefined, response);
   }
+};
+
+/**
+ * APIGatewayEventからリクエストパラメータを取り出す
+ *
+ * @param event
+ * @returns {{client_id: number}}
+ */
+const extractRequest = (event: lambda.APIGatewayEvent): ClientRequest.FindRequest => {
+  if (event.pathParameters != null) {
+    return {
+      client_id: parseInt(event.pathParameters.id)
+    };
+  }
+
+  return {
+    client_id: 0
+  };
 };
 
