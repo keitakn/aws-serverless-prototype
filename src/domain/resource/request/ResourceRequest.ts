@@ -1,5 +1,5 @@
 /**
- * ClientRequest
+ * ResourceRequest
  * リソース系APIのリクエスト型定義
  *
  * @author keita-nishimoto
