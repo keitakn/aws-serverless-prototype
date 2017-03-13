@@ -1,6 +1,6 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import {LambdaExecutionEvent} from "../../types";
+import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
@@ -162,7 +162,7 @@ export const issueAuthorizationCode = async (
  * @returns {Promise<void>}
  */
 export const authorization = async (
-  event: LambdaExecutionEvent,
+  event: LambdaApiGatewayCustomAuthorizerEvent,
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
