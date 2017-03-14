@@ -9,6 +9,41 @@ import {DomainValidator} from "../DomainValidator";
 export class AuthValidationService {
 
   /**
+   * auth.authenticationのバリデーション
+   *
+   * @param request
+   * @returns {Object}
+   */
+  static authenticationValidate(request: Object): Object {
+    // TODO schemeはどこか別ファイル等に定義してまとめる
+    const scheme = {
+      type: "object",
+      required: [
+        "subject",
+        "password"
+      ],
+      properties: {
+        subject: {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        password: {
+          "type": "string",
+          "pattern": "^([a-zA-Z0-9])+$",
+          "minLength": 8,
+          "maxLength": 16
+        }
+      },
+      additionalProperties: false
+    };
+
+    const domainValidator = new DomainValidator(scheme);
+
+    return domainValidator.doValidate(request);
+  }
+
+  /**
    * auth.issueAuthorizationCodeのバリデーション
    *
    * @param request

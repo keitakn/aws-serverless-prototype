@@ -56,7 +56,7 @@ describe("Authentication", () => {
     const password = "password1234";
 
     const request = {
-      id: userId,
+      subject: userId,
       password: password
     };
 
@@ -79,7 +79,7 @@ describe("Authentication", () => {
     const password   = "password1234";
 
     const request = {
-      id: failUserId,
+      subject: failUserId,
       password: password
     };
 
@@ -97,13 +97,39 @@ describe("Authentication", () => {
     const password = "FailPassword";
 
     const request = {
-      id: userId,
+      subject: userId,
       password: password
     };
 
     return AuthApi.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 401);
       assert.equal(error.response.data.code, 401);
+    });
+  });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const request: AuthApi.AuthenticationRequest = {
+      subject: "98f46ad0-09e2-4324-910c-011df62e73071",
+      password: "pass@wd"
+    };
+
+    return AuthApi.ApiClient.authentication(request).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "subject"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "password"
+      );
     });
   });
 });

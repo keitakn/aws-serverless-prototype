@@ -13,7 +13,7 @@ export namespace AuthApi {
    * 認証のリクエスト
    */
   export interface AuthenticationRequest {
-    id: string;
+    subject: string;
     password: string;
   }
 
