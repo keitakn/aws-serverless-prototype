@@ -14,7 +14,7 @@ describe("FindResource", () => {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",
-      scopes: ["test"]
+      scopes: ["tests"]
     };
 
     return ResourceApi.ApiClient.create(request).then(() => {});
@@ -24,7 +24,7 @@ describe("FindResource", () => {
    * 正常系のテストケース
    */
   it("testSuccess", () => {
-    const resourceId = "POST_tests";
+    const resourceId = "POST.tests";
 
     return (async () => {
       const resourceFindResponse = await ResourceApi.ApiClient.find(resourceId);
@@ -35,7 +35,9 @@ describe("FindResource", () => {
       assert.equal(resourceFindResponse.data.resource_path, "tests");
       assert.equal(resourceFindResponse.data.name, "テストに利用するリソース");
       assert.deepEqual(resourceFindResponse.data.scopes, ["test"]);
-    })();
+    })().catch((error) => {
+      console.log(error.response);
+    });
   });
 
   /**
@@ -44,11 +46,29 @@ describe("FindResource", () => {
    * リソースが存在しない
    */
   it("testSuccessDoseNotExistResource", () => {
-    const resourceId = "GET_no";
+    const resourceId = "GET.no";
 
     return ResourceApi.ApiClient.find(resourceId).catch((error) => {
       assert.equal(error.response.status, 404);
       assert.equal(error.response.data.code, 404);
+    });
+  });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const resourceId = "TRACE-users";
+
+    return ResourceApi.ApiClient.find(resourceId).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "resource_id"
+      );
     });
   });
 });
