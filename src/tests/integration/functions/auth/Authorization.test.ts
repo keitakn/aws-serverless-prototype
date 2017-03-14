@@ -80,7 +80,8 @@ describe("Authorization", () => {
       const tokenCreateResponse = await AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest);
 
       // DBからリソースを削除する
-      await ResourceApi.ApiClient.destroy("GET_clients");
+      const destroyResourceResponse = await ResourceApi.ApiClient.destroy("GET.clients");
+      assert.equal(destroyResourceResponse.status, 204);
 
       return await ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     })().then((response) => {

@@ -34,10 +34,8 @@ describe("FindResource", () => {
       assert.equal(resourceFindResponse.data.http_method, "POST");
       assert.equal(resourceFindResponse.data.resource_path, "tests");
       assert.equal(resourceFindResponse.data.name, "テストに利用するリソース");
-      assert.deepEqual(resourceFindResponse.data.scopes, ["test"]);
-    })().catch((error) => {
-      console.log(error.response);
-    });
+      assert.deepEqual(resourceFindResponse.data.scopes, ["tests"]);
+    })();
   });
 
   /**

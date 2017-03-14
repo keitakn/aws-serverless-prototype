@@ -10,7 +10,7 @@ describe("CreateResource", () => {
    * 事前にテスト用のリソースを削除しておく
    */
   beforeEach(() => {
-    const resourceId = "POST_tests";
+    const resourceId = "POST.tests";
 
     return (async () => {
       const destroyResponse = await ResourceApi.ApiClient.destroy(resourceId);
@@ -39,7 +39,7 @@ describe("CreateResource", () => {
       assert.equal(createResourceResponse.data.name, createRequest.name);
       assert.deepEqual(createResourceResponse.data.scopes, createRequest.scopes);
 
-      const findResourceResponse = await ResourceApi.ApiClient.find("POST_tests");
+      const findResourceResponse = await ResourceApi.ApiClient.find("POST.tests");
       assert.equal(findResourceResponse.status, 200);
     })();
   });
