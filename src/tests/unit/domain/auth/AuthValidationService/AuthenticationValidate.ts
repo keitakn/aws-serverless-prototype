@@ -47,9 +47,16 @@ describe("AuthenticationValidate", () => {
         password: "pass123",
       },
       {
+        // 許可されている最大値より大きい値を指定
+        subject: "98f46ad0-09e2-4324-910c-011df62e73032",
+        // 許可されている最大値より大きい値を指定
+        password: "pass1234567890123",
+      },
+      {
         // nullを指定
         subject: null,
-        password: null
+        // 禁止されている文字列を含む
+        password: "password@;"
       },
       {
         // 空文字を指定
@@ -103,7 +110,7 @@ describe("AuthenticationValidate", () => {
   it("testValidationNotContainsError", () => {
     const request = {
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      password: "passwordAB1234",
+      password: "passwordAB123456",
     };
 
     const validateResultObject = AuthValidationService.authenticationValidate(request);
