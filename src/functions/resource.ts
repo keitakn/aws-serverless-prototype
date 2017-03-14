@@ -106,7 +106,14 @@ export const find = async (
     const environment = new Environment(event);
 
     const request = extractRequest(event);
-    const resourceId = request.resource_id;
+    const validateResultObject = ResourceValidationService.findValidate(request);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
+    }
+
+    const resourceId = request.resource_id.replace(".", "/");
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
     if (environment.isLocal() === true) {
@@ -184,7 +191,7 @@ export const destroy = async (
 const extractRequest = (event: lambda.APIGatewayEvent): ResourceRequest.FindRequest => {
   if (event.pathParameters != null) {
     return {
-      resource_id: event.pathParameters.id.replace("_", "/")
+      resource_id: event.pathParameters.id
     };
   }
 
