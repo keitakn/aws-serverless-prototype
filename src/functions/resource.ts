@@ -159,8 +159,16 @@ export const destroy = async (
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
+
     const request = extractRequest(event);
-    const resourceId = request.resource_id;
+    const validateResultObject = ResourceValidationService.destroyValidate(request);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
+    }
+
+    const resourceId = request.resource_id.replace(".", "/");
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
     if (environment.isLocal() === true) {
