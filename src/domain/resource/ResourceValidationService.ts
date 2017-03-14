@@ -85,4 +85,14 @@ export class ResourceValidationService {
 
     return domainValidator.doValidate(request);
   }
+
+  /**
+   * resource.destroyのバリデーション
+   *
+   * @param request
+   * @returns {Object}
+   */
+  static destroyValidate(request: Object):Object {
+    return ResourceValidationService.findValidate(request);
+  }
 }
