@@ -55,4 +55,22 @@ describe("DestroyResource", () => {
       assert.equal(response.status, 204);
     });
   });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const resourceId = "TRACE-users";
+
+    return ResourceApi.ApiClient.destroy(resourceId).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "resource_id"
+      );
+    });
+  });
 });
