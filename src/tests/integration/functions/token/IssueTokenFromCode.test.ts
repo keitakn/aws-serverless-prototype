@@ -79,4 +79,30 @@ describe("IssueTokenFromCode", () => {
       assert.equal(error.response.data.code, 400);
     });
   });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const tokenRequest = {
+      code: "vPHtD8zkhYOPUwcQmwt4WGEHs8qv5XSvyMYbOWFq4kU2",
+      redirect_uri: `http`
+    };
+
+    return AuthApi.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "code"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "redirect_uri"
+      );
+    });
+  });
 });

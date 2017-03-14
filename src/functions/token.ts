@@ -4,6 +4,8 @@ import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {TokenValidationService} from "../domain/token/TokenValidationService";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 
 sourceMapSupport.install();
 
@@ -29,6 +31,13 @@ export const issueTokenFromCode = async (
     } else {
       const eventBody: any = event.body;
       requestBody = JSON.parse(eventBody);
+    }
+
+    const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(requestBody);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
     }
 
     const authorizationCode = requestBody.code;
