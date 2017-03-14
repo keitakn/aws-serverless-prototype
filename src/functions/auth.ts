@@ -54,7 +54,14 @@ export const authentication = async (
       requestBody = JSON.parse(eventBody);
     }
 
-    const userId = requestBody.id;
+    const validateResultObject = AuthValidationService.authenticationValidate(requestBody);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
+    }
+
+    const userId = requestBody.subject;
     const password = requestBody.password;
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
