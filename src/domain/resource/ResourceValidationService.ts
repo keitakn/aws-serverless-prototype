@@ -56,4 +56,33 @@ export class ResourceValidationService {
 
     return domainValidator.doValidate(request);
   }
+
+  /**
+   * resource.findのバリデーション
+   *
+   * @param request
+   * @returns {Object}
+   */
+  static findValidate(request: Object): Object {
+    // TODO schemeはどこか別ファイル等に定義してまとめる
+    const scheme = {
+      type: "object",
+      required: [
+        "resource_id",
+      ],
+      properties: {
+        resource_id: {
+          "type": "string",
+          "pattern": "^(GET|HEAD|POST|PUT|PATCH|DELETE|ANY)([.]{1})([a-z{}._-])+$",
+          "minLength": 5,
+          "maxLength": 128
+        }
+      },
+      additionalProperties: false
+    };
+
+    const domainValidator = new DomainValidator(scheme);
+
+    return domainValidator.doValidate(request);
+  }
 }
