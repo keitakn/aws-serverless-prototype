@@ -26,7 +26,7 @@ describe("CreateResource", () => {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",
-      scopes: ["test"]
+      scopes: ["tests"]
     };
 
     return (async () => {
@@ -42,5 +42,43 @@ describe("CreateResource", () => {
       const findResourceResponse = await ResourceApi.ApiClient.find("POST_tests");
       assert.equal(findResourceResponse.status, 200);
     })();
+  });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const request: ResourceRequest.CreateRequest = {
+      http_method: "TRACE",
+      resource_path: "test/test.test/[1]",
+      name: "",
+      scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
+    };
+
+    return ResourceApi.ApiClient.create(request).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "http_method"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "resource_path"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "name"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "scopes[0]"
+      );
+    });
   });
 });

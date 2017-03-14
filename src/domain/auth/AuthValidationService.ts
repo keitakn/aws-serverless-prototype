@@ -2,7 +2,7 @@ import {DomainValidator} from "../DomainValidator";
 
 /**
  * AuthValidationService
- *s
+ *
  * @author keita-nishimoto
  * @since 2017-03-08
  */

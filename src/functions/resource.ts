@@ -2,10 +2,12 @@ import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
+import {ResourceValidationService} from "../domain/resource/ResourceValidationService";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -33,6 +35,13 @@ export const create = async (
     } else {
       const eventBody: any = event.body;
       requestBody = JSON.parse(eventBody);
+    }
+
+    const validateResultObject = ResourceValidationService.createValidate(requestBody);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
     }
 
     const httpMethod   = requestBody.http_method;
