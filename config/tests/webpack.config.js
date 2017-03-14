@@ -12,7 +12,8 @@ const testDirs = [
   paths.integrationUserTests,
   paths.unitAccessTokenRepositoryTest,
   paths.unitAuthValidationServiceTest,
-  paths.unitResourceValidationServiceTest
+  paths.unitResourceValidationServiceTest,
+  paths.unitTokenValidationServiceTest
 ];
 
 let targetObject = {};
