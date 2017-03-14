@@ -14,7 +14,7 @@ describe("DestroyResource", () => {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",
-      scopes: ["test"]
+      scopes: ["tests"]
     };
 
     return ResourceApi.ApiClient.create(request).then(() => {});
@@ -26,7 +26,7 @@ describe("DestroyResource", () => {
    * 削除対象のリソースが存在し、削除に成功
    */
   it("testSuccessDestroy", () => {
-    const resourceId = "POST_tests";
+    const resourceId = "POST.tests";
 
     return (async () => {
       const resourceResponse = await ResourceApi.ApiClient.find(resourceId);
@@ -49,7 +49,7 @@ describe("DestroyResource", () => {
    * 削除対象のリソースが存在しない
    */
   it("testSuccessDoseNotExistResourceDestroy", () => {
-    const resourceId = "GET_tests";
+    const resourceId = "GET.tests";
 
     return ResourceApi.ApiClient.destroy(resourceId).then((response) => {
       assert.equal(response.status, 204);
