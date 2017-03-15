@@ -1,5 +1,5 @@
 import * as querystring from "querystring";
-import {AuthleteResponse} from "./AuthleteResponse";
+import {AuthleteAPI} from "../../types/authlete/types";
 
 /**
  * AuthorizationCodeEntityInterface
@@ -8,7 +8,7 @@ import {AuthleteResponse} from "./AuthleteResponse";
  * @since 2017-02-16
  */
 interface AuthorizationCodeEntityInterface {
-  authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse;
+  authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse;
   code: string;
   state: string;
   responseContent: string;
@@ -42,16 +42,16 @@ export class AuthorizationCodeEntity implements AuthorizationCodeEntityInterface
    *
    * @param _authorizationIssueResponse
    */
-  constructor(private _authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse) {
+  constructor(private _authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse) {
     this._code = _authorizationIssueResponse.authorizationCode;
     this._responseContent = _authorizationIssueResponse.responseContent;
     this.extractState();
   }
 
   /**
-   * @returns {AuthleteResponse.AuthorizationIssueResponse}
+   * @returns {AuthleteAPI.AuthorizationIssueResponse}
    */
-  get authorizationIssueResponse(): AuthleteResponse.AuthorizationIssueResponse {
+  get authorizationIssueResponse(): AuthleteAPI.AuthorizationIssueResponse {
     return this._authorizationIssueResponse;
   }
 

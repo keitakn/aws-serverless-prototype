@@ -2,10 +2,10 @@ import axios from "axios";
 import {AxiosResponse} from "axios";
 import ClientEntity from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
-import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
 import {Authlete} from "../config/Authlete";
+import {AuthleteAPI} from "../types/authlete/types";
 
 /**
  * ClientRepository
@@ -45,7 +45,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
         requestConfig
       );
 
-      const clientResponse: AuthleteResponse.ClientResponse = axiosResponse.data;
+      const clientResponse: AuthleteAPI.ClientResponse = axiosResponse.data;
       const clientEntity = new ClientEntity(clientResponse.clientId, clientResponse.createdAt);
       clientEntity.secret          = clientResponse.clientSecret;
       clientEntity.name            = clientResponse.clientName;

@@ -2,6 +2,7 @@ import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
  * AccessTokenRepository.fetchのテスト
@@ -13,7 +14,7 @@ describe("Fetch", () => {
    */
   it("testSuccess", () => {
     const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.CLIENT_CREDENTIALS,
+      grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["email"]
     };
@@ -40,7 +41,10 @@ describe("Fetch", () => {
     const accessTokenRepository = new AccessTokenRepository();
 
     return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity) => {
-      assert.equal(accessTokenEntity.extractHttpStats(), "BAD_REQUEST");
+      assert.equal(
+        accessTokenEntity.extractIntrospectionAction(),
+        AuthleteAPIConstant.IntrospectionActions.BAD_REQUEST
+      );
     });
   });
 });

@@ -175,7 +175,7 @@ export const authorization = async (
     const accessTokenEntity = await introspect(accessToken);
 
     let effect = "";
-    switch (accessTokenEntity.extractHttpStats()) {
+    switch (accessTokenEntity.extractIntrospectionAction()) {
       case "OK":
         const hasScope = await hasRequiredScope(event.methodArn, accessTokenEntity);
         effect = "Allow";
