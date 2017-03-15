@@ -8,6 +8,8 @@ import Environment from "../infrastructures/Environment";
 import UserEntity from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {UserValidationService} from "../domain/user/UserValidationService";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 
 sourceMapSupport.install();
 
@@ -35,6 +37,13 @@ export const create = async (
     } else {
       const eventBody: any = event.body;
       requestBody = JSON.parse(eventBody);
+    }
+
+    const validateResultObject = UserValidationService.createValidate(requestBody);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
     }
 
     const nowDateTime = new Date().getTime();

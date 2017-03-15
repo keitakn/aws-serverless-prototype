@@ -56,4 +56,48 @@ describe("CreateUser", () => {
       assert.equal(response.status, 200);
     });
   });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const request: UserRequest.CreateRequest = {
+      email: ".-keita@gmail.com",
+      password: "passwd",
+      name: "a",
+      gender: "0",
+      birthdate: "1990/01/01"
+    };
+
+    return UserApi.ApiClient.create(request, accessToken).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "email"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "password"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "name"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "gender"
+      );
+
+      assert.property(
+        error.response.data.errors,
+        "birthdate"
+      );
+    });
+  });
 });
