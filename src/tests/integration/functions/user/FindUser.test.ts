@@ -3,6 +3,7 @@ import {AuthApi} from "../../../lib/AuthApi";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
 import {UserApi} from "../../../lib/UserApi";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
  * ユーザー取得のテスト
@@ -24,7 +25,7 @@ describe("FindUser", () => {
    */
   beforeEach(() => {
     const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.CLIENT_CREDENTIALS,
+      grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_users"]
     };

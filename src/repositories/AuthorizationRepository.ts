@@ -1,6 +1,5 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
-import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import InternalServerError from "../errors/InternalServerError";
@@ -8,6 +7,8 @@ import BadRequestError from "../errors/BadRequestError";
 import {Logger} from "../infrastructures/Logger";
 import {Authlete} from "../config/Authlete";
 import {AuthorizationRepositoryInterface} from "../domain/auth/AuthorizationRepositoryInterface";
+import {AuthleteAPI} from "../types/authlete/types";
+import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 
 /**
  * AuthorizationRepository
@@ -57,13 +58,13 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
         );
       }
 
-      const authorizationIssueResponse: AuthleteResponse.AuthorizationIssueResponse = response.data;
+      const authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse = response.data;
       const action = authorizationIssueResponse.action.toString();
 
       switch (action) {
-        case "LOCATION":
+        case AuthleteAPIConstant.AuthorizationIssueActions.LOCATION:
           return new AuthorizationCodeEntity(authorizationIssueResponse);
-        case "BAD_REQUEST":
+        case AuthleteAPIConstant.AuthorizationIssueActions.BAD_REQUEST:
           return Promise.reject(
             new BadRequestError(authorizationIssueResponse.resultMessage)
           );
@@ -83,9 +84,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
    * 認可ticketを発行する
    *
    * @param authorizationRequest
-   * @returns {Promise<AuthleteResponse.Authorization>}
+   * @returns {Promise<AuthleteAPI.Authorization>}
    */
-  private async issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteResponse.Authorization> {
+  private async issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteAPI.AuthorizationResponse> {
     try {
       const headers = {
         "Content-Type": "application/json"
@@ -114,7 +115,12 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
         }
       };
 
-      const response: AxiosResponse = await axios.post("https://api.authlete.com/api/auth/authorization", requestData, requestConfig);
+      const response: AxiosResponse = await axios.post(
+        "https://api.authlete.com/api/auth/authorization",
+        requestData,
+        requestConfig
+      );
+
       if (response.status !== 200) {
         Logger.critical(response);
         return Promise.reject(
@@ -122,16 +128,16 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
         );
       }
 
-      const authorizationResponse: AuthleteResponse.Authorization = response.data;
+      const authorizationResponse: AuthleteAPI.AuthorizationResponse = response.data;
       const action = authorizationResponse.action.toString();
       switch (action) {
-        case "INTERACTION":
+        case AuthleteAPIConstant.AuthorizationActions.INTERACTION:
           return authorizationResponse;
-        case "BAD_REQUEST":
+        case AuthleteAPIConstant.AuthorizationActions.BAD_REQUEST:
           return Promise.reject(
             new BadRequestError(authorizationResponse.resultMessage)
           );
-        case "INTERNAL_SERVER_ERROR":
+        case AuthleteAPIConstant.AuthorizationActions.INTERNAL_SERVER_ERROR:
           Logger.critical(authorizationResponse);
           return Promise.reject(
             new InternalServerError(authorizationResponse.resultMessage)

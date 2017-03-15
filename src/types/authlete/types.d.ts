@@ -1,14 +1,55 @@
 /**
- * AuthleteResponse
+ * AuthleteAPI
+ * AuthleteのAPI型定義を定義する
  *
  * @author keita-nishimoto
- * @since 2017-02-16
+ * @since 2017-03-15
+ * @link https://www.authlete.com/documents/apis/reference
  */
-export namespace AuthleteResponse {
+export namespace AuthleteAPI {
+
   /**
    * Introspectionレスポンスで返すべきHTTPステータスが設定される
    */
   type IntrospectionActions = "OK" | "BAD_REQUEST" | "FORBIDDEN" | "UNAUTHORIZED" | "INTERNAL_SERVER_ERROR";
+
+  /**
+   * actionのデータ型（/auth/authorization API）
+   * レスポンスで返すべきHTTPステータスが設定される
+   */
+  type AuthorizationActions = "INTERNAL_SERVER_ERROR" | "BAD_REQUEST" | "LOCATION" | "FORM" | "NO_INTERACTION" | "INTERACTION";
+
+  /**
+   * actionのデータ型（/auth/authorization/issue API）
+   * レスポンスで返すべきHTTPステータスが設定される
+   */
+  type AuthorizationIssueActions = "INTERNAL_SERVER_ERROR" | "BAD_REQUEST" | "LOCATION" | "FORM";
+
+  /**
+   * actionのデータ型（/auth/token API）
+   * レスポンスで返すべきHTTPステータスが設定される
+   */
+  type TokenResponseActions = "INVALID_CLIENT" | "INTERNAL_SERVER_ERROR" | "BAD_REQUEST" | "PASSWORD" | "OK";
+
+  /**
+   * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
+   */
+  type ApplicationTypes = "WEB" | "NATIVE";
+
+  /**
+   * RFC 6749, 2.1. Client Types.
+   */
+  type ClientTypes = "CONFIDENTIAL" | "PUBLIC";
+
+  /**
+   * OAuth 2.0 supportedGrantTypes
+   */
+  type GrantTypes = "AUTHORIZATION_CODE" | "IMPLICIT" | "PASSWORD" | "CLIENT_CREDENTIALS" | "REFRESH_TOKEN";
+
+  /**
+   * OAuth 2.0 Response Type
+   */
+  type ResponseTypes = "NONE | CODE | TOKEN | ID_TOKEN | CODE_TOKEN | CODE_ID_TOKEN | ID_TOKEN_TOKEN | CODE_ID_TOKEN_TOKEN";
 
   /**
    * IntrospectionResponse
@@ -17,7 +58,7 @@ export namespace AuthleteResponse {
    * @author keita-nishimoto
    * @since 2017-01-25
    */
-  export interface IntrospectionResponse {
+  interface IntrospectionResponse {
     /**
      * イントロスペクションAPIの結果コード
      */
@@ -67,16 +108,9 @@ export namespace AuthleteResponse {
   }
 
   /**
-   * actionのデータ型（/auth/authorization API）
-   * レスポンスで返すべきHTTPステータスが設定される
-   */
-  type AuthorizationActions = "INTERNAL_SERVER_ERROR" | "BAD_REQUEST" | "LOCATION" | "FORM" | "NO_INTERACTION" | "INTERACTION";
-
-  /**
    * /auth/authorization APIのレスポンス
    */
-  export interface Authorization {
-
+  interface AuthorizationResponse {
     /**
      * APIの結果メッセージ
      */
@@ -92,12 +126,6 @@ export namespace AuthleteResponse {
      */
     ticket: string;
   }
-
-  /**
-   * actionのデータ型（/auth/authorization/issue API）
-   * レスポンスで返すべきHTTPステータスが設定される
-   */
-  type AuthorizationIssueActions = "INTERNAL_SERVER_ERROR | BAD_REQUEST | LOCATION | FORM";
 
   /**
    * /auth/authorization/issue APIのレスポンス
@@ -126,15 +154,9 @@ export namespace AuthleteResponse {
   }
 
   /**
-   * actionのデータ型（/auth/token API）
-   * レスポンスで返すべきHTTPステータスが設定される
-   */
-  type TokenResponseActions = "OK | BAD_REQUEST | FORBIDDEN | INTERNAL_SERVER_ERROR";
-
-  /**
    * /auth/token APIのレスポンス
    */
-  export interface TokenResponse {
+  interface TokenResponse {
 
     /**
      * APIの結果メッセージ
@@ -189,33 +211,13 @@ export namespace AuthleteResponse {
   }
 
   /**
-   * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
-   */
-  type ApplicationType = "WEB | NATIVE";
-
-  /**
-   * RFC 6749, 2.1. Client Types.
-   */
-  type ClientType = "CONFIDENTIAL | PUBLIC";
-
-  /**
-   * OAuth 2.0 supportedGrantTypes
-   */
-  type GrantType = "AUTHORIZATION_CODE | IMPLICIT | PASSWORD | CLIENT_CREDENTIALS | REFRESH_TOKEN";
-
-  /**
-   * OAuth 2.0 Response Type
-   */
-  type ResponseType = "NONE | CODE | TOKEN | ID_TOKEN | CODE_TOKEN | CODE_ID_TOKEN | ID_TOKEN_TOKEN | CODE_ID_TOKEN_TOKEN";
-
-  /**
    * クライアントのレスポンス
    */
-  export interface ClientResponse {
+  interface ClientResponse {
     /**
      * OpenID Connect Dynamic Client Registration 1.0, 2. Client Metadata.
      */
-    applicationType: ApplicationType;
+    applicationType: ApplicationTypes;
 
     /**
      * クライアントID
@@ -235,7 +237,7 @@ export namespace AuthleteResponse {
     /**
      * RFC 6749, 2.1. Client Types.
      */
-    clientType: ClientType;
+    clientType: ClientTypes;
 
     /**
      * 作成日時（UnixTime）
@@ -255,7 +257,7 @@ export namespace AuthleteResponse {
     /**
      * OAuth 2.0 supportedGrantTypes
      */
-    grantTypes: [GrantType];
+    grantTypes: [GrantTypes];
 
     /**
      * リダイレクトURI
@@ -265,7 +267,7 @@ export namespace AuthleteResponse {
     /**
      * OAuth 2.0 Response Type
      */
-    responseTypes: [ResponseType];
+    responseTypes: [ResponseTypes];
 
     /**
      * クライアントが持てる拡張情報

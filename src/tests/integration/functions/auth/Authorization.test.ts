@@ -2,6 +2,7 @@ import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi";
 import {ClientApi} from "../../../lib/ClientApi";
 import {ResourceApi} from "../../../lib/ResourceApi";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
  * 認可のテスト
@@ -30,7 +31,7 @@ describe("Authorization", () => {
    */
   it("testSuccessClientCredentials", () => {
     const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.CLIENT_CREDENTIALS,
+      grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_clients"]
     };
@@ -49,7 +50,7 @@ describe("Authorization", () => {
    */
   it("testSuccessAuthorizationCode", () => {
     const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.AUTHORIZATION_CODE,
+      grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
       scopes: ["prototype_clients_find"]
@@ -70,7 +71,7 @@ describe("Authorization", () => {
   it("testSuccessScopeByLimitDoseNotExist", () => {
     // あえてアクセスに必要なスコープをリクエストしない
     const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.AUTHORIZATION_CODE,
+      grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
       scopes: ["email"]
@@ -109,7 +110,7 @@ describe("Authorization", () => {
    */
   it("testFailNotHasRequiredScopes", () => {
     const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.AUTHORIZATION_CODE,
+      grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
       scopes: ["email"]

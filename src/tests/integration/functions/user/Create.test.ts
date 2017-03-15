@@ -1,6 +1,7 @@
 import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi"
 import {UserApi} from "../../../lib/UserApi";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
  * ユーザー作成のテスト
@@ -17,7 +18,7 @@ describe("CreateUser", () => {
    */
   beforeEach(() => {
     const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
-      grantType: AuthApi.GrantTypesEnum.CLIENT_CREDENTIALS,
+      grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_users"]
     };

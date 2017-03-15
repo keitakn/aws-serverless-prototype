@@ -3,6 +3,7 @@ import {AxiosResponse} from "axios";
 import {AxiosError} from "axios";
 import {TestUtil} from "./TestUtil";
 import {Authlete} from "../../config/Authlete";
+import {AuthleteAPI} from "../../types/authlete/types";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -37,27 +38,12 @@ export namespace AuthApi {
   }
 
   /**
-   * チート発行出来るgrantType（REFRESH_TOKENは出来ない模様）
-   */
-  type GrantTypes = "AUTHORIZATION_CODE" | "IMPLICIT" | "PASSWORD" | "CLIENT_CREDENTIALS";
-
-  /**
-   * チート発行出来るgrantType
-   */
-  export namespace GrantTypesEnum {
-    export const AUTHORIZATION_CODE: GrantTypes = "AUTHORIZATION_CODE";
-    export const IMPLICIT: GrantTypes = "IMPLICIT";
-    export const PASSWORD: GrantTypes = "PASSWORD";
-    export const CLIENT_CREDENTIALS: GrantTypes = "CLIENT_CREDENTIALS";
-  }
-
-  /**
    * アクセストークン発行（チート）のリクエスト
    *
    * @link https://www.authlete.com/documents/apis/reference#auth_token_create
    */
   export interface IssueAccessTokenInCheatApiRequest {
-    grantType: GrantTypes;
+    grantType: AuthleteAPI.GrantTypes;
     clientId: number;
     subject?: string;
     scopes?: [string];
@@ -78,7 +64,7 @@ export namespace AuthApi {
     resultMessage: string;
     accessToken: string;
     clientId: number;
-    grantType: GrantTypes;
+    grantType: AuthleteAPI.GrantTypes;
     scopes: [string];
   }
 

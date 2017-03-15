@@ -1,13 +1,13 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
-import {AuthleteResponse} from "../domain/auth/AuthleteResponse";
 import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
 import BadRequestError from "../errors/BadRequestError";
-import ForbiddenError from "../errors/ForbiddenError";
 import InternalServerError from "../errors/InternalServerError";
 import {Logger} from "../infrastructures/Logger";
 import {Authlete} from "../config/Authlete";
+import {AuthleteAPI} from "../types/authlete/types";
+import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 
 /**
  * AccessTokenRepository
@@ -53,7 +53,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         return Promise.reject(new InternalServerError());
       }
 
-      const introspectionResponse: AuthleteResponse.IntrospectionResponse = response.data;
+      const introspectionResponse: AuthleteAPI.IntrospectionResponse = response.data;
       const accessTokenEntity = new AccessTokenEntity(
         accessToken
       );
@@ -102,19 +102,16 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         return Promise.reject(new InternalServerError());
       }
 
-      const tokenResponse: AuthleteResponse.TokenResponse = response.data;
+      const tokenResponse: AuthleteAPI.TokenResponse = response.data;
       const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
       accessTokenEntity.tokenResponse = tokenResponse;
 
       if (accessTokenEntity.extractTokenAction() !== "OK") {
         switch (accessTokenEntity.extractTokenAction()) {
-          case "BAD_REQUEST":
+          case AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST:
+          case AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT:
             return Promise.reject(
               new BadRequestError(accessTokenEntity.tokenResponse.resultMessage)
-            );
-          case "FORBIDDEN":
-            return Promise.reject(
-              new ForbiddenError(accessTokenEntity.tokenResponse.resultMessage)
             );
           default:
             Logger.critical(accessTokenEntity.tokenResponse);
