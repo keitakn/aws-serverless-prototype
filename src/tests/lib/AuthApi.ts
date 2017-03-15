@@ -4,6 +4,7 @@ import {AxiosError} from "axios";
 import {TestUtil} from "./TestUtil";
 import {Authlete} from "../../config/Authlete";
 import {AuthleteAPI} from "../../types/authlete/types";
+import {AuthRequest} from "../../domain/auth/request/AuthRequest";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -11,34 +12,8 @@ import {AuthleteAPI} from "../../types/authlete/types";
 export namespace AuthApi {
 
   /**
-   * 認証のリクエスト
-   */
-  export interface AuthenticationRequest {
-    subject: string;
-    password: string;
-  }
-
-  /**
-   * 認可コード発行のリクエスト
-   */
-  export interface IssueAuthorizationCodeRequest {
-    client_id: number;
-    state: string;
-    redirect_uri: string;
-    subject: string;
-    scopes: [string];
-  }
-
-  /**
-   * アクセストークン発行（認可コード）のリクエスト
-   */
-  export interface IssueTokenFromCodeRequest {
-    code: string;
-    redirect_uri: string;
-  }
-
-  /**
    * アクセストークン発行（チート）のリクエスト
+   * 本来AuthRequestに定義すべきだがテストでしか使わないのでここで定義する
    *
    * @link https://www.authlete.com/documents/apis/reference#auth_token_create
    */
@@ -55,6 +30,7 @@ export namespace AuthApi {
   /**
    * アクセストークン発行（チート）のレスポンス
    * 厳密には全ての型を定義している訳ではないがテストに使うだけなのでこれで十分
+   * 本来AuthResponseに定義すべきだがテストでしか使わないのでここで定義する
    *
    * @link https://www.authlete.com/documents/apis/reference#auth_token_create
    */
@@ -82,7 +58,7 @@ export namespace AuthApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static authentication(request: AuthenticationRequest): Promise<AxiosResponse> {
+    static authentication(request: AuthRequest.AuthenticationRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
@@ -113,7 +89,7 @@ export namespace AuthApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static issueAuthorizationCode(request: IssueAuthorizationCodeRequest): Promise<AxiosResponse> {
+    static issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
@@ -144,7 +120,7 @@ export namespace AuthApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static issueTokenFromCode(request: IssueTokenFromCodeRequest): Promise<AxiosResponse> {
+    static issueTokenFromCode(request: AuthRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"

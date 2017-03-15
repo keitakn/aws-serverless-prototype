@@ -1,6 +1,7 @@
 import * as mocha from "mocha";
 import {assert} from "chai";
 import {AuthApi} from "../../../lib/AuthApi";
+import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 typeof mocha;
 
@@ -13,7 +14,7 @@ describe("IssueAuthorizationCode", () => {
    */
   it("testSuccess", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
@@ -34,7 +35,7 @@ describe("IssueAuthorizationCode", () => {
    */
   it("testFailClientDoseNotExist", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 1111111111111,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
@@ -53,7 +54,7 @@ describe("IssueAuthorizationCode", () => {
    * 登録されていないリダイレクトURIを指定
    */
   it("testFailRedirectUriNotRegistered", () => {
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection`,
@@ -72,7 +73,7 @@ describe("IssueAuthorizationCode", () => {
    * バリデーションエラー
    */
   it("testFailValidation", () => {
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 0,
       state: "1234567",
       redirect_uri: "url",

@@ -4,6 +4,7 @@ import AccessTokenRepository from "../../../../repositories/AccessTokenRepositor
 import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
 import {UserApi} from "../../../lib/UserApi";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 /**
  * 認証のテスト
@@ -113,7 +114,7 @@ describe("Authentication", () => {
    * バリデーションエラー
    */
   it("testFailValidation", () => {
-    const request: AuthApi.AuthenticationRequest = {
+    const request: AuthRequest.AuthenticationRequest = {
       subject: "98f46ad0-09e2-4324-910c-011df62e73071",
       password: "pass@wd"
     };
