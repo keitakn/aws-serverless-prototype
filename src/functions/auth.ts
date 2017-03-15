@@ -20,6 +20,7 @@ import {Logger} from "../infrastructures/Logger";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
+import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -176,21 +177,21 @@ export const authorization = async (
 
     let effect = "";
     switch (accessTokenEntity.extractIntrospectionAction()) {
-      case "OK":
+      case AuthleteAPIConstant.IntrospectionActions.OK:
         const hasScope = await hasRequiredScope(event.methodArn, accessTokenEntity);
         effect = "Allow";
         if (hasScope === false) {
           effect = "Deny";
         }
         break;
-      case "BAD_REQUEST":
-      case "FORBIDDEN":
+      case AuthleteAPIConstant.IntrospectionActions.BAD_REQUEST:
+      case AuthleteAPIConstant.IntrospectionActions.FORBIDDEN:
         effect = "Deny";
         break;
-      case "UNAUTHORIZED":
+      case AuthleteAPIConstant.IntrospectionActions.UNAUTHORIZED:
         callback(new Error("Unauthorized"));
         break;
-      case "INTERNAL_SERVER_ERROR":
+      case AuthleteAPIConstant.IntrospectionActions.INTERNAL_SERVER_ERROR:
         Logger.critical(accessTokenEntity.introspectionResponse);
         callback(new Error("Internal Server Error"));
         break;
