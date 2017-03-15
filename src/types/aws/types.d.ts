@@ -5,6 +5,7 @@
  * @since 2016-03-11
  */
 export interface LambdaEvent {
+  body: string | null;
   headers: {[name: string]: string};
 }
 

@@ -19,6 +19,7 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {RequestFactory} from "../factories/RequestFactory";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -41,28 +42,24 @@ export const authentication = async (
 ): Promise<void> => {
   try {
     const environment = new Environment<lambda.APIGatewayEvent>(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody: any;
     if (environment.isLocal() === true) {
-      requestBody = event.body;
-
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
         environment.isLocal()
       );
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
     }
 
-    const validateResultObject = AuthValidationService.authenticationValidate(requestBody);
+    const validateResultObject = AuthValidationService.authenticationValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const userId = requestBody.subject;
-    const password = requestBody.password;
+    const userId = request.subject;
+    const password = request.password;
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
     const userEntity = await userRepository.find(userId);
