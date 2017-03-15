@@ -106,6 +106,13 @@ export const find = async (
   // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
     const request = extractRequest(event);
+    const validateResultObject = UserValidationService.findValidate(request);
+    if (Object.keys(validateResultObject).length !== 0) {
+      const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
+      callback(undefined, validationErrorResponse.getResponse());
+      return;
+    }
+
     const userId = request.subject;
     const environment = new Environment(event);
     if (environment.isLocal() === true) {

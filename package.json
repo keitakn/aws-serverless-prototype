@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Serverless CRUD Prototype",
   "scripts": {
-    "test": "mocha -t 8000 -R nyan",
-    "test:local": "IS_LOCAL=true mocha -t 8000 -R nyan",
+    "test": "mocha -t 10000 -R nyan",
+    "test:local": "IS_LOCAL=true mocha -t 10000 -R nyan",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
     "build:test": "webpack --config config/tests/webpack.config.js",

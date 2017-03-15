@@ -75,4 +75,22 @@ describe("FindUser", () => {
       assert.equal(error.response.data.code, 404);
     });
   });
+
+  /**
+   * 異常系テスト
+   * バリデーションエラー
+   */
+  it("testFailValidation", () => {
+    const failUserId = "subject";
+
+    return UserApi.ApiClient.find(failUserId, accessToken).catch((error) => {
+      assert.equal(error.response.status, 422);
+      assert.equal(error.response.data.code, 422);
+
+      assert.property(
+        error.response.data.errors,
+        "subject"
+      );
+    });
+  });
 });

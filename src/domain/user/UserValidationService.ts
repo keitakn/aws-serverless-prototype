@@ -62,4 +62,32 @@ export class UserValidationService {
 
     return domainValidator.doValidate(request);
   }
+
+  /**
+   * user.findのバリデーション
+   *
+   * @param request
+   * @returns {Object}
+   */
+  static findValidate(request: Object): Object {
+    // TODO schemeはどこか別ファイル等に定義してまとめる
+    const scheme = {
+      type: "object",
+      required: [
+        "subject"
+      ],
+      properties: {
+        subject: {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        }
+      },
+      additionalProperties: false
+    };
+
+    const domainValidator = new DomainValidator(scheme);
+
+    return domainValidator.doValidate(request);
+  }
 }
