@@ -106,27 +106,21 @@ export const issueAuthorizationCode = async (
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody;
-    if (environment.isLocal() === true) {
-      requestBody = event.body;
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
-    }
-
-    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const clientId    = requestBody.client_id;
-    const state       = requestBody.state;
-    const redirectUri = requestBody.redirect_uri;
-    const subject     = requestBody.subject;
-    const scopes      = requestBody.scopes;
+    const clientId    = request.client_id;
+    const state       = request.state;
+    const redirectUri = request.redirect_uri;
+    const subject     = request.subject;
+    const scopes      = request.scopes;
 
     const requestBuilder = new AuthorizationRequest.RequestBuilder();
     requestBuilder.clientId    = clientId;

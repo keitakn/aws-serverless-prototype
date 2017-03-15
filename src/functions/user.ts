@@ -10,6 +10,7 @@ import PasswordService from "../domain/auth/PasswordService";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {UserValidationService} from "../domain/user/UserValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {RequestFactory} from "../factories/RequestFactory";
 
 sourceMapSupport.install();
 
@@ -27,19 +28,12 @@ export const create = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
     const environment = new Environment(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody;
-    if (environment.isLocal() === true) {
-      requestBody = event.body;
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
-    }
-
-    const validateResultObject = UserValidationService.createValidate(requestBody);
+    const validateResultObject = UserValidationService.createValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
@@ -49,14 +43,14 @@ export const create = async (
     const nowDateTime = new Date().getTime();
 
     const userEntity = new UserEntity(uuid.v4(), nowDateTime);
-    const passwordHash = PasswordService.generatePasswordHash(requestBody.password);
+    const passwordHash = PasswordService.generatePasswordHash(request.password);
 
-    userEntity.email = requestBody.email;
+    userEntity.email = request.email;
     userEntity.emailVerified = 0;
     userEntity.passwordHash = passwordHash;
-    userEntity.name = requestBody.name;
-    userEntity.gender = requestBody.gender;
-    userEntity.birthdate = requestBody.birthdate;
+    userEntity.name = request.name;
+    userEntity.gender = request.gender;
+    userEntity.birthdate = request.birthdate;
     userEntity.updatedAt = nowDateTime;
 
     if (environment.isLocal() === true) {
@@ -103,7 +97,6 @@ export const find = async (
   context: lambda.Context,
   callback: lambda.Callback
 ): Promise<void> => {
-  // TODO このあたりの処理はリクエストオブジェクトに集約する @keita-nishimoto
   try {
     const request = extractRequest(event);
     const validateResultObject = UserValidationService.findValidate(request);
