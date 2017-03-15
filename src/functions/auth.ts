@@ -19,6 +19,7 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {RequestFactory} from "../factories/RequestFactory";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -41,28 +42,24 @@ export const authentication = async (
 ): Promise<void> => {
   try {
     const environment = new Environment<lambda.APIGatewayEvent>(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody: any;
     if (environment.isLocal() === true) {
-      requestBody = event.body;
-
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
         environment.isLocal()
       );
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
     }
 
-    const validateResultObject = AuthValidationService.authenticationValidate(requestBody);
+    const validateResultObject = AuthValidationService.authenticationValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const userId = requestBody.subject;
-    const password = requestBody.password;
+    const userId = request.subject;
+    const password = request.password;
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
     const userEntity = await userRepository.find(userId);
@@ -109,27 +106,21 @@ export const issueAuthorizationCode = async (
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody;
-    if (environment.isLocal() === true) {
-      requestBody = event.body;
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
-    }
-
-    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(requestBody);
+    const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const clientId    = requestBody.client_id;
-    const state       = requestBody.state;
-    const redirectUri = requestBody.redirect_uri;
-    const subject     = requestBody.subject;
-    const scopes      = requestBody.scopes;
+    const clientId    = request.client_id;
+    const state       = request.state;
+    const redirectUri = request.redirect_uri;
+    const subject     = request.subject;
+    const scopes      = request.scopes;
 
     const requestBuilder = new AuthorizationRequest.RequestBuilder();
     requestBuilder.clientId    = clientId;

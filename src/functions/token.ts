@@ -6,6 +6,7 @@ import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {TokenValidationService} from "../domain/token/TokenValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {RequestFactory} from "../factories/RequestFactory";
 
 sourceMapSupport.install();
 
@@ -24,24 +25,18 @@ export const issueTokenFromCode = async (
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody;
-    if (environment.isLocal() === true) {
-      requestBody = event.body;
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
-    }
-
-    const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(requestBody);
+    const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const authorizationCode = requestBody.code;
-    const redirectUri       = requestBody.redirect_uri;
+    const authorizationCode = request.code;
+    const redirectUri       = request.redirect_uri;
 
     const accessTokenRepository = new AccessTokenRepository();
 

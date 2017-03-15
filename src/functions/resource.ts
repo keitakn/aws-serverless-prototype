@@ -8,6 +8,7 @@ import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import {RequestFactory} from "../factories/RequestFactory";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -28,26 +29,20 @@ export const create = async (
 ): Promise<void> => {
   try {
     const environment = new Environment(event);
+    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const request = requestFactory.create();
 
-    let requestBody;
-    if (environment.isLocal() === true) {
-      requestBody = event.body;
-    } else {
-      const eventBody: any = event.body;
-      requestBody = JSON.parse(eventBody);
-    }
-
-    const validateResultObject = ResourceValidationService.createValidate(requestBody);
+    const validateResultObject = ResourceValidationService.createValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
       const validationErrorResponse = new ValidationErrorResponse(validateResultObject);
       callback(undefined, validationErrorResponse.getResponse());
       return;
     }
 
-    const httpMethod   = requestBody.http_method;
-    const resourcePath = requestBody.resource_path;
-    const name         = requestBody.name;
-    const scopes       = requestBody.scopes;
+    const httpMethod   = request.http_method;
+    const resourcePath = request.resource_path;
+    const name         = request.name;
+    const scopes       = request.scopes;
 
     const nowDateTime = new Date().getTime();
     const resourceId  = `${httpMethod}/${resourcePath}`;
