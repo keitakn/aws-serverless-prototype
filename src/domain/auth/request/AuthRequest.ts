@@ -24,12 +24,4 @@ export namespace AuthRequest {
     subject: string;
     scopes: [string];
   }
-
-  /**
-   * アクセストークン発行（認可コード）のリクエスト
-   */
-  export interface IssueTokenFromCodeRequest {
-    code: string;
-    redirect_uri: string;
-  }
 }

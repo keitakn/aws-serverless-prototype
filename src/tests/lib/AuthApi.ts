@@ -5,6 +5,7 @@ import {TestUtil} from "./TestUtil";
 import {Authlete} from "../../config/Authlete";
 import {AuthleteAPI} from "../../types/authlete/types";
 import {AuthRequest} from "../../domain/auth/request/AuthRequest";
+import {TokenRequest} from "../../domain/token/request/TokenRequest";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -120,7 +121,7 @@ export namespace AuthApi {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static issueTokenFromCode(request: AuthRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
+    static issueTokenFromCode(request: TokenRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json"
