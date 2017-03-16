@@ -186,8 +186,16 @@ export const authorization = async (
         break;
     }
 
+    let principalId = accessTokenEntity.introspectionResponse.subject;
+
+    // クライアントクレデンシャル等で発行されたアクセストークンはsubjectが設定されない場合がある
+    // よってその場合はクライアントIDを文字列型にキャストしてprincipalIdに設定する
+    if (principalId == null) {
+      principalId = accessTokenEntity.introspectionResponse.clientId.toString();
+    }
+
     const authorizationResponse = generatePolicy(
-      accessTokenEntity.introspectionResponse.subject,
+      principalId,
       effect,
       [event.methodArn]
     );

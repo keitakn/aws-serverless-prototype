@@ -18,7 +18,7 @@ export class TestUtil {
     let gatewayUri = `${baseUri}/${stage}`;
 
     if (process.env.IS_LOCAL) {
-      gatewayUri = "http://localhost:8000";
+      gatewayUri = "http://localhost:3000";
     }
 
     return gatewayUri;
