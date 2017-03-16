@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import {ResourceApi} from "../../../lib/ResourceApi";
+import {ResourceTest} from "../../../lib/ResourceTest";
 
 /**
  * リソース削除のテスト
@@ -17,7 +17,7 @@ describe("DestroyResource", () => {
       scopes: ["tests"]
     };
 
-    return ResourceApi.ApiClient.create(request).then(() => {});
+    return ResourceTest.ApiClient.create(request).then(() => {});
   });
 
   /**
@@ -29,13 +29,13 @@ describe("DestroyResource", () => {
     const resourceId = "POST.tests";
 
     return (async () => {
-      const resourceResponse = await ResourceApi.ApiClient.find(resourceId);
+      const resourceResponse = await ResourceTest.ApiClient.find(resourceId);
       assert.equal(resourceResponse.status, 200);
 
-      const destroyResponse = await ResourceApi.ApiClient.destroy(resourceId);
+      const destroyResponse = await ResourceTest.ApiClient.destroy(resourceId);
       assert.equal(destroyResponse.status, 204);
 
-      await ResourceApi.ApiClient.find(resourceId);
+      await ResourceTest.ApiClient.find(resourceId);
 
     })().catch((error) => {
       assert.equal(error.response.status, 404);
@@ -51,7 +51,7 @@ describe("DestroyResource", () => {
   it("testSuccessDoseNotExistResourceDestroy", () => {
     const resourceId = "GET.tests";
 
-    return ResourceApi.ApiClient.destroy(resourceId).then((response) => {
+    return ResourceTest.ApiClient.destroy(resourceId).then((response) => {
       assert.equal(response.status, 204);
     });
   });
@@ -63,7 +63,7 @@ describe("DestroyResource", () => {
   it("testFailValidation", () => {
     const resourceId = "TRACE-users";
 
-    return ResourceApi.ApiClient.destroy(resourceId).catch((error) => {
+    return ResourceTest.ApiClient.destroy(resourceId).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

@@ -1,6 +1,6 @@
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi"
-import {UserApi} from "../../../lib/UserApi";
+import {AuthTest} from "../../../lib/AuthTest"
+import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
@@ -17,13 +17,13 @@ describe("CreateUser", () => {
    * 事前にトークンを取得しユーザーを作成する
    */
   beforeEach(() => {
-    const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
+    return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       accessToken = response.accessToken;
     });
   });
@@ -40,7 +40,7 @@ describe("CreateUser", () => {
       birthdate: "1990-01-01"
     };
 
-    return UserApi.ApiClient.create(request, accessToken).then((response) => {
+    return UserTest.ApiClient.create(request, accessToken).then((response) => {
       assert.equal(response.status, 201);
       assert.equal(response.data.email, "keita@gmail.com");
       assert.equal(response.data.email_verified, 0);
@@ -52,7 +52,7 @@ describe("CreateUser", () => {
       assert.equal(response.data.gender, "male");
       assert.equal(response.data.birthdate, "1990-01-01");
 
-      return UserApi.ApiClient.find(response.data.id, accessToken);
+      return UserTest.ApiClient.find(response.data.id, accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
     });
@@ -71,7 +71,7 @@ describe("CreateUser", () => {
       birthdate: "1990/01/01"
     };
 
-    return UserApi.ApiClient.create(request, accessToken).catch((error) => {
+    return UserTest.ApiClient.create(request, accessToken).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

@@ -1,6 +1,7 @@
 import * as mocha from "mocha";
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
+import {AuthTest} from "../../../lib/AuthTest";
+import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 typeof mocha;
 
@@ -13,7 +14,7 @@ describe("IssueAuthorizationCode", () => {
    */
   it("testSuccess", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
@@ -21,7 +22,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       assert.equal(response.status, 201);
       assert.equal(response.data.code.length, 43);
       assert.equal(response.data.state, request.state);
@@ -34,7 +35,7 @@ describe("IssueAuthorizationCode", () => {
    */
   it("testFailClientDoseNotExist", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 1111111111111,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
@@ -42,7 +43,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
     });
@@ -53,7 +54,7 @@ describe("IssueAuthorizationCode", () => {
    * 登録されていないリダイレクトURIを指定
    */
   it("testFailRedirectUriNotRegistered", () => {
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 2118736939631,
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection`,
@@ -61,7 +62,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
     });
@@ -72,7 +73,7 @@ describe("IssueAuthorizationCode", () => {
    * バリデーションエラー
    */
   it("testFailValidation", () => {
-    const request: AuthApi.IssueAuthorizationCodeRequest = {
+    const request: AuthRequest.IssueAuthorizationCodeRequest = {
       client_id: 0,
       state: "1234567",
       redirect_uri: "url",
@@ -80,7 +81,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["food", "98f46ad0-09e2-4324-910c-011df62e73071"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

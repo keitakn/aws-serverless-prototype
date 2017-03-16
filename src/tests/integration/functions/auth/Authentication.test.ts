@@ -1,9 +1,10 @@
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
+import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
-import {UserApi} from "../../../lib/UserApi";
+import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 /**
  * 認証のテスト
@@ -24,13 +25,13 @@ describe("Authentication", () => {
    * 事前にトークンを取得しユーザーを作成する
    */
   beforeEach(() => {
-    const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_users", "prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
+    return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       const accessTokenRepository = new AccessTokenRepository();
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity) => {
@@ -44,7 +45,7 @@ describe("Authentication", () => {
         birthdate: "1990-01-01"
       };
 
-      return UserApi.ApiClient.create(createUserRequest, accessToken);
+      return UserTest.ApiClient.create(createUserRequest, accessToken);
     }).then((response) => {
       userId = response.data.id;
     });
@@ -61,7 +62,7 @@ describe("Authentication", () => {
       password: password
     };
 
-    return AuthApi.ApiClient.authentication(request).then((response) => {
+    return AuthTest.ApiClient.authentication(request).then((response) => {
       assert.equal(response.data.authenticated, true);
       assert.equal(response.data.subject, userId);
       assert.equal(response.data.claims.email, "keita@gmail.com");
@@ -84,7 +85,7 @@ describe("Authentication", () => {
       password: password
     };
 
-    return AuthApi.ApiClient.authentication(request).catch((error) => {
+    return AuthTest.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 404);
       assert.equal(error.response.data.code, 404);
     });
@@ -102,7 +103,7 @@ describe("Authentication", () => {
       password: password
     };
 
-    return AuthApi.ApiClient.authentication(request).catch((error) => {
+    return AuthTest.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 401);
       assert.equal(error.response.data.code, 401);
     });
@@ -113,12 +114,12 @@ describe("Authentication", () => {
    * バリデーションエラー
    */
   it("testFailValidation", () => {
-    const request: AuthApi.AuthenticationRequest = {
+    const request: AuthRequest.AuthenticationRequest = {
       subject: "98f46ad0-09e2-4324-910c-011df62e73071",
       password: "pass@wd"
     };
 
-    return AuthApi.ApiClient.authentication(request).catch((error) => {
+    return AuthTest.ApiClient.authentication(request).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

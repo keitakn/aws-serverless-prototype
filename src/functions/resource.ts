@@ -30,7 +30,7 @@ export const create = async (
   try {
     const environment = new Environment(event);
     const requestFactory = new RequestFactory(event, environment.isLocal());
-    const request = requestFactory.create();
+    const request: ResourceRequest.CreateRequest = requestFactory.create();
 
     const validateResultObject = ResourceValidationService.createValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {

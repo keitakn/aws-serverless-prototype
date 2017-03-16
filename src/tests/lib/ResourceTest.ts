@@ -5,7 +5,7 @@ import {TestUtil} from "./TestUtil";
 /**
  * Resource系APIのテスト用ライブラリ
  */
-export namespace ResourceApi {
+export namespace ResourceTest {
 
   /**
    * ApiClient

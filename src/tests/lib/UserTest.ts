@@ -6,7 +6,7 @@ import {TestUtil} from "./TestUtil";
 /**
  * User系APIのテスト用ライブラリ
  */
-export namespace UserApi {
+export namespace UserTest {
 
   /**
    * ApiClient

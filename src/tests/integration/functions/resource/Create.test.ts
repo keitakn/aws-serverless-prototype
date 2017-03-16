@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import {ResourceApi} from "../../../lib/ResourceApi";
+import {ResourceTest} from "../../../lib/ResourceTest";
 
 /**
  * リソース作成のテスト
@@ -13,7 +13,7 @@ describe("CreateResource", () => {
     const resourceId = "POST.tests";
 
     return (async () => {
-      const destroyResponse = await ResourceApi.ApiClient.destroy(resourceId);
+      const destroyResponse = await ResourceTest.ApiClient.destroy(resourceId);
       assert.equal(destroyResponse.status, 204);
     })();
   });
@@ -30,7 +30,7 @@ describe("CreateResource", () => {
     };
 
     return (async () => {
-      const createResourceResponse = await ResourceApi.ApiClient.create(createRequest);
+      const createResourceResponse = await ResourceTest.ApiClient.create(createRequest);
 
       assert.equal(createResourceResponse.status, 201);
       assert.equal(createResourceResponse.data.id, "POST/tests");
@@ -39,7 +39,7 @@ describe("CreateResource", () => {
       assert.equal(createResourceResponse.data.name, createRequest.name);
       assert.deepEqual(createResourceResponse.data.scopes, createRequest.scopes);
 
-      const findResourceResponse = await ResourceApi.ApiClient.find("POST.tests");
+      const findResourceResponse = await ResourceTest.ApiClient.find("POST.tests");
       assert.equal(findResourceResponse.status, 200);
     })();
   });
@@ -56,7 +56,7 @@ describe("CreateResource", () => {
       scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
     };
 
-    return ResourceApi.ApiClient.create(request).catch((error) => {
+    return ResourceTest.ApiClient.create(request).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

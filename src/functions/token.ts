@@ -7,6 +7,7 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {TokenValidationService} from "../domain/token/TokenValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
+import {TokenRequest} from "../domain/token/request/TokenRequest";
 
 sourceMapSupport.install();
 
@@ -26,7 +27,7 @@ export const issueTokenFromCode = async (
   try {
     const environment = new Environment(event);
     const requestFactory = new RequestFactory(event, environment.isLocal());
-    const request = requestFactory.create();
+    const request: TokenRequest.IssueTokenFromCodeRequest = requestFactory.create();
 
     const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {

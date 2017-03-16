@@ -1,7 +1,6 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
-import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import InternalServerError from "../errors/InternalServerError";
 import BadRequestError from "../errors/BadRequestError";
 import {Logger} from "../infrastructures/Logger";
@@ -9,6 +8,7 @@ import {Authlete} from "../config/Authlete";
 import {AuthorizationRepositoryInterface} from "../domain/auth/AuthorizationRepositoryInterface";
 import {AuthleteAPI} from "../types/authlete/types";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
+import {AuthRequest} from "../domain/auth/request/AuthRequest";
 
 /**
  * AuthorizationRepository
@@ -21,12 +21,12 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
   /**
    * 認可コードを発行する
    *
-   * @param authorizationRequest
+   * @param request
    * @returns {Promise<AuthorizationCodeEntity>}
    */
-  async issueAuthorizationCode(authorizationRequest: AuthorizationRequest.Request): Promise<AuthorizationCodeEntity> {
+  async issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity> {
     try {
-      const authorizationResponse = await this.issueAuthorizationTicket(authorizationRequest);
+      const authorizationResponse = await this.issueAuthorizationTicket(request);
 
       const headers = {
         "Content-Type": "application/json"
@@ -34,7 +34,7 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
 
       const requestData = {
         ticket: authorizationResponse.ticket,
-        subject: authorizationRequest.subject
+        subject: request.subject
       };
 
       const requestConfig = {
@@ -83,21 +83,21 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
   /**
    * 認可ticketを発行する
    *
-   * @param authorizationRequest
+   * @param request
    * @returns {Promise<AuthleteAPI.Authorization>}
    */
-  private async issueAuthorizationTicket(authorizationRequest: AuthorizationRequest.Request): Promise<AuthleteAPI.AuthorizationResponse> {
+  private async issueAuthorizationTicket(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthleteAPI.AuthorizationResponse> {
     try {
       const headers = {
         "Content-Type": "application/json"
       };
 
-      const clientId    = authorizationRequest.clientId;
-      const state       = authorizationRequest.state;
-      const redirectUri = authorizationRequest.redirectUri;
+      const clientId    = request.client_id;
+      const state       = request.state;
+      const redirectUri = request.redirect_uri;
 
       let scopes = "openid";
-      authorizationRequest.scopes.map((scope) => {
+      request.scopes.map((scope) => {
         if (scope !== "openid") {
           scopes += "%20" + scope;
         }

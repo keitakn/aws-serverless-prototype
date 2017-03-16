@@ -5,7 +5,7 @@ import {TestUtil} from "./TestUtil";
 /**
  * Client系APIのテスト用ライブラリ
  */
-export namespace ClientApi {
+export namespace ClientTest {
 
   /**
    * ApiClient
