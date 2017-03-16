@@ -8,8 +8,8 @@
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
     "build:test": "webpack --config config/tests/webpack.config.js",
-    "migrate": "sls dynamodb migrate",
-    "server": "serverless offline --location .webpack && yarn run migrate",
+    "migrate": "serverless dynamodb migrate",
+    "server": "serverless offline --location .webpack",
     "deploy": "serverless deploy"
   },
   "author": "keita-nishimoto",
