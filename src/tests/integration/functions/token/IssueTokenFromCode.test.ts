@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
+import {AuthTest} from "../../../lib/AuthTest";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 /**
@@ -20,13 +20,13 @@ describe("IssueTokenFromCode", () => {
       scopes: ["openid", "email", "offline_access", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
         redirect_uri: request.redirect_uri
       };
 
-      return AuthApi.ApiClient.issueTokenFromCode(tokenRequest);
+      return AuthTest.ApiClient.issueTokenFromCode(tokenRequest);
     }).then((response) => {
       // 要求を許可してあるスコープ以外は含まれていない事を確認する
       // テストに使うクライアントはoffline_accessの要求権限を持っていない
@@ -52,12 +52,12 @@ describe("IssueTokenFromCode", () => {
       scopes: ["openid", "email", "offline_access", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
         redirect_uri: "https://api.authlete.com/api/mock/redirection"
       };
-      return AuthApi.ApiClient.issueTokenFromCode(tokenRequest);
+      return AuthTest.ApiClient.issueTokenFromCode(tokenRequest);
     }).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
@@ -75,7 +75,7 @@ describe("IssueTokenFromCode", () => {
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`
     };
 
-    return AuthApi.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
+    return AuthTest.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
     });
@@ -91,7 +91,7 @@ describe("IssueTokenFromCode", () => {
       redirect_uri: `http`
     };
 
-    return AuthApi.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
+    return AuthTest.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

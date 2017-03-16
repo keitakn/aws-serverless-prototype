@@ -1,7 +1,7 @@
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
-import {ClientApi} from "../../../lib/ClientApi";
-import {ResourceApi} from "../../../lib/ResourceApi";
+import {AuthTest} from "../../../lib/AuthTest";
+import {ClientTest} from "../../../lib/ClientTest";
+import {ResourceTest} from "../../../lib/ResourceTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
@@ -22,7 +22,7 @@ describe("Authorization", () => {
       scopes: ["prototype_clients", "prototype_clients_find"]
     };
 
-    return ResourceApi.ApiClient.create(createRequest);
+    return ResourceTest.ApiClient.create(createRequest);
   });
 
   /**
@@ -30,14 +30,14 @@ describe("Authorization", () => {
    * クライアントクレデンシャルで発行したアクセストークンでAPIを呼び出せる事
    */
   it("testSuccessClientCredentials", () => {
-    const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const tokenRequest: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
-      return ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
+    return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
+      return ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
@@ -49,15 +49,15 @@ describe("Authorization", () => {
    * 認可コードで発行したアクセストークンでAPIを呼び出せる事
    */
   it("testSuccessAuthorizationCode", () => {
-    const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const tokenRequest: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
       scopes: ["prototype_clients_find"]
     };
 
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
-      return ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
+    return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
+      return ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
@@ -70,7 +70,7 @@ describe("Authorization", () => {
    */
   it("testSuccessScopeByLimitDoseNotExist", () => {
     // あえてアクセスに必要なスコープをリクエストしない
-    const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const tokenRequest: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
@@ -78,13 +78,13 @@ describe("Authorization", () => {
     };
 
     return (async () => {
-      const tokenCreateResponse = await AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest);
+      const tokenCreateResponse = await AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest);
 
       // DBからリソースを削除する
-      const destroyResourceResponse = await ResourceApi.ApiClient.destroy("GET.clients");
+      const destroyResourceResponse = await ResourceTest.ApiClient.destroy("GET.clients");
       assert.equal(destroyResourceResponse.status, 204);
 
-      return await ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
+      return await ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     })().then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
@@ -99,7 +99,7 @@ describe("Authorization", () => {
   it("testFailAccessTokenDoseNotExist", () => {
     const clientId    = 1957483863470;
     const accessToken = "s8knBIweyLgtsSSexBhwLwQgo-BhKKLOo_v3l0uGX_Y";
-    return ClientApi.ApiClient.find(clientId, accessToken).catch((error) => {
+    return ClientTest.ApiClient.find(clientId, accessToken).catch((error) => {
       assert.equal(error.response.status, 403);
     });
   });
@@ -109,7 +109,7 @@ describe("Authorization", () => {
    * 認可に必要なスコープをアクセストークンが持っていないケース
    */
   it("testFailNotHasRequiredScopes", () => {
-    const tokenRequest: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const tokenRequest: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
@@ -117,9 +117,9 @@ describe("Authorization", () => {
     };
 
     return (async () => {
-      const tokenCreateResponse = await AuthApi.ApiClient.issueAccessTokenInCheatApi(tokenRequest);
+      const tokenCreateResponse = await AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest);
 
-      await ClientApi.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
+      await ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
     })().catch((error) => {
       assert.equal(error.response.status, 403);
     });

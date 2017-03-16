@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
+import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
@@ -13,14 +13,14 @@ describe("Fetch", () => {
    * 正常系テスト
    */
   it("testSuccess", () => {
-    const request: AuthApi.IssueAccessTokenInCheatApiRequest = {
+    const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
       scopes: ["email"]
     };
 
     const accessTokenRepository = new AccessTokenRepository();
-    return AuthApi.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
+    return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity) => {
       assert.equal(

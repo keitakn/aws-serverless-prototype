@@ -10,7 +10,7 @@ import {TokenRequest} from "../../domain/token/request/TokenRequest";
 /**
  * Auth系APIのテスト用ライブラリ
  */
-export namespace AuthApi {
+export namespace AuthTest {
 
   /**
    * アクセストークン発行（チート）のリクエスト

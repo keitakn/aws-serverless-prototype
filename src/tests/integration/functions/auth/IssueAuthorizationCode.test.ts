@@ -1,6 +1,6 @@
 import * as mocha from "mocha";
 import {assert} from "chai";
-import {AuthApi} from "../../../lib/AuthApi";
+import {AuthTest} from "../../../lib/AuthTest";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 
 typeof mocha;
@@ -22,7 +22,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_clients"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       assert.equal(response.status, 201);
       assert.equal(response.data.code.length, 43);
       assert.equal(response.data.state, request.state);
@@ -43,7 +43,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
     });
@@ -62,7 +62,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_users"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 400);
       assert.equal(error.response.data.code, 400);
     });
@@ -81,7 +81,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["food", "98f46ad0-09e2-4324-910c-011df62e73071"]
     };
 
-    return AuthApi.ApiClient.issueAuthorizationCode(request).catch((error) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

@@ -1,5 +1,5 @@
 import {assert} from "chai";
-import {ResourceApi} from "../../../lib/ResourceApi";
+import {ResourceTest} from "../../../lib/ResourceTest";
 
 /**
  * リソース取得のテスト
@@ -17,7 +17,7 @@ describe("FindResource", () => {
       scopes: ["tests"]
     };
 
-    return ResourceApi.ApiClient.create(request).then(() => {});
+    return ResourceTest.ApiClient.create(request).then(() => {});
   });
 
   /**
@@ -27,7 +27,7 @@ describe("FindResource", () => {
     const resourceId = "POST.tests";
 
     return (async () => {
-      const resourceFindResponse = await ResourceApi.ApiClient.find(resourceId);
+      const resourceFindResponse = await ResourceTest.ApiClient.find(resourceId);
 
       assert.equal(resourceFindResponse.status, 200);
       assert.equal(resourceFindResponse.data.id, "POST/tests");
@@ -46,7 +46,7 @@ describe("FindResource", () => {
   it("testSuccessDoseNotExistResource", () => {
     const resourceId = "GET.no";
 
-    return ResourceApi.ApiClient.find(resourceId).catch((error) => {
+    return ResourceTest.ApiClient.find(resourceId).catch((error) => {
       assert.equal(error.response.status, 404);
       assert.equal(error.response.data.code, 404);
     });
@@ -59,7 +59,7 @@ describe("FindResource", () => {
   it("testFailValidation", () => {
     const resourceId = "TRACE-users";
 
-    return ResourceApi.ApiClient.find(resourceId).catch((error) => {
+    return ResourceTest.ApiClient.find(resourceId).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 
