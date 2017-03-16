@@ -1,5 +1,5 @@
 import {AuthorizationCodeEntity} from "./AuthorizationCodeEntity";
-import {AuthorizationRequest} from "./request/AuthorizationRequest";
+import {AuthRequest} from "./request/AuthRequest";
 
 /**
  * AuthorizationRepositoryInterface
@@ -12,8 +12,8 @@ export interface AuthorizationRepositoryInterface {
   /**
    * 認可コードを発行する
    *
-   * @param authorizationRequest
+   * @param request
    * @returns {Promise<AuthorizationCodeEntity>}
    */
-  issueAuthorizationCode(authorizationRequest:  AuthorizationRequest.Request): Promise<AuthorizationCodeEntity>;
+  issueAuthorizationCode(request:  AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity>;
 }

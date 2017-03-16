@@ -14,13 +14,13 @@ import PasswordService from "../domain/auth/PasswordService";
 import UnauthorizedError from "../errors/UnauthorizedError";
 import {ResourceRepository} from "../repositories/ResourceRepository";
 import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
-import {AuthorizationRequest} from "../domain/auth/request/AuthorizationRequest";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {Logger} from "../infrastructures/Logger";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
+import {AuthRequest} from "../domain/auth/request/AuthRequest";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
@@ -108,7 +108,7 @@ export const issueAuthorizationCode = async (
   try {
     const environment = new Environment(event);
     const requestFactory = new RequestFactory(event, environment.isLocal());
-    const request = requestFactory.create();
+    const request: AuthRequest.IssueAuthorizationCodeRequest = requestFactory.create();
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
@@ -117,24 +117,9 @@ export const issueAuthorizationCode = async (
       return;
     }
 
-    const clientId    = request.client_id;
-    const state       = request.state;
-    const redirectUri = request.redirect_uri;
-    const subject     = request.subject;
-    const scopes      = request.scopes;
-
-    const requestBuilder = new AuthorizationRequest.RequestBuilder();
-    requestBuilder.clientId    = clientId;
-    requestBuilder.state       = state;
-    requestBuilder.redirectUri = redirectUri;
-    requestBuilder.subject     = subject;
-    requestBuilder.scopes      = scopes;
-
-    const authorizationRequest = requestBuilder.build();
-
     const authorizationRepository = new AuthorizationRepository();
 
-    const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(authorizationRequest);
+    const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(request);
 
     const responseBody = {
       code: authorizationCodeEntity.code,
