@@ -43,11 +43,11 @@ export default class AwsSdkFactory {
    * @returns {DocumentClient|DynamoDB.DocumentClient}
    */
   createDynamoDbDocumentClient(isLocal = false): DocumentClient {
-    if (isLocal === true) {
+    if (isLocal === true || process.env.IS_OFFLINE) {
       // DocumentClientOptionsというInterfaceで渡さないとダメみたい
       const documentClientOptions = {
         region: "localhost",
-        endpoint: "http://localhost:9000"
+        endpoint: "http://localhost:8000"
       };
 
       const dynamoDbDocumentClient = new AWS.DynamoDB.DocumentClient(documentClientOptions);

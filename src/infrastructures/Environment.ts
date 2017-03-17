@@ -29,7 +29,7 @@ export default class Environment<T extends LambdaEvent> {
    */
   isLocal(): boolean {
 
-    if (this.event.headers.host === "localhost:8000") {
+    if (process.env.IS_OFFLINE) {
       return true;
     }
 

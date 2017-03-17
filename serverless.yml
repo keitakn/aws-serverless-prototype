@@ -2,6 +2,8 @@ service: prototype
 
 plugins:
   - serverless-webpack
+  - serverless-offline
+  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -35,6 +37,13 @@ custom:
     resultTtlInSeconds: 0
   webpack: webpack.config.js
   webpackIncludeModules: true
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migration: true
+    migration:
+      dir: ./config/migrations
 
 functions:
   findClient:
