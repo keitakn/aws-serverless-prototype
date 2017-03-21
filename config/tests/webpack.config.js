@@ -41,13 +41,16 @@ module.exports = {
       {
         test:   /\.tsx?$/,
         loader: 'ts-loader',
+        query: {
+          configFileName: 'tsconfig.test.json'
+        }
       },
 
       {
         test:   /\.json$/,
         loader: 'json-loader',
       },
-    ],
+    ]
   },
 
   resolve: {
