@@ -42,7 +42,6 @@ export const create = async (
 
     const nowDateTime = new Date().getTime();
 
-
     const userBuilder = new UserEntity.Builder();
 
     userBuilder.subject = uuid.v4();
@@ -66,7 +65,7 @@ export const create = async (
     await userRepository.save(userEntity);
 
     const responseBody = {
-      id: userEntity.subject,
+      subject: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       password_hash: userEntity.passwordHash.passwordHash,
@@ -109,7 +108,7 @@ export const find = async (
       return;
     }
 
-    const userId = request.subject;
+    const subject = request.subject;
     const environment = new Environment(event);
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -119,10 +118,10 @@ export const find = async (
 
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
-    const userEntity = await userRepository.find(userId);
+    const userEntity = await userRepository.find(subject);
 
     const responseBody = {
-      id: userEntity.subject,
+      subject: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       name: userEntity.name,
