@@ -52,7 +52,7 @@ describe("CreateUser", () => {
       assert.equal(response.data.gender, "male");
       assert.equal(response.data.birthdate, "1990-01-01");
 
-      return UserTest.ApiClient.find(response.data.id, accessToken);
+      return UserTest.ApiClient.find(response.data.subject, accessToken);
     }).then((response) => {
       assert.equal(response.status, 200);
     });

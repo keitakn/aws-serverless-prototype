@@ -1,4 +1,4 @@
-import UserEntity from "../domain/user/UserEntity";
+import {UserEntity} from "../domain/user/UserEntity";
 import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {DynamoDB} from "aws-sdk";
@@ -26,15 +26,15 @@ export default class UserRepository implements UserRepositoryInterface {
   /**
    * ユーザーを取得する
    *
-   * @param userId
-   * @returns {Promise<UserEntity>}
+   * @param subject
+   * @returns {Promise<UserEntity.Entity>}
    */
-  find(userId: string): Promise<UserEntity> {
-    return new Promise<UserEntity>((resolve: Function, reject: Function) => {
+  find(subject: string): Promise<UserEntity.Entity> {
+    return new Promise<UserEntity.Entity>((resolve: Function, reject: Function) => {
       const params = {
         TableName: this.getUsersTableName(),
         Key: {
-          id: userId
+          id: subject
         }
       };
 
@@ -46,14 +46,19 @@ export default class UserRepository implements UserRepositoryInterface {
             return reject(new NotFoundError());
           }
 
-          const userEntity = new UserEntity(dbResponse.Item.id, dbResponse.Item.created_at);
-          userEntity.email = dbResponse.Item.email;
-          userEntity.emailVerified = dbResponse.Item.email_verified;
-          userEntity.passwordHash = new PasswordHash(dbResponse.Item.password_hash);
-          userEntity.name = dbResponse.Item.name;
-          userEntity.gender = dbResponse.Item.gender;
-          userEntity.birthdate = dbResponse.Item.birthdate;
-          userEntity.updatedAt = dbResponse.Item.updated_at;
+          const builder = new UserEntity.Builder();
+
+          builder.subject = dbResponse.Item.id;
+          builder.email = dbResponse.Item.email;
+          builder.emailVerified = dbResponse.Item.email_verified;
+          builder.passwordHash = new PasswordHash(dbResponse.Item.password_hash);
+          builder.name = dbResponse.Item.name;
+          builder.gender = dbResponse.Item.gender;
+          builder.birthdate = dbResponse.Item.birthdate;
+          builder.createdAt = dbResponse.Item.created_at;
+          builder.updatedAt = dbResponse.Item.updated_at;
+
+          const userEntity = builder.build();
 
           return resolve(userEntity);
         })
@@ -70,12 +75,12 @@ export default class UserRepository implements UserRepositoryInterface {
    * ユーザーを保存する
    *
    * @param userEntity
-   * @returns {Promise<UserEntity>}
+   * @returns {Promise<UserEntity.Entity>}
    */
-  async save(userEntity: UserEntity): Promise<UserEntity> {
+  async save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity> {
     try {
       const userCreateParams = {
-        id: userEntity.id,
+        id: userEntity.subject,
         email: userEntity.email,
         email_verified: userEntity.emailVerified,
         password_hash: userEntity.passwordHash.passwordHash,

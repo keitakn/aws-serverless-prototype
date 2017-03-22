@@ -19,7 +19,7 @@ describe("Authentication", () => {
   /**
    * テストに使うユーザーID
    */
-  let userId: string;
+  let subject: string;
 
   /**
    * 事前にトークンを取得しユーザーを作成する
@@ -47,7 +47,7 @@ describe("Authentication", () => {
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
     }).then((response) => {
-      userId = response.data.id;
+      subject = response.data.subject;
     });
   });
 
@@ -58,13 +58,13 @@ describe("Authentication", () => {
     const password = "password1234";
 
     const request = {
-      subject: userId,
+      subject: subject,
       password: password
     };
 
     return AuthTest.ApiClient.authentication(request).then((response) => {
       assert.equal(response.data.authenticated, true);
-      assert.equal(response.data.subject, userId);
+      assert.equal(response.data.subject, subject);
       assert.equal(response.data.claims.email, "keita@gmail.com");
       assert.equal(response.data.claims.email_verified, 0);
       assert.equal(response.data.claims.gender, "male");
@@ -77,11 +77,11 @@ describe("Authentication", () => {
    * ユーザーが存在しない
    */
   it("testFailUserDoseNotExist", () => {
-    const failUserId = "99999999-mono-9999-1234-mono99999999";
-    const password   = "password1234";
+    const failSubject = "99999999-mono-9999-1234-mono99999999";
+    const password    = "password1234";
 
     const request = {
-      subject: failUserId,
+      subject: failSubject,
       password: password
     };
 
@@ -99,7 +99,7 @@ describe("Authentication", () => {
     const password = "FailPassword";
 
     const request = {
-      subject: userId,
+      subject: subject,
       password: password
     };
 

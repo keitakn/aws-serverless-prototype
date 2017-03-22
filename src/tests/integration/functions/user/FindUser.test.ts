@@ -18,7 +18,7 @@ describe("FindUser", () => {
   /**
    * テストに使うユーザーID
    */
-  let userId: string;
+  let subject: string;
 
   /**
    * 事前にトークンを取得しユーザーを作成する
@@ -46,7 +46,7 @@ describe("FindUser", () => {
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
     }).then((response) => {
-      userId = response.data.id;
+      subject = response.data.subject;
     });
   });
 
@@ -54,7 +54,7 @@ describe("FindUser", () => {
    * 正常系のテストケース
    */
   it("testSuccess", () => {
-    return UserTest.ApiClient.find(userId, accessToken).then((response) => {
+    return UserTest.ApiClient.find(subject, accessToken).then((response) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.email, "keita@gmail.com");
       assert.equal(response.data.email_verified, 0);
@@ -69,9 +69,9 @@ describe("FindUser", () => {
    * ユーザーが存在しない
    */
   it("testFailUserDoseNotExist", () => {
-    const failUserId = "99999999-mono-9999-1234-mono99999999";
+    const failSubject = "99999999-mono-9999-1234-mono99999999";
 
-    return UserTest.ApiClient.find(failUserId, accessToken).catch((error) => {
+    return UserTest.ApiClient.find(failSubject, accessToken).catch((error) => {
       assert.equal(error.response.status, 404);
       assert.equal(error.response.data.code, 404);
     });
@@ -82,9 +82,9 @@ describe("FindUser", () => {
    * バリデーションエラー
    */
   it("testFailValidation", () => {
-    const failUserId = "subject";
+    const failSubject = "subject";
 
-    return UserTest.ApiClient.find(failUserId, accessToken).catch((error) => {
+    return UserTest.ApiClient.find(failSubject, accessToken).catch((error) => {
       assert.equal(error.response.status, 422);
       assert.equal(error.response.data.code, 422);
 

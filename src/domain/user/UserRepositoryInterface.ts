@@ -1,4 +1,4 @@
-import UserEntity from "./UserEntity";
+import {UserEntity} from "./UserEntity";
 
 /**
  * UserRepositoryInterface
@@ -12,15 +12,15 @@ export interface UserRepositoryInterface {
    * ユーザーを取得する
    *
    * @param userId
-   * @returns {Promise<UserEntity>}
+   * @returns {Promise<UserEntity.Entity>}
    */
-  find(userId: string): Promise<UserEntity>;
+  find(userId: string): Promise<UserEntity.Entity>;
 
   /**
    * ユーザーを保存する
    *
    * @param userEntity
-   * @returns {Promise<UserEntity>}
+   * @returns {Promise<UserEntity.Entity>}
    */
-  save(userEntity: UserEntity): Promise<UserEntity>;
+  save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity>;
 }

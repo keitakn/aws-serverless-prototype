@@ -5,7 +5,7 @@ import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
 import Environment from "../infrastructures/Environment";
-import UserEntity from "../domain/user/UserEntity";
+import {UserEntity} from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {UserValidationService} from "../domain/user/UserValidationService";
@@ -42,17 +42,19 @@ export const create = async (
 
     const nowDateTime = new Date().getTime();
 
-    const userEntity = new UserEntity(uuid.v4(), nowDateTime);
-    const passwordHash = PasswordService.generatePasswordHash(request.password);
+    const userBuilder = new UserEntity.Builder();
 
-    userEntity.email = request.email;
-    userEntity.emailVerified = 0;
-    userEntity.passwordHash = passwordHash;
-    userEntity.name = request.name;
-    userEntity.gender = request.gender;
-    userEntity.birthdate = request.birthdate;
-    userEntity.updatedAt = nowDateTime;
+    userBuilder.subject = uuid.v4();
+    userBuilder.email = request.email;
+    userBuilder.emailVerified = 0;
+    userBuilder.passwordHash = PasswordService.generatePasswordHash(request.password);
+    userBuilder.name = request.name;
+    userBuilder.gender = request.gender;
+    userBuilder.birthdate = request.birthdate;
+    userBuilder.createdAt = nowDateTime;
+    userBuilder.updatedAt = nowDateTime;
 
+    const userEntity = userBuilder.build();
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
         environment.isLocal()
@@ -63,7 +65,7 @@ export const create = async (
     await userRepository.save(userEntity);
 
     const responseBody = {
-      id: userEntity.id,
+      subject: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       password_hash: userEntity.passwordHash.passwordHash,
@@ -106,7 +108,7 @@ export const find = async (
       return;
     }
 
-    const userId = request.subject;
+    const subject = request.subject;
     const environment = new Environment(event);
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
@@ -116,10 +118,10 @@ export const find = async (
 
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
-    const userEntity = await userRepository.find(userId);
+    const userEntity = await userRepository.find(subject);
 
     const responseBody = {
-      id: userEntity.id,
+      subject: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       name: userEntity.name,
