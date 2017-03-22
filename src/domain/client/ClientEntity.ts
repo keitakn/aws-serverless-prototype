@@ -1,202 +1,360 @@
 /**
- * ClientEntityInterface
- *
- * @author keita-nishimoto
- * @since 2017-01-16
- */
-interface ClientEntityInterface {
-  id: number;
-  secret: string;
-  name: string;
-  developer: string;
-  applicationType: string;
-  redirectUris: [string];
-  grantTypes: [string];
-  scopes: [string];
-  createdAt: number;
-  updatedAt: number;
-}
-
-/**
  * ClientEntity
  *
  * @author keita-nishimoto
- * @since 2017-01-16
+ * @since 2017-03-22
  */
-export default class ClientEntity implements ClientEntityInterface {
+export namespace ClientEntity {
 
   /**
-   * クライアントシークレット
-   */
-  private _secret: string;
-
-  /**
-   * クライアント名
-   */
-  private _name: string;
-
-  /**
-   * 開発者
-   */
-  private _developer: string;
-
-  /**
-   * アプリケーションタイプ
-   */
-  private _applicationType: string;
-
-  /**
-   * リダイレクトURI
-   */
-  private _redirectUris: [string];
-
-  /**
-   * クライアントタイプ
-   */
-  private _grantTypes: [string];
-
-  /**
-   * スコープ
-   */
-  private _scopes: [string];
-
-  /**
-   * 更新日時
-   */
-  private _updatedAt: number;
-
-  /**
-   * constructor
+   * Builder
    *
-   * @param _id
-   * @param _createdAt
+   * @author keita-nishimoto
+   * @since 2017-03-22
    */
-  constructor(private _id: number, private _createdAt: number) {
+  export class Builder {
+    /**
+     * クライントID
+     */
+    private _clientId: number;
+
+    /**
+     * クライアントシークレット
+     */
+    private _clientSecret: string;
+
+    /**
+     * クライアント名
+     */
+    private _name: string;
+
+    /**
+     * 開発者
+     */
+    private _developer: string;
+
+    /**
+     * アプリケーションタイプ
+     */
+    private _applicationType: string;
+
+    /**
+     * リダイレクトURI
+     */
+    private _redirectUris: [string];
+
+    /**
+     * クライアントタイプ
+     */
+    private _grantTypes: [string];
+
+    /**
+     * スコープ
+     */
+    private _scopes: [string];
+
+    /**
+     * 作成日時
+     */
+    private _createdAt: number;
+
+    /**
+     * 更新日時
+     */
+    private _updatedAt: number;
+
+    /**
+     * @returns {number}
+     */
+    get clientId(): number {
+      return this._clientId;
+    }
+
+    /**
+     * @param value
+     */
+    set clientId(value: number) {
+      this._clientId = value;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get clientSecret(): string {
+      return this._clientSecret;
+    }
+
+    /**
+     * @param value
+     */
+    set clientSecret(value: string) {
+      this._clientSecret = value;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get name(): string {
+      return this._name;
+    }
+
+    /**
+     * @param value
+     */
+    set name(value: string) {
+      this._name = value;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get developer(): string {
+      return this._developer;
+    }
+
+    /**
+     * @param value
+     */
+    set developer(value: string) {
+      this._developer = value;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get applicationType(): string {
+      return this._applicationType;
+    }
+
+    /**
+     * @param value
+     */
+    set applicationType(value: string) {
+      this._applicationType = value;
+    }
+
+    /**
+     * @returns {[string]}
+     */
+    get redirectUris(): [string] {
+      return this._redirectUris;
+    }
+
+    /**
+     * @param value
+     */
+    set redirectUris(value: [string]) {
+      this._redirectUris = value;
+    }
+
+    /**
+     * @returns {[string]}
+     */
+    get grantTypes(): [string] {
+      return this._grantTypes;
+    }
+
+    /**
+     * @param value
+     */
+    set grantTypes(value: [string]) {
+      this._grantTypes = value;
+    }
+
+    /**
+     * @returns {[string]}
+     */
+    get scopes(): [string] {
+      return this._scopes;
+    }
+
+    /**
+     * @param value
+     */
+    set scopes(value: [string]) {
+      this._scopes = value;
+    }
+
+    /**
+     * @returns {number}
+     */
+    get createdAt(): number {
+      return this._createdAt;
+    }
+
+    /**
+     * @param value
+     */
+    set createdAt(value: number) {
+      this._createdAt = value;
+    }
+
+    /**
+     * @returns {number}
+     */
+    get updatedAt(): number {
+      return this._updatedAt;
+    }
+
+    /**
+     * @param value
+     */
+    set updatedAt(value: number) {
+      this._updatedAt = value;
+    }
+
+    /**
+     * @returns {ClientEntity.Entity}
+     */
+    build(): Entity {
+      return new Entity(this);
+    }
   }
 
   /**
-   * @returns {number}
+   * Entity
+   *
+   * @author keita-nishimoto
+   * @since 2017-03-22
    */
-  get id(): number {
-    return this._id;
-  }
+  export class Entity {
 
-  /**
-   * @returns {number}
-   */
-  get createdAt(): number {
-    return this._createdAt;
-  }
+    /**
+     * クライントID
+     */
+    private _clientId: number;
 
-  /**
-   * @returns {string}
-   */
-  get secret(): string {
-    return this._secret;
-  }
+    /**
+     * クライアントシークレット
+     */
+    private _clientSecret: string;
 
-  /**
-   * @param value
-   */
-  set secret(value: string) {
-    this._secret = value;
-  }
+    /**
+     * クライアント名
+     */
+    private _name: string;
 
-  /**
-   * @returns {string}
-   */
-  get name(): string {
-    return this._name;
-  }
+    /**
+     * 開発者
+     */
+    private _developer: string;
 
-  /**
-   * @param value
-   */
-  set name(value: string) {
-    this._name = value;
-  }
+    /**
+     * アプリケーションタイプ
+     */
+    private _applicationType: string;
 
-  /**
-   * @returns {string}
-   */
-  get developer(): string {
-    return this._developer;
-  }
+    /**
+     * リダイレクトURI
+     */
+    private _redirectUris: [string];
 
-  /**
-   * @param value
-   */
-  set developer(value: string) {
-    this._developer = value;
-  }
+    /**
+     * クライアントタイプ
+     */
+    private _grantTypes: [string];
 
-  /**
-   * @returns {string}
-   */
-  get applicationType(): string {
-    return this._applicationType;
-  }
+    /**
+     * スコープ
+     */
+    private _scopes: [string];
 
-  /**
-   * @param value
-   */
-  set applicationType(value: string) {
-    this._applicationType = value;
-  }
+    /**
+     * 作成日時
+     */
+    private _createdAt: number;
 
-  /**
-   * @returns {[string]}
-   */
-  get redirectUris(): [string] {
-    return this._redirectUris;
-  }
+    /**
+     * 更新日時
+     */
+    private _updatedAt: number;
 
-  /**
-   * @param value
-   */
-  set redirectUris(value: [string]) {
-    this._redirectUris = value;
-  }
+    /**
+     * constructor
+     *
+     * @param builder
+     */
+    constructor(builder: Builder) {
+      this._clientId        = builder.clientId;
+      this._clientSecret    = builder.clientSecret;
+      this._name            = builder.name;
+      this._developer       = builder.developer;
+      this._applicationType = builder.applicationType;
+      this._redirectUris    = builder.redirectUris;
+      this._grantTypes      = builder.grantTypes;
+      this._scopes          = builder.scopes;
+      this._createdAt       = builder.createdAt;
+      this._updatedAt       = builder.updatedAt;
+    }
 
-  /**
-   * @returns {[string]}
-   */
-  get grantTypes(): [string] {
-    return this._grantTypes;
-  }
+    /**
+     * @returns {number}
+     */
+    get clientId(): number {
+      return this._clientId;
+    }
 
-  /**
-   * @param value
-   */
-  set grantTypes(value: [string]) {
-    this._grantTypes = value;
-  }
+    /**
+     * @returns {string}
+     */
+    get clientSecret(): string {
+      return this._clientSecret;
+    }
 
-  /**
-   * @returns {[string]}
-   */
-  get scopes(): [string] {
-    return this._scopes;
-  }
+    /**
+     * @returns {string}
+     */
+    get name(): string {
+      return this._name;
+    }
 
-  /**
-   * @param value
-   */
-  set scopes(value: [string]) {
-    this._scopes = value;
-  }
+    /**
+     * @returns {string}
+     */
+    get developer(): string {
+      return this._developer;
+    }
 
-  /**
-   * @returns {number}
-   */
-  get updatedAt(): number {
-    return this._updatedAt;
-  }
+    /**
+     * @returns {string}
+     */
+    get applicationType(): string {
+      return this._applicationType;
+    }
 
-  /**
-   * @param value
-   */
-  set updatedAt(value: number) {
-    this._updatedAt = value;
+    /**
+     * @returns {[string]}
+     */
+    get redirectUris(): [string] {
+      return this._redirectUris;
+    }
+
+    /**
+     * @returns {[string]}
+     */
+    get grantTypes(): [string] {
+      return this._grantTypes;
+    }
+
+    /**
+     * @returns {[string]}
+     */
+    get scopes(): [string] {
+      return this._scopes;
+    }
+
+    /**
+     * @returns {number}
+     */
+    get createdAt(): number {
+      return this._createdAt;
+    }
+
+    /**
+     * @returns {number}
+     */
+    get updatedAt(): number {
+      return this._updatedAt;
+    }
   }
 }
