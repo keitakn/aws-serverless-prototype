@@ -92,7 +92,7 @@ export class ResourceValidationService {
    * @param request
    * @returns {Object}
    */
-  static destroyValidate(request: Object):Object {
+  static destroyValidate(request: Object): Object {
     return ResourceValidationService.findValidate(request);
   }
 }
