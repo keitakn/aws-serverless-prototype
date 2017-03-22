@@ -26,10 +26,10 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * リソースを取得する
    *
    * @param resourceId
-   * @returns {Promise<ResourceEntity>}
+   * @returns {Promise<ResourceEntity.Entity>}
    */
-  find(resourceId: string): Promise<ResourceEntity> {
-    return new Promise<ResourceEntity>((resolve: Function, reject: Function) => {
+  find(resourceId: string): Promise<ResourceEntity.Entity> {
+    return new Promise<ResourceEntity.Entity>((resolve: Function, reject: Function) => {
       const params = {
         TableName: this.getResourcesTableName(),
         Key: {
@@ -45,12 +45,16 @@ export class ResourceRepository implements ResourceRepositoryInterface {
             return reject(new NotFoundError());
           }
 
-          const resourceEntity = new ResourceEntity(dbResponse.Item.id, dbResponse.Item.created_at);
-          resourceEntity.httpMethod = dbResponse.Item.http_method;
-          resourceEntity.resourcePath = dbResponse.Item.resource_path;
-          resourceEntity.name = dbResponse.Item.name;
-          resourceEntity.scopes = dbResponse.Item.scopes;
-          resourceEntity.updatedAt = dbResponse.Item.updated_at;
+          const builder = new ResourceEntity.Builder();
+          builder.resourceId   = dbResponse.Item.id;
+          builder.httpMethod   = dbResponse.Item.http_method;
+          builder.resourcePath = dbResponse.Item.resource_path;
+          builder.name         = dbResponse.Item.name;
+          builder.scopes       = dbResponse.Item.scopes;
+          builder.createdAt    = dbResponse.Item.created_at;
+          builder.updatedAt    = dbResponse.Item.updated_at;
+
+          const resourceEntity = builder.build();
 
           resolve(resourceEntity);
         })
@@ -67,12 +71,12 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * リソースを保存する
    *
    * @param resourceEntity
-   * @returns {Promise<ResourceEntity>}
+   * @returns {Promise<ResourceEntity.Entity>}
    */
-  async save(resourceEntity: ResourceEntity): Promise<ResourceEntity> {
+  async save(resourceEntity: ResourceEntity.Entity): Promise<ResourceEntity.Entity> {
     try {
       const resourceCreateParams = {
-        id: resourceEntity.id,
+        id: resourceEntity.resourceId,
         http_method: resourceEntity.httpMethod,
         resource_path: resourceEntity.resourcePath,
         name: resourceEntity.name,

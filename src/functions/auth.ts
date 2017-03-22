@@ -3,7 +3,7 @@ import * as lambda from "aws-lambda";
 import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
-import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
+import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
 import Statement from "../domain/auth/aws/iam/Statement";
 import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
 import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
@@ -236,9 +236,9 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * AuthleteのイントロスペクションAPIからアクセストークンを取得する
  *
  * @param accessToken
- * @returns {Promise<AccessTokenEntity>}
+ * @returns {Promise<AccessTokenEntity.Entity>}
  */
-const introspect = async (accessToken: string): Promise<AccessTokenEntity> => {
+const introspect = async (accessToken: string): Promise<AccessTokenEntity.Entity> => {
   const accessTokenRepository = new AccessTokenRepository();
 
   return await accessTokenRepository.fetch(accessToken);
@@ -253,7 +253,7 @@ const introspect = async (accessToken: string): Promise<AccessTokenEntity> => {
  */
 const hasRequiredScope = async (
   arn: string,
-  accessTokenEntity: AccessTokenEntity
+  accessTokenEntity: AccessTokenEntity.Entity
 ): Promise<boolean> => {
   try {
     const resource = extractMethodAndPath(arn);

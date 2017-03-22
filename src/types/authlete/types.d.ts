@@ -49,7 +49,7 @@ export namespace AuthleteAPI {
   /**
    * OAuth 2.0 Response Type
    */
-  type ResponseTypes = "NONE | CODE | TOKEN | ID_TOKEN | CODE_TOKEN | CODE_ID_TOKEN | ID_TOKEN_TOKEN | CODE_ID_TOKEN_TOKEN";
+  type ResponseTypes = "NONE" | "CODE" | "TOKEN" | "ID_TOKEN" | "CODE_TOKEN" | "CODE_ID_TOKEN" | "ID_TOKEN_TOKEN" | "CODE_ID_TOKEN_TOKEN";
 
   /**
    * IntrospectionResponse

@@ -30,7 +30,7 @@ describe("FindResource", () => {
       const resourceFindResponse = await ResourceTest.ApiClient.find(resourceId);
 
       assert.equal(resourceFindResponse.status, 200);
-      assert.equal(resourceFindResponse.data.id, "POST/tests");
+      assert.equal(resourceFindResponse.data.resource_id, "POST/tests");
       assert.equal(resourceFindResponse.data.http_method, "POST");
       assert.equal(resourceFindResponse.data.resource_path, "tests");
       assert.equal(resourceFindResponse.data.name, "テストに利用するリソース");

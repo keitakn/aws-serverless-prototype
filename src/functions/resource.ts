@@ -47,13 +47,16 @@ export const create = async (
     const nowDateTime = new Date().getTime();
     const resourceId  = `${httpMethod}/${resourcePath}`;
 
-    const resourceEntity = new ResourceEntity(resourceId, nowDateTime);
-    resourceEntity.httpMethod = httpMethod;
-    resourceEntity.resourcePath = resourcePath;
-    resourceEntity.name = name;
-    resourceEntity.scopes = scopes;
-    resourceEntity.updatedAt = nowDateTime;
+    const builder = new ResourceEntity.Builder();
+    builder.resourceId = resourceId;
+    builder.httpMethod = httpMethod;
+    builder.resourcePath = resourcePath;
+    builder.name = name;
+    builder.scopes = scopes;
+    builder.createdAt = nowDateTime;
+    builder.updatedAt = nowDateTime;
 
+    const resourceEntity = builder.build();
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
         environment.isLocal()
@@ -64,7 +67,7 @@ export const create = async (
     await resourceRepository.save(resourceEntity);
 
     const responseBody = {
-      id: resourceEntity.id,
+      resource_id: resourceEntity.resourceId,
       http_method: resourceEntity.httpMethod,
       resource_path: resourceEntity.resourcePath,
       name: resourceEntity.name,
@@ -119,7 +122,7 @@ export const find = async (
 
     const resourceEntity = await resourceRepository.find(resourceId);
     const responseBody = {
-      id: resourceEntity.id,
+      resource_id: resourceEntity.resourceId,
       http_method: resourceEntity.httpMethod,
       resource_path: resourceEntity.resourcePath,
       name: resourceEntity.name,

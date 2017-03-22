@@ -38,8 +38,8 @@ export const find = async (
     const clientEntity = await clientRepository.find(clientId);
 
     const responseBody = {
-      client_id: clientEntity.id,
-      client_secret: clientEntity.secret,
+      client_id: clientEntity.clientId,
+      client_secret: clientEntity.clientSecret,
       client_name: clientEntity.name,
       developer: clientEntity.developer,
       application_type: clientEntity.applicationType,

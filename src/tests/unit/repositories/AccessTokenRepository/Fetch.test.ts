@@ -1,7 +1,7 @@
 import {assert} from "chai";
 import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
-import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
+import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
 /**
@@ -22,13 +22,13 @@ describe("Fetch", () => {
     const accessTokenRepository = new AccessTokenRepository();
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       return accessTokenRepository.fetch(response.accessToken);
-    }).then((accessTokenEntity: AccessTokenEntity) => {
+    }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(
         accessTokenEntity.introspectionResponse.clientId,
         1957483863470
       );
 
-      assert.equal(accessTokenEntity.token.length, 43);
+      assert.equal(accessTokenEntity.accessToken.length, 43);
     });
   });
 
@@ -40,7 +40,7 @@ describe("Fetch", () => {
     const accessToken = "PO65AdqbwHI896SjX4FIH6eeV6cNRSe_QC9W45mCPV0";
     const accessTokenRepository = new AccessTokenRepository();
 
-    return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity) => {
+    return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(
         accessTokenEntity.extractIntrospectionAction(),
         AuthleteAPIConstant.IntrospectionActions.BAD_REQUEST

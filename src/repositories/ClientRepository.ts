@@ -1,6 +1,6 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
-import ClientEntity from "../domain/client/ClientEntity";
+import {ClientEntity} from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
@@ -19,9 +19,9 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * クライアントを取得する
    *
    * @param clientId
-   * @returns {Promise<ClientEntity>}
+   * @returns {Promise<ClientEntity.Entity>}
    */
-  async find(clientId: number): Promise<ClientEntity> {
+  async find(clientId: number): Promise<ClientEntity.Entity> {
     return await this.fetchFromAPi(clientId);
   }
 
@@ -29,9 +29,9 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * Authlete APIからクライアントを取得する
    *
    * @param clientId
-   * @returns {Promise<ClientEntity>}
+   * @returns {Promise<ClientEntity.Entity>}
    */
-  private async fetchFromAPi(clientId: number): Promise<ClientEntity> {
+  private async fetchFromAPi(clientId: number): Promise<ClientEntity.Entity> {
     try {
       const requestConfig = {
         auth: {
@@ -46,22 +46,25 @@ export default class ClientRepository implements ClientRepositoryInterface {
       );
 
       const clientResponse: AuthleteAPI.ClientResponse = axiosResponse.data;
-      const clientEntity = new ClientEntity(clientResponse.clientId, clientResponse.createdAt);
-      clientEntity.secret          = clientResponse.clientSecret;
-      clientEntity.name            = clientResponse.clientName;
-      clientEntity.developer       = clientResponse.developer;
-      clientEntity.applicationType = clientResponse.applicationType;
-      clientEntity.redirectUris    = clientResponse.redirectUris;
-      clientEntity.grantTypes      = clientResponse.grantTypes;
-      clientEntity.updatedAt       = clientResponse.modifiedAt;
+      const builder = new ClientEntity.Builder();
+
+      builder.clientId        = clientResponse.clientId;
+      builder.clientSecret    = clientResponse.clientSecret;
+      builder.name            = clientResponse.clientName;
+      builder.developer       = clientResponse.developer;
+      builder.applicationType = clientResponse.applicationType;
+      builder.redirectUris    = clientResponse.redirectUris;
+      builder.grantTypes      = clientResponse.grantTypes;
+      builder.createdAt       = clientResponse.createdAt;
+      builder.updatedAt       = clientResponse.modifiedAt;
 
       if ("extension" in clientResponse) {
         if (clientResponse.extension != null) {
-          clientEntity.scopes = clientResponse.extension.requestableScopes;
+          builder.scopes = clientResponse.extension.requestableScopes;
         }
       }
 
-      return clientEntity;
+      return builder.build();
     } catch (error) {
       if (error.response != null) {
         if (error.response.status === 404) {

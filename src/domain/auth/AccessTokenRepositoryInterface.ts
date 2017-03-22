@@ -1,4 +1,4 @@
-import AccessTokenEntity from "./AccessTokenEntity";
+import {AccessTokenEntity} from "./AccessTokenEntity";
 
 /**
  * AccessTokenRepository
@@ -13,5 +13,5 @@ export interface AccessTokenRepositoryInterface {
    *
    * @param accessToken
    */
-  fetch(accessToken: string): Promise<AccessTokenEntity>;
+  fetch(accessToken: string): Promise<AccessTokenEntity.Entity>;
 }
