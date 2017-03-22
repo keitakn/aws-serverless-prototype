@@ -12,17 +12,17 @@ export interface ResourceRepositoryInterface {
    * リソースを保存する
    *
    * @param resourceEntity
-   * @returns {Promise<ResourceEntity>}
+   * @returns {Promise<ResourceEntity.Entity>}
    */
-  save(resourceEntity: ResourceEntity): Promise<ResourceEntity>;
+  save(resourceEntity: ResourceEntity.Entity): Promise<ResourceEntity.Entity>;
 
   /**
    * リソースを取得する
    *
    * @param resourceId
-   * @returns {Promise<ResourceEntity>}
+   * @returns {Promise<ResourceEntity.Entity>}
    */
-  find(resourceId: string): Promise<ResourceEntity>;
+  find(resourceId: string): Promise<ResourceEntity.Entity>;
 
   /**
    * リソースを削除する

@@ -33,7 +33,7 @@ describe("CreateResource", () => {
       const createResourceResponse = await ResourceTest.ApiClient.create(createRequest);
 
       assert.equal(createResourceResponse.status, 201);
-      assert.equal(createResourceResponse.data.id, "POST/tests");
+      assert.equal(createResourceResponse.data.resource_id, "POST/tests");
       assert.equal(createResourceResponse.data.http_method, createRequest.http_method);
       assert.equal(createResourceResponse.data.resource_path, createRequest.resource_path);
       assert.equal(createResourceResponse.data.name, createRequest.name);
