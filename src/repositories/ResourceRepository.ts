@@ -69,8 +69,8 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * @param resourceEntity
    * @returns {Promise<ResourceEntity>}
    */
-  save(resourceEntity: ResourceEntity): Promise<ResourceEntity> {
-    return new Promise<ResourceEntity>((resolve: Function, reject: Function) => {
+  async save(resourceEntity: ResourceEntity): Promise<ResourceEntity> {
+    try {
       const resourceCreateParams = {
         id: resourceEntity.id,
         http_method: resourceEntity.httpMethod,
@@ -86,19 +86,15 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         Item: resourceCreateParams
       };
 
-      this.dynamoDbDocumentClient
-        .put(params)
-        .promise()
-        .then(() => {
-          return resolve(resourceEntity);
-        })
-        .catch((error: Error) => {
-          Logger.critical(error);
-          return reject(
-            new InternalServerError(error.message)
-          );
-        });
-    });
+      await this.dynamoDbDocumentClient.put(params).promise();
+
+      return resourceEntity;
+    } catch (error) {
+      Logger.critical(error);
+      return Promise.reject(
+        new InternalServerError(error.message)
+      );
+    }
   }
 
   /**
@@ -107,8 +103,8 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * @param resourceId
    * @returns {Promise<void>}
    */
-  destroy(resourceId: string): Promise<void> {
-    return new Promise<void>((resolve: Function, reject: Function) => {
+  async destroy(resourceId: string): Promise<void> {
+    try {
       const params = {
         TableName: this.getResourcesTableName(),
         Key: {
@@ -116,17 +112,15 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         }
       };
 
-      this.dynamoDbDocumentClient
-        .delete(params)
-        .promise()
-        .then(() => {
-          return resolve();
-        })
-        .catch((error) => {
-          Logger.critical(error);
-          return reject(error);
-        });
-    });
+      await this.dynamoDbDocumentClient.delete(params).promise();
+
+      return Promise.resolve();
+    } catch (error) {
+      Logger.critical(error);
+      return Promise.reject(
+        new InternalServerError(error.message)
+      );
+    }
   }
 
   /**

@@ -72,8 +72,8 @@ export default class UserRepository implements UserRepositoryInterface {
    * @param userEntity
    * @returns {Promise<UserEntity>}
    */
-  save(userEntity: UserEntity): Promise<UserEntity> {
-    return new Promise<UserEntity>((resolve: Function, reject: Function) => {
+  async save(userEntity: UserEntity): Promise<UserEntity> {
+    try {
       const userCreateParams = {
         id: userEntity.id,
         email: userEntity.email,
@@ -91,19 +91,15 @@ export default class UserRepository implements UserRepositoryInterface {
         Item: userCreateParams
       };
 
-      this.dynamoDbDocumentClient
-        .put(params)
-        .promise()
-        .then(() => {
-          return resolve(userEntity);
-        })
-        .catch((error) => {
-          Logger.critical(error);
-          return reject(
-            new InternalServerError(error.message)
-          );
-        });
-    });
+      await this.dynamoDbDocumentClient.put(params).promise();
+
+      return userEntity;
+    } catch (error) {
+      Logger.critical(error);
+      return Promise.reject(
+        new InternalServerError(error.message)
+      );
+    }
   }
 
   /**
