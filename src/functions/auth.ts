@@ -59,11 +59,11 @@ export const authentication = async (
       return;
     }
 
-    const userId = request.subject;
+    const subject = request.subject;
     const password = request.password;
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
-    const userEntity = await userRepository.find(userId);
+    const userEntity = await userRepository.find(subject);
     const requestPassword = PasswordService.generatePasswordHash(password);
     if (userEntity.verifyPassword(requestPassword) === false) {
       throw new UnauthorizedError();
@@ -71,7 +71,7 @@ export const authentication = async (
 
     const responseBody = {
       authenticated: true,
-      subject: userId,
+      subject: subject,
       claims: {
         name: userEntity.name,
         email: userEntity.email,

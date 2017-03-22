@@ -5,7 +5,7 @@ import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
 import Environment from "../infrastructures/Environment";
-import UserEntity from "../domain/user/UserEntity";
+import {UserEntity} from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {UserValidationService} from "../domain/user/UserValidationService";
@@ -42,17 +42,20 @@ export const create = async (
 
     const nowDateTime = new Date().getTime();
 
-    const userEntity = new UserEntity(uuid.v4(), nowDateTime);
-    const passwordHash = PasswordService.generatePasswordHash(request.password);
 
-    userEntity.email = request.email;
-    userEntity.emailVerified = 0;
-    userEntity.passwordHash = passwordHash;
-    userEntity.name = request.name;
-    userEntity.gender = request.gender;
-    userEntity.birthdate = request.birthdate;
-    userEntity.updatedAt = nowDateTime;
+    const userBuilder = new UserEntity.Builder();
 
+    userBuilder.subject = uuid.v4();
+    userBuilder.email = request.email;
+    userBuilder.emailVerified = 0;
+    userBuilder.passwordHash = PasswordService.generatePasswordHash(request.password);
+    userBuilder.name = request.name;
+    userBuilder.gender = request.gender;
+    userBuilder.birthdate = request.birthdate;
+    userBuilder.createdAt = nowDateTime;
+    userBuilder.updatedAt = nowDateTime;
+
+    const userEntity = userBuilder.build();
     if (environment.isLocal() === true) {
       dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
         environment.isLocal()
@@ -63,7 +66,7 @@ export const create = async (
     await userRepository.save(userEntity);
 
     const responseBody = {
-      id: userEntity.id,
+      id: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       password_hash: userEntity.passwordHash.passwordHash,
@@ -119,7 +122,7 @@ export const find = async (
     const userEntity = await userRepository.find(userId);
 
     const responseBody = {
-      id: userEntity.id,
+      id: userEntity.subject,
       email: userEntity.email,
       email_verified: userEntity.emailVerified,
       name: userEntity.name,
