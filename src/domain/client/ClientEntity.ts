@@ -1,3 +1,5 @@
+import {AuthleteAPI} from "../../types/authlete/types";
+
 /**
  * ClientEntity
  *
@@ -36,7 +38,7 @@ export namespace ClientEntity {
     /**
      * アプリケーションタイプ
      */
-    private _applicationType: string;
+    private _applicationType: AuthleteAPI.ApplicationTypes;
 
     /**
      * リダイレクトURI
@@ -46,7 +48,7 @@ export namespace ClientEntity {
     /**
      * クライアントタイプ
      */
-    private _grantTypes: [string];
+    private _grantTypes: [AuthleteAPI.GrantTypes];
 
     /**
      * スコープ
@@ -120,16 +122,16 @@ export namespace ClientEntity {
     }
 
     /**
-     * @returns {string}
+     * @returns {AuthleteAPI.ApplicationTypes}
      */
-    get applicationType(): string {
+    get applicationType(): AuthleteAPI.ApplicationTypes {
       return this._applicationType;
     }
 
     /**
      * @param value
      */
-    set applicationType(value: string) {
+    set applicationType(value: AuthleteAPI.ApplicationTypes) {
       this._applicationType = value;
     }
 
@@ -148,16 +150,16 @@ export namespace ClientEntity {
     }
 
     /**
-     * @returns {[string]}
+     * @returns {[AuthleteAPI.GrantTypes]}
      */
-    get grantTypes(): [string] {
+    get grantTypes(): [AuthleteAPI.GrantTypes] {
       return this._grantTypes;
     }
 
     /**
      * @param value
      */
-    set grantTypes(value: [string]) {
+    set grantTypes(value: [AuthleteAPI.GrantTypes]) {
       this._grantTypes = value;
     }
 
@@ -242,7 +244,7 @@ export namespace ClientEntity {
     /**
      * アプリケーションタイプ
      */
-    private _applicationType: string;
+    private _applicationType: AuthleteAPI.ApplicationTypes;
 
     /**
      * リダイレクトURI
@@ -252,7 +254,7 @@ export namespace ClientEntity {
     /**
      * クライアントタイプ
      */
-    private _grantTypes: [string];
+    private _grantTypes: [AuthleteAPI.GrantTypes];
 
     /**
      * スコープ
@@ -316,9 +318,9 @@ export namespace ClientEntity {
     }
 
     /**
-     * @returns {string}
+     * @returns {AuthleteAPI.ApplicationTypes}
      */
-    get applicationType(): string {
+    get applicationType(): AuthleteAPI.ApplicationTypes {
       return this._applicationType;
     }
 
@@ -330,9 +332,9 @@ export namespace ClientEntity {
     }
 
     /**
-     * @returns {[string]}
+     * @returns {[AuthleteAPI.GrantTypes]}
      */
-    get grantTypes(): [string] {
+    get grantTypes(): [AuthleteAPI.GrantTypes] {
       return this._grantTypes;
     }
 
