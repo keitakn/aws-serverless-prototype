@@ -1,7 +1,7 @@
 import {assert} from "chai";
 import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
-import AccessTokenEntity from "../../../../domain/auth/AccessTokenEntity";
+import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 
@@ -33,8 +33,8 @@ describe("FindUser", () => {
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       const accessTokenRepository = new AccessTokenRepository();
       return accessTokenRepository.fetch(response.accessToken);
-    }).then((accessTokenEntity: AccessTokenEntity) => {
-      accessToken = accessTokenEntity.token;
+    }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
+      accessToken = accessTokenEntity.accessToken;
 
       const createUserRequest = {
         email: "keita@gmail.com",

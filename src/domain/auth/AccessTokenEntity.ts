@@ -1,96 +1,155 @@
 import {AuthleteAPI} from "../../types/authlete/types";
 
 /**
- * AccessTokenEntityInterface
- *
- * @author keita-nishimoto
- * @since 2017-01-23
- */
-interface AccessTokenEntityInterface {
-  token: string;
-  introspectionResponse: AuthleteAPI.IntrospectionResponse;
-  tokenResponse: AuthleteAPI.TokenResponse;
-  extractIntrospectionAction(): string;
-  extractTokenAction(): string;
-}
-
-/**
  * AccessTokenEntity
  *
  * @author keita-nishimoto
- * @since 2017-01-23
- * @todo Authleteのレスポンスは書き換えられたくないのでもっと良い実装がないか検討 @keita-nishimoto
+ * @since 2017-03-22
  */
-export default class AccessTokenEntity implements AccessTokenEntityInterface {
+export namespace AccessTokenEntity {
 
   /**
-   * /auth/token APIのレスポンス
-   */
-  private _tokenResponse: AuthleteAPI.TokenResponse;
-
-  /**
-   * AuthleteのイントロスペクションAPIのレスポンス
-   */
-  private _introspectionResponse: AuthleteAPI.IntrospectionResponse;
-
-  /**
-   * constructor
+   * Builder
    *
-   * @param _token
+   * @author keita-nishimoto
+   * @since 2017-03-22
    */
-  constructor(private _token: string) {
+  export class Builder {
+    /**
+     * アクセストークン
+     */
+    private _accessToken: string;
+
+    /**
+     * /auth/token APIのレスポンス
+     */
+    private _tokenResponse: AuthleteAPI.TokenResponse;
+
+    /**
+     * AuthleteのイントロスペクションAPIのレスポンス
+     */
+    private _introspectionResponse: AuthleteAPI.IntrospectionResponse;
+
+    /**
+     * @returns {string}
+     */
+    get accessToken(): string {
+      return this._accessToken;
+    }
+
+    /**
+     * @param value
+     */
+    set accessToken(value: string) {
+      this._accessToken = value;
+    }
+
+    /**
+     * @returns {AuthleteAPI.TokenResponse}
+     */
+    get tokenResponse(): AuthleteAPI.TokenResponse {
+      return this._tokenResponse;
+    }
+
+    /**
+     * @param value
+     */
+    set tokenResponse(value: AuthleteAPI.TokenResponse) {
+      this._tokenResponse = value;
+    }
+
+    /**
+     * @returns {AuthleteAPI.IntrospectionResponse}
+     */
+    get introspectionResponse(): AuthleteAPI.IntrospectionResponse {
+      return this._introspectionResponse;
+    }
+
+    /**
+     * @param value
+     */
+    set introspectionResponse(value: AuthleteAPI.IntrospectionResponse) {
+      this._introspectionResponse = value;
+    }
+
+    /**
+     * @returns {AccessTokenEntity.Entity}
+     */
+    build(): Entity {
+      return new Entity(this);
+    }
   }
 
   /**
-   * @returns {string}
-   */
-  get token(): string {
-    return this._token;
-  }
-
-  /**
-   * @param value
-   */
-  set introspectionResponse(value: AuthleteAPI.IntrospectionResponse) {
-    this._introspectionResponse = value;
-  }
-
-  /**
-   * @returns {AuthleteAPI.IntrospectionResponse}
-   */
-  get introspectionResponse(): AuthleteAPI.IntrospectionResponse {
-    return this._introspectionResponse;
-  }
-
-  /**
-   * @returns {AuthleteAPI.TokenResponse}
-   */
-  get tokenResponse(): AuthleteAPI.TokenResponse {
-    return this._tokenResponse;
-  }
-
-  /**
-   * @param value
-   */
-  set tokenResponse(value: AuthleteAPI.TokenResponse) {
-    this._tokenResponse = value;
-  }
-
-  /**
-   * AuthleteのイントロスペクションAPI.actionから返却すべきHTTPステータスコードを取り出す
+   * Entity
    *
-   * @returns {AuthleteAPI.IntrospectionActions}
+   * @author keita-nishimoto
+   * @since 2017-03-22
    */
-  extractIntrospectionAction(): AuthleteAPI.IntrospectionActions {
-    return this._introspectionResponse.action;
-  }
+  export class Entity {
+    /**
+     * アクセストークン
+     */
+    private _accessToken: string;
 
-  /**
-   * トークン発行時にクライアントに返すべきアクションを取り出す
-   *
-   * @returns {AuthleteAPI.TokenResponseActions}
-   */
-  extractTokenAction(): AuthleteAPI.TokenResponseActions {
-    return this.tokenResponse.action;
+    /**
+     * /auth/token APIのレスポンス
+     */
+    private _tokenResponse: AuthleteAPI.TokenResponse;
+
+    /**
+     * AuthleteのイントロスペクションAPIのレスポンス
+     */
+    private _introspectionResponse: AuthleteAPI.IntrospectionResponse;
+
+    /**
+     * constructor
+     *
+     * @param builder
+     */
+    constructor(builder: Builder) {
+      this._accessToken           = builder.accessToken;
+      this._introspectionResponse = builder.introspectionResponse;
+      this._tokenResponse         = builder.tokenResponse;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get accessToken(): string {
+      return this._accessToken;
+    }
+
+    /**
+     * @returns {AuthleteAPI.IntrospectionResponse}
+     */
+    get introspectionResponse(): AuthleteAPI.IntrospectionResponse {
+      return this._introspectionResponse;
+    }
+
+    /**
+     * @returns {AuthleteAPI.TokenResponse}
+     */
+    get tokenResponse(): AuthleteAPI.TokenResponse {
+      return this._tokenResponse;
+    }
+
+    /**
+     * AuthleteのイントロスペクションAPI.actionから返却すべきHTTPステータスコードを取り出す
+     *
+     * @returns {AuthleteAPI.IntrospectionActions}
+     */
+    extractIntrospectionAction(): AuthleteAPI.IntrospectionActions {
+      return this.introspectionResponse.action;
+    }
+
+    /**
+     * トークン発行時にクライアントに返すべきアクションを取り出す
+     *
+     * @returns {AuthleteAPI.TokenResponseActions}
+     */
+    extractTokenAction(): AuthleteAPI.TokenResponseActions {
+      return this.tokenResponse.action;
+    }
   }
 }

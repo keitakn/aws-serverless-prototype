@@ -1,7 +1,7 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
-import AccessTokenEntity from "../domain/auth/AccessTokenEntity";
+import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
 import BadRequestError from "../errors/BadRequestError";
 import InternalServerError from "../errors/InternalServerError";
 import {Logger} from "../infrastructures/Logger";
@@ -22,9 +22,9 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * AuthleteのイントロスペクションAPIを利用する
    *
    * @param accessToken
-   * @returns {Promise<AccessTokenEntity>}
+   * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async fetch(accessToken: string): Promise<AccessTokenEntity> {
+  async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
     try {
       const headers = {
         "Content-Type": "application/json"
@@ -54,12 +54,12 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
       }
 
       const introspectionResponse: AuthleteAPI.IntrospectionResponse = response.data;
-      const accessTokenEntity = new AccessTokenEntity(
-        accessToken
-      );
-      accessTokenEntity.introspectionResponse = introspectionResponse;
 
-      return accessTokenEntity;
+      const builder = new AccessTokenEntity.Builder();
+      builder.accessToken = accessToken;
+      builder.introspectionResponse = introspectionResponse;
+
+      return builder.build();
     } catch (error) {
       Logger.critical(error);
       return Promise.reject(error);
@@ -71,9 +71,9 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    *
    * @param authorizationCode
    * @param redirectUri
-   * @returns {Promise<AccessTokenEntity>}
+   * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity> {
+  async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
     try {
       const headers = {
         "Content-Type": "application/json"
@@ -103,8 +103,11 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
       }
 
       const tokenResponse: AuthleteAPI.TokenResponse = response.data;
-      const accessTokenEntity = new AccessTokenEntity(tokenResponse.accessToken);
-      accessTokenEntity.tokenResponse = tokenResponse;
+      const builder = new AccessTokenEntity.Builder();
+      builder.accessToken = tokenResponse.accessToken;
+      builder.tokenResponse = tokenResponse;
+
+      const accessTokenEntity = builder.build();
 
       if (accessTokenEntity.extractTokenAction() !== "OK") {
         switch (accessTokenEntity.extractTokenAction()) {
