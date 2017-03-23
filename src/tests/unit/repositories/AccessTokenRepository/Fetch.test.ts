@@ -1,9 +1,9 @@
 import {assert} from "chai";
-import axios from "axios";
 import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
 
 /**
  * AccessTokenRepository.fetchのテスト
@@ -20,7 +20,7 @@ describe("Fetch", () => {
       scopes: ["email"]
     };
 
-    const axiosInstance = axios.create();
+    const axiosInstance = AuthleteHttpClientFactory.create();
     const accessTokenRepository = new AccessTokenRepository(axiosInstance);
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       return accessTokenRepository.fetch(response.accessToken);
@@ -40,7 +40,7 @@ describe("Fetch", () => {
    */
   it("testFailAccessTokenDoesNotExist", () => {
     const accessToken = "PO65AdqbwHI896SjX4FIH6eeV6cNRSe_QC9W45mCPV0";
-    const axiosInstance = axios.create();
+    const axiosInstance = AuthleteHttpClientFactory.create();
     const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
     return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity.Entity) => {
