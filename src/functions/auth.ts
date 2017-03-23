@@ -23,10 +23,10 @@ import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 import {AuthRequest} from "../domain/auth/request/AuthRequest";
 import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
-let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
-const axiosInstance = AuthleteHttpClientFactory.create();
-
 sourceMapSupport.install();
+
+const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
  * 認証を行う
@@ -47,12 +47,6 @@ export const authentication = async (
     const environment = new Environment<lambda.APIGatewayEvent>(event);
     const requestFactory = new RequestFactory(event, environment.isLocal());
     const request = requestFactory.create();
-
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     const validateResultObject = AuthValidationService.authenticationValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {

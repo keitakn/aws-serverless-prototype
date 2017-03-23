@@ -10,9 +10,9 @@ import {RequestFactory} from "../factories/RequestFactory";
 import {TokenRequest} from "../domain/token/request/TokenRequest";
 import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
-const axiosInstance = AuthleteHttpClientFactory.create();
-
 sourceMapSupport.install();
+
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
  * 認可コードからアクセストークンを発行する

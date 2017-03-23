@@ -10,9 +10,9 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 
-let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
-
 sourceMapSupport.install();
+
+const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
 /**
  * リソースを作成する
@@ -57,11 +57,7 @@ export const create = async (
     builder.updatedAt = nowDateTime;
 
     const resourceEntity = builder.build();
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
+
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
 
     await resourceRepository.save(resourceEntity);
@@ -101,8 +97,6 @@ export const find = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-
     const request = extractRequest(event);
     const validateResultObject = ResourceValidationService.findValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
@@ -114,11 +108,6 @@ export const find = async (
     const resourceId = request.resource_id.replace(".", "/");
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     const resourceEntity = await resourceRepository.find(resourceId);
     const responseBody = {
@@ -156,8 +145,6 @@ export const destroy = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-
     const request = extractRequest(event);
     const validateResultObject = ResourceValidationService.destroyValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
@@ -169,11 +156,6 @@ export const destroy = async (
     const resourceId = request.resource_id.replace(".", "/");
 
     const resourceRepository = new ResourceRepository(dynamoDbDocumentClient);
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     await resourceRepository.destroy(resourceId);
 

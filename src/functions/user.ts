@@ -14,7 +14,7 @@ import {RequestFactory} from "../factories/RequestFactory";
 
 sourceMapSupport.install();
 
-let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
 
 /**
  * ユーザーを作成する
@@ -55,11 +55,6 @@ export const create = async (
     userBuilder.updatedAt = nowDateTime;
 
     const userEntity = userBuilder.build();
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     const userRepository = new UserRepository(dynamoDbDocumentClient);
     await userRepository.save(userEntity);
@@ -109,12 +104,6 @@ export const find = async (
     }
 
     const subject = request.subject;
-    const environment = new Environment(event);
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     const userRepository = new UserRepository(dynamoDbDocumentClient);
 
