@@ -6,8 +6,11 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {ClientValidationService} from "../domain/client/ClientValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {ClientRequest} from "../domain/client/request/ClientRequest";
+import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
 sourceMapSupport.install();
+
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
  * クライアントを1件取得する
@@ -33,7 +36,7 @@ export const find = async (
     }
 
     const clientId = request.client_id;
-    const clientRepository = new ClientRepository();
+    const clientRepository = new ClientRepository(axiosInstance);
 
     const clientEntity = await clientRepository.find(clientId);
 

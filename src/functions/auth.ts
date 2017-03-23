@@ -113,7 +113,7 @@ export const issueAuthorizationCode = async (
       return;
     }
 
-    const authorizationRepository = new AuthorizationRepository();
+    const authorizationRepository = new AuthorizationRepository(axiosInstance);
 
     const authorizationCodeEntity = await authorizationRepository.issueAuthorizationCode(request);
 

@@ -1,10 +1,9 @@
-import axios from "axios";
+import {AxiosInstance} from "axios";
 import {AxiosResponse} from "axios";
 import {AuthorizationCodeEntity} from "../domain/auth/AuthorizationCodeEntity";
 import InternalServerError from "../errors/InternalServerError";
 import BadRequestError from "../errors/BadRequestError";
 import {Logger} from "../infrastructures/Logger";
-import {Authlete} from "../config/Authlete";
 import {AuthorizationRepositoryInterface} from "../domain/auth/AuthorizationRepositoryInterface";
 import {AuthleteAPI} from "../types/authlete/types";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
@@ -19,6 +18,14 @@ import {AuthRequest} from "../domain/auth/request/AuthRequest";
 export class AuthorizationRepository implements AuthorizationRepositoryInterface {
 
   /**
+   * constructor
+   *
+   * @param axiosInstance
+   */
+  constructor(private axiosInstance: AxiosInstance) {
+  }
+
+  /**
    * 認可コードを発行する
    *
    * @param request
@@ -28,27 +35,14 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
     try {
       const authorizationResponse = await this.issueAuthorizationTicket(request);
 
-      const headers = {
-        "Content-Type": "application/json"
-      };
-
       const requestData = {
         ticket: authorizationResponse.ticket,
         subject: request.subject
       };
 
-      const requestConfig = {
-        headers: headers,
-        auth: {
-          username: Authlete.getApiKey(),
-          password: Authlete.getApiSecret()
-        }
-      };
-
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/authorization/issue",
-        requestData,
-        requestConfig
+        requestData
       );
 
       if (response.status !== 200) {
@@ -88,10 +82,6 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
    */
   private async issueAuthorizationTicket(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthleteAPI.AuthorizationResponse> {
     try {
-      const headers = {
-        "Content-Type": "application/json"
-      };
-
       const clientId    = request.client_id;
       const state       = request.state;
       const redirectUri = request.redirect_uri;
@@ -107,18 +97,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
         parameters: `client_id=${clientId}&response_type=code&state=${state}&scope=${scopes}&redirect_uri=${redirectUri}`
       };
 
-      const requestConfig = {
-        headers: headers,
-        auth: {
-          username: Authlete.getApiKey(),
-          password: Authlete.getApiSecret()
-        }
-      };
-
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/authorization",
-        requestData,
-        requestConfig
+        requestData
       );
 
       if (response.status !== 200) {
