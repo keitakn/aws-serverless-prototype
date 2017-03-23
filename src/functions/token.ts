@@ -8,8 +8,11 @@ import {TokenValidationService} from "../domain/token/TokenValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 import {TokenRequest} from "../domain/token/request/TokenRequest";
+import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
 sourceMapSupport.install();
+
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
  * 認可コードからアクセストークンを発行する
@@ -39,7 +42,7 @@ export const issueTokenFromCode = async (
     const authorizationCode = request.code;
     const redirectUri       = request.redirect_uri;
 
-    const accessTokenRepository = new AccessTokenRepository();
+    const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
     const accessTokenEntity = await accessTokenRepository.issue(authorizationCode, redirectUri);
 

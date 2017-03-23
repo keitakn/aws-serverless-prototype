@@ -1,11 +1,10 @@
-import axios from "axios";
+import {AxiosInstance} from "axios";
 import {AxiosResponse} from "axios";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
 import BadRequestError from "../errors/BadRequestError";
 import InternalServerError from "../errors/InternalServerError";
 import {Logger} from "../infrastructures/Logger";
-import {Authlete} from "../config/Authlete";
 import {AuthleteAPI} from "../types/authlete/types";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 
@@ -18,6 +17,14 @@ import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 export default class AccessTokenRepository implements AccessTokenRepositoryInterface {
 
   /**
+   * constructor
+   *
+   * @param axiosInstance
+   */
+  constructor(private axiosInstance: AxiosInstance) {
+  }
+
+  /**
    * アクセストークンを取得する
    * AuthleteのイントロスペクションAPIを利用する
    *
@@ -26,26 +33,13 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    */
   async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
     try {
-      const headers = {
-        "Content-Type": "application/json"
-      };
-
       const requestData = {
         token: accessToken
       };
 
-      const requestConfig = {
-        headers: headers,
-        auth: {
-          username: Authlete.getApiKey(),
-          password: Authlete.getApiSecret()
-        }
-      };
-
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/introspection",
-        requestData,
-        requestConfig
+        requestData
       );
 
       if (response.status !== 200) {
@@ -75,26 +69,13 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    */
   async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
     try {
-      const headers = {
-        "Content-Type": "application/json"
-      };
-
       const requestData = {
         parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
       };
 
-      const requestConfig = {
-        headers: headers,
-        auth: {
-          username: Authlete.getApiKey(),
-          password: Authlete.getApiSecret()
-        }
-      };
-
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/token",
-        requestData,
-        requestConfig
+        requestData
       );
 
       if (response.status !== 200) {
@@ -109,7 +90,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
 
       const accessTokenEntity = builder.build();
 
-      if (accessTokenEntity.extractTokenAction() !== "OK") {
+      if (accessTokenEntity.extractTokenAction() !== AuthleteAPIConstant.TokenResponseActions.OK) {
         switch (accessTokenEntity.extractTokenAction()) {
           case AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST:
           case AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT:

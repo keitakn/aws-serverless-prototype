@@ -5,6 +5,7 @@ import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
+import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
 
 /**
  * 認証のテスト
@@ -32,7 +33,8 @@ describe("Authentication", () => {
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
-      const accessTokenRepository = new AccessTokenRepository();
+      const axiosInstance = AuthleteHttpClientFactory.create();
+      const accessTokenRepository = new AccessTokenRepository(axiosInstance);
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       accessToken = accessTokenEntity.accessToken;

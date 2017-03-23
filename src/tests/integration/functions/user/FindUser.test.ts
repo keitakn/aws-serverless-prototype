@@ -4,6 +4,7 @@ import AccessTokenRepository from "../../../../repositories/AccessTokenRepositor
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
 
 /**
  * ユーザー取得のテスト
@@ -31,7 +32,8 @@ describe("FindUser", () => {
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
-      const accessTokenRepository = new AccessTokenRepository();
+      const axiosInstance = AuthleteHttpClientFactory.create();
+      const accessTokenRepository = new AccessTokenRepository(axiosInstance);
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       accessToken = accessTokenEntity.accessToken;

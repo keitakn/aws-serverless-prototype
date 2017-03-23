@@ -21,10 +21,12 @@ import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 import {AuthRequest} from "../domain/auth/request/AuthRequest";
-
-let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
 sourceMapSupport.install();
+
+const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
  * 認証を行う
@@ -45,12 +47,6 @@ export const authentication = async (
     const environment = new Environment<lambda.APIGatewayEvent>(event);
     const requestFactory = new RequestFactory(event, environment.isLocal());
     const request = requestFactory.create();
-
-    if (environment.isLocal() === true) {
-      dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient(
-        environment.isLocal()
-      );
-    }
 
     const validateResultObject = AuthValidationService.authenticationValidate(request);
     if (Object.keys(validateResultObject).length !== 0) {
@@ -239,7 +235,7 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @returns {Promise<AccessTokenEntity.Entity>}
  */
 const introspect = async (accessToken: string): Promise<AccessTokenEntity.Entity> => {
-  const accessTokenRepository = new AccessTokenRepository();
+  const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
   return await accessTokenRepository.fetch(accessToken);
 };
