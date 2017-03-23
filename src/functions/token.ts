@@ -1,6 +1,5 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import axios from "axios";
 import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
@@ -9,6 +8,9 @@ import {TokenValidationService} from "../domain/token/TokenValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 import {TokenRequest} from "../domain/token/request/TokenRequest";
+import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
+
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 sourceMapSupport.install();
 
@@ -40,7 +42,6 @@ export const issueTokenFromCode = async (
     const authorizationCode = request.code;
     const redirectUri       = request.redirect_uri;
 
-    const axiosInstance = axios.create();
     const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
     const accessTokenEntity = await accessTokenRepository.issue(authorizationCode, redirectUri);

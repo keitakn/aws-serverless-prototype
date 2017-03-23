@@ -1,6 +1,5 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import axios from "axios";
 import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
@@ -22,8 +21,10 @@ import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
 import {AuthRequest} from "../domain/auth/request/AuthRequest";
+import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
 
 let dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const axiosInstance = AuthleteHttpClientFactory.create();
 
 sourceMapSupport.install();
 
@@ -240,7 +241,6 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @returns {Promise<AccessTokenEntity.Entity>}
  */
 const introspect = async (accessToken: string): Promise<AccessTokenEntity.Entity> => {
-  const axiosInstance = axios.create();
   const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
   return await accessTokenRepository.fetch(accessToken);
