@@ -1,10 +1,9 @@
-import axios from "axios";
+import {AxiosInstance} from "axios";
 import {AxiosResponse} from "axios";
 import {ClientEntity} from "../domain/client/ClientEntity";
 import {ClientRepositoryInterface} from "../domain/client/ClientRepositoryInterface";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
-import {Authlete} from "../config/Authlete";
 import {AuthleteAPI} from "../types/authlete/types";
 
 /**
@@ -14,6 +13,14 @@ import {AuthleteAPI} from "../types/authlete/types";
  * @since 2017-01-16
  */
 export default class ClientRepository implements ClientRepositoryInterface {
+
+  /**
+   * constructor
+   *
+   * @param axiosInstance
+   */
+  constructor(private axiosInstance: AxiosInstance) {
+  }
 
   /**
    * クライアントを取得する
@@ -33,16 +40,8 @@ export default class ClientRepository implements ClientRepositoryInterface {
    */
   private async fetchFromAPi(clientId: number): Promise<ClientEntity.Entity> {
     try {
-      const requestConfig = {
-        auth: {
-          username: Authlete.getApiKey(),
-          password: Authlete.getApiSecret()
-        }
-      };
-
-      const axiosResponse: AxiosResponse = await axios.get(
-        `https://api.authlete.com/api/client/get/${clientId}`,
-        requestConfig
+      const axiosResponse: AxiosResponse = await this.axiosInstance.get(
+        `https://api.authlete.com/api/client/get/${clientId}`
       );
 
       const clientResponse: AuthleteAPI.ClientResponse = axiosResponse.data;
