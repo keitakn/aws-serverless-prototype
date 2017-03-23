@@ -1,3 +1,8 @@
+import axios from "axios";
+import {AxiosInstance} from "axios";
+import {AxiosAdapter} from "axios";
+import {Authlete} from "../../config/Authlete";
+
 /**
  * TestUtil
  * テストに利用する汎用ライブラリ（大きくなってきたら分離する）
@@ -22,5 +27,28 @@ export class TestUtil {
     }
 
     return gatewayUri;
+  }
+
+  /**
+   * モック用のAxiosInstance（HTTPクライアント）を生成する
+   *
+   * @param mockAdapter
+   * @returns {AxiosInstance}
+   */
+  static createMockAxiosInstance(mockAdapter: AxiosAdapter): AxiosInstance {
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    const requestConfig = {
+      headers: headers,
+      auth: {
+        username: Authlete.getApiKey(),
+        password: Authlete.getApiSecret()
+      },
+      adapter: mockAdapter
+    };
+
+    return axios.create(requestConfig);
   }
 }
