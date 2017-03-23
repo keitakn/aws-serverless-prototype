@@ -90,7 +90,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
 
       const accessTokenEntity = builder.build();
 
-      if (accessTokenEntity.extractTokenAction() !== "OK") {
+      if (accessTokenEntity.extractTokenAction() !== AuthleteAPIConstant.TokenResponseActions.OK) {
         switch (accessTokenEntity.extractTokenAction()) {
           case AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST:
           case AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT:
