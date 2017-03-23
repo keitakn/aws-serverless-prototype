@@ -1,4 +1,5 @@
 import {assert} from "chai";
+import axios from "axios";
 import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
@@ -19,7 +20,8 @@ describe("Fetch", () => {
       scopes: ["email"]
     };
 
-    const accessTokenRepository = new AccessTokenRepository();
+    const axiosInstance = axios.create();
+    const accessTokenRepository = new AccessTokenRepository(axiosInstance);
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
@@ -38,7 +40,8 @@ describe("Fetch", () => {
    */
   it("testFailAccessTokenDoesNotExist", () => {
     const accessToken = "PO65AdqbwHI896SjX4FIH6eeV6cNRSe_QC9W45mCPV0";
-    const accessTokenRepository = new AccessTokenRepository();
+    const axiosInstance = axios.create();
+    const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
     return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(

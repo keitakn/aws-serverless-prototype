@@ -1,4 +1,4 @@
-import axios from "axios";
+import {AxiosInstance} from "axios";
 import {AxiosResponse} from "axios";
 import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
@@ -16,6 +16,14 @@ import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
  * @since 2017-01-23
  */
 export default class AccessTokenRepository implements AccessTokenRepositoryInterface {
+
+  /**
+   * constructor
+   *
+   * @param axiosInstance
+   */
+  constructor(private axiosInstance: AxiosInstance) {
+  }
 
   /**
    * アクセストークンを取得する
@@ -42,7 +50,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         }
       };
 
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/introspection",
         requestData,
         requestConfig
@@ -91,7 +99,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
         }
       };
 
-      const response: AxiosResponse = await axios.post(
+      const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/token",
         requestData,
         requestConfig

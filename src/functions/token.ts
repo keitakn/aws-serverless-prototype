@@ -1,5 +1,6 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
+import axios from "axios";
 import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
@@ -39,7 +40,8 @@ export const issueTokenFromCode = async (
     const authorizationCode = request.code;
     const redirectUri       = request.redirect_uri;
 
-    const accessTokenRepository = new AccessTokenRepository();
+    const axiosInstance = axios.create();
+    const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
     const accessTokenEntity = await accessTokenRepository.issue(authorizationCode, redirectUri);
 

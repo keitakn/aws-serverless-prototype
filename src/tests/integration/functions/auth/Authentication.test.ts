@@ -1,4 +1,5 @@
 import {assert} from "chai";
+import axios from "axios";
 import {AuthTest} from "../../../lib/AuthTest";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
@@ -32,7 +33,8 @@ describe("Authentication", () => {
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
-      const accessTokenRepository = new AccessTokenRepository();
+      const axiosInstance = axios.create();
+      const accessTokenRepository = new AccessTokenRepository(axiosInstance);
       return accessTokenRepository.fetch(response.accessToken);
     }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       accessToken = accessTokenEntity.accessToken;

@@ -1,5 +1,6 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
+import axios from "axios";
 import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
@@ -239,7 +240,8 @@ const extractAccessToken = (authorizationHeader: string): string => {
  * @returns {Promise<AccessTokenEntity.Entity>}
  */
 const introspect = async (accessToken: string): Promise<AccessTokenEntity.Entity> => {
-  const accessTokenRepository = new AccessTokenRepository();
+  const axiosInstance = axios.create();
+  const accessTokenRepository = new AccessTokenRepository(axiosInstance);
 
   return await accessTokenRepository.fetch(accessToken);
 };
