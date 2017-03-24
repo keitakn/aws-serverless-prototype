@@ -24,4 +24,6 @@ admin.env
 .env
 tmp
 .webpack
-.tests
+
+### Test Coverage Report
+.nyc_output

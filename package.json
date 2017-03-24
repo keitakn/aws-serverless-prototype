@@ -5,6 +5,7 @@
   "scripts": {
     "test": "mocha -t 30000 -R nyan --compilers ts:ts-node/register",
     "test:local": "IS_LOCAL=true mocha -t 30000 --compilers ts:ts-node/register",
+    "test:coverage": "IS_LOCAL=true nyc --extension .ts mocha -t 30000 --compilers ts:ts-node/register",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
     "migrate": "serverless dynamodb migrate",
@@ -29,6 +30,7 @@
     "jsonschema": "^1.1.1",
     "mocha": "^3.2.0",
     "node-inspector": "^0.12.10",
+    "nyc": "^10.1.2",
     "serverless": "^1.9.0",
     "serverless-dynamodb-local": "^0.2.19",
     "serverless-offline": "^3.10.3",
