@@ -1,5 +1,6 @@
 import {assert} from "chai";
 import {ResourceTest} from "../../../lib/ResourceTest";
+import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 
 /**
  * リソース作成のテスト

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {TestUtil} from "./TestUtil";
+import {ResourceRequest} from "../../domain/resource/request/ResourceRequest";
 
 /**
  * Resource系APIのテスト用ライブラリ

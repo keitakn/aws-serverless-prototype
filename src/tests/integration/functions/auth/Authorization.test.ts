@@ -3,6 +3,7 @@ import {AuthTest} from "../../../lib/AuthTest";
 import {ClientTest} from "../../../lib/ClientTest";
 import {ResourceTest} from "../../../lib/ResourceTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 
 /**
  * 認可のテスト
