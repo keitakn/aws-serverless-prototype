@@ -6,6 +6,7 @@
     "test": "mocha -t 30000 -R nyan --compilers ts:ts-node/register",
     "test:local": "IS_LOCAL=true mocha -t 30000 --compilers ts:ts-node/register",
     "test:coverage": "IS_LOCAL=true nyc --extension .ts mocha -t 30000 --compilers ts:ts-node/register",
+    "coverage:report:html": "nyc report --reporter=html",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
     "migrate": "serverless dynamodb migrate",
