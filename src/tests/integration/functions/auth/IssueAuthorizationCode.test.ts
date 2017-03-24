@@ -1,9 +1,6 @@
-import * as mocha from "mocha";
 import {assert} from "chai";
 import {AuthTest} from "../../../lib/AuthTest";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
-
-typeof mocha;
 
 /**
  * 認可コード発行のテスト
