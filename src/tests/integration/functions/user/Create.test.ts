@@ -2,6 +2,7 @@ import {assert} from "chai";
 import {AuthTest} from "../../../lib/AuthTest"
 import {UserTest} from "../../../lib/UserTest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {UserRequest} from "../../../../domain/user/request/UserRequest";
 
 /**
  * ユーザー作成のテスト

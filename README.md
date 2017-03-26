@@ -198,11 +198,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 
 ## ローカル環境でデバッグを行う方法
 
-[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考に必要なテーブルをローカル内のDynamoDBに作成して下さい。
-
-※DynamoDBのポートは必ず9000で起動する必要があります。
-
-また、ローカルでデバッガーを利用する為には [こちらの記事](http://qiita.com/keita-nishimoto/items/9c27bfcd1e67c0dc4ad1) を参考にして下さい。
+[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考にして下さい。
 
 ## AWS services used
 
@@ -245,7 +241,7 @@ Done in 2.35s.
 もし [TSLint](https://palantir.github.io/tslint/) のルールに違反する内容が含まれる場合は下記のようにエラーが表示されます。
 
 ```
-yarn run v0.19.1
+yarn run v0.21.3
 $ tslint -c tslint.json src/**/*.ts
 
 src/functions/auth.ts[73, 8]: Missing semicolon
@@ -265,58 +261,54 @@ info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this comm
 
 #### AWS上でIntegrationTestを実行する
 
-- webpackを利用してテストコードをbuildします。以下のコマンドを実行して下さい。
-
-```bash
-yarn run build:test
-```
-
 - 以下のコマンドを実行しテストを実行します。
 
 ```bash
-yarn run test .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+yarn run test -- src/tests/integration/functions/token/IssueTokenFromCode.test.ts
 ```
 
-この例では IssueAuthorizationCode を指定して実行しています。
+この例では IssueTokenFromCode を指定して実行しています。
 
-IntegrationTestは実際にHTTPクライアントを用いてAWS APIGatewayにリクエストを送信している為、実行時間は長めになります。
+IntegrationTestは実際にHTTPクライアントを用いてAWS API Gatewayにリクエストを送信している為、実行時間は長めになります。
 
-その為、-t でタイムアウトのオプションを設定しています。
+その為、-t でタイムアウトのオプションを長めに設定しています。
 
 特定のテストケースだけ実行したい場合は下記のようにオプション指定で実行します。
 
 ```bash
-yarn run test -- -g testFailRedirectUriNotRegistered .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+yarn run test -- src/tests/integration/functions/token/IssueTokenFromCode.test.ts -g testFailRedirectUriDoesNotMatch
 ```
 
-上記の例では "testFailRedirectUriNotRegistered" というテストケースのみ実行しています。
+上記の例では "testFailRedirectUriDoesNotMatch" というテストケースのみ実行しています。
 
 - 小ネタ
 
 テストの実行結果をかわいくする為に "-R nyan" を指定しています。テストの実行結果を表示する画面にねこちゃんが出現します。
 
 ```
- 3   -_-__,------,
- 0   -_-__|  /\_/\
- 0   -_-_~|_( ^ .^)
-     -_-_ ""  ""
+ 4   -_-_-_,------,
+ 0   -_-_-_|   /\_/\
+ 0   -_-_-^|__( ^ .^)
+     -_-_-  ""  ""
 
-  3 passing (4s)
+  4 passing (6s)
+
+Done in 9.03s.
 ```
 
 #### ローカルサーバ上でIntegrationTestを実行する
 
 - ローカルサーバを起動します。
 
-```bash
-serverless webpack serve
-```
+詳しい起動方法に関しては [こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考にして下さい。
 
 - 以下のコマンドでテストを実行します。
 
 ```bash
-IS_LOCAL=true yarn run test .tests/integration/functions/auth/IssueAuthorizationCode.test.js
+yarn run test:local -- src/tests/integration/**/*.test.ts
 ```
+
+この例では src/tests/integration 配下のテストコードを全て実行しています。
 
 ### UnitTest
 
@@ -324,4 +316,28 @@ IS_LOCAL=true yarn run test .tests/integration/functions/auth/IssueAuthorization
 
 テストコードは src/tests/unit 配下に作成します。
 
-実行手順等はIntegrationTestと同様なので省略します。
+- 以下のコマンドでテストを実行します。
+
+```bash
+yarn run test:local -- src/tests/unit/**/*.test.ts
+```
+
+この例では src/tests/unit 配下のテストコードを全て実行しています。
+
+#### UnitTestでコードカバレッジを出力する
+
+- 以下のコマンドを実行します。
+
+```bash
+yarn run test:coverage -- src/tests/unit/**/*.test.ts
+```
+
+テストの実行画面にカバレッジレポートが出力されます。
+
+これをHTMLで閲覧する為にはさらに以下のコマンドを実行します。
+
+```bash
+yarn run coverage:report:html
+```
+
+これを実行するとプロジェクトルートのcoverageディレクトリにHTMLで出力されるので、ブラウザ上で確認する事が可能です。

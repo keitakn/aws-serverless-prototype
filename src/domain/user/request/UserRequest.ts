@@ -5,7 +5,7 @@
  * @author keita-nishimoto
  * @since 2017-03-13
  */
-namespace UserRequest {
+export namespace UserRequest {
   /**
    * ユーザー作成のリクエスト
    */

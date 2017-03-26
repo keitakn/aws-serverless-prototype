@@ -11,6 +11,7 @@ import {SuccessResponse} from "../domain/SuccessResponse";
 import {UserValidationService} from "../domain/user/UserValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
+import {UserRequest} from "../domain/user/request/UserRequest";
 
 sourceMapSupport.install();
 

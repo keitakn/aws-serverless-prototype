@@ -9,6 +9,7 @@ import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {RequestFactory} from "../factories/RequestFactory";
+import {ResourceRequest} from "../domain/resource/request/ResourceRequest";
 
 sourceMapSupport.install();
 

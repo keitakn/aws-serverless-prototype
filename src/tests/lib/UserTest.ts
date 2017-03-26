@@ -2,6 +2,7 @@ import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AxiosError} from "axios";
 import {TestUtil} from "./TestUtil";
+import {UserRequest} from "../../domain/user/request/UserRequest";
 
 /**
  * User系APIのテスト用ライブラリ

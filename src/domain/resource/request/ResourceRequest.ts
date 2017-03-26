@@ -5,7 +5,7 @@
  * @author keita-nishimoto
  * @since 2017-03-13
  */
-namespace ResourceRequest {
+export namespace ResourceRequest {
   /**
    * リソース作成のリクエスト
    */
