@@ -36,7 +36,7 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 以下は.bash_profileへの設定例です。
 
 ```bash
-echo export SLS_DEBUG=true >> ~/.bash_profile
+echo export SLS_DEBUG=* >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
