@@ -7,7 +7,6 @@ import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
 import Statement from "../domain/auth/aws/iam/Statement";
 import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
 import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
-import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import UserRepository from "../repositories/UserRepository";
 import PasswordService from "../domain/auth/PasswordService";
@@ -44,8 +43,7 @@ export const authentication = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment<lambda.APIGatewayEvent>(event);
-    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const requestFactory = new RequestFactory(event);
     const request = requestFactory.create();
 
     const validateResultObject = AuthValidationService.authenticationValidate(request);
@@ -102,8 +100,7 @@ export const issueAuthorizationCode = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const requestFactory = new RequestFactory(event);
     const request: AuthRequest.IssueAuthorizationCodeRequest = requestFactory.create();
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);

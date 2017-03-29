@@ -4,7 +4,6 @@ import * as uuid from "uuid";
 import ErrorResponse from "../domain/ErrorResponse";
 import AwsSdkFactory from "../factories/AwsSdkFactory";
 import UserRepository from "../repositories/UserRepository";
-import Environment from "../infrastructures/Environment";
 import {UserEntity} from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -30,8 +29,7 @@ export const create = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const requestFactory = new RequestFactory(event);
     const request = requestFactory.create();
 
     const validateResultObject = UserValidationService.createValidate(request);
