@@ -1,6 +1,5 @@
 import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import Environment from "../infrastructures/Environment";
 import AccessTokenRepository from "../repositories/AccessTokenRepository";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -28,8 +27,7 @@ export const issueTokenFromCode = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const requestFactory = new RequestFactory(event);
     const request: TokenRequest.IssueTokenFromCodeRequest = requestFactory.create();
 
     const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);

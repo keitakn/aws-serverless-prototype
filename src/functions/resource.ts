@@ -4,7 +4,6 @@ import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceValidationService} from "../domain/resource/ResourceValidationService";
 import {ResourceRepository} from "../repositories/ResourceRepository";
-import Environment from "../infrastructures/Environment";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
@@ -29,8 +28,7 @@ export const create = async (
   callback: lambda.Callback
 ): Promise<void> => {
   try {
-    const environment = new Environment(event);
-    const requestFactory = new RequestFactory(event, environment.isLocal());
+    const requestFactory = new RequestFactory(event);
     const request: ResourceRequest.CreateRequest = requestFactory.create();
 
     const validateResultObject = ResourceValidationService.createValidate(request);
