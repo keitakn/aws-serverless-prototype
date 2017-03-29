@@ -1,6 +1,7 @@
 import * as AWS from "aws-sdk";
 import {DynamoDB} from "aws-sdk";
 import DocumentClient = DynamoDB.DocumentClient;
+import Environment from "../infrastructures/Environment";
 
 /**
  * AwsSdkFactory
@@ -40,23 +41,19 @@ export default class AwsSdkFactory {
   /**
    * DynamoDB.DocumentClientを生成する
    *
-   * @returns {DocumentClient|DynamoDB.DocumentClient}
+   * @returns {DynamoDB.DocumentClient|DocumentClient}
    */
-  createDynamoDbDocumentClient(isLocal = false): DocumentClient {
-    if (isLocal === true || process.env.IS_OFFLINE) {
+  createDynamoDbDocumentClient(): DocumentClient {
+    if (Environment.isLocal() === true) {
       // DocumentClientOptionsというInterfaceで渡さないとダメみたい
       const documentClientOptions = {
         region: "localhost",
         endpoint: "http://localhost:8000"
       };
 
-      const dynamoDbDocumentClient = new AWS.DynamoDB.DocumentClient(documentClientOptions);
-
-      return dynamoDbDocumentClient;
+      return new AWS.DynamoDB.DocumentClient(documentClientOptions);
     }
 
-    const dynamoDbDocumentClient = new AWS.DynamoDB.DocumentClient();
-
-    return dynamoDbDocumentClient;
+    return new AWS.DynamoDB.DocumentClient();
   }
 }
