@@ -36,7 +36,7 @@ serverless config credentials --provider aws --key <your-key-here> --secret <you
 以下は.bash_profileへの設定例です。
 
 ```bash
-echo export SLS_DEBUG=true >> ~/.bash_profile
+echo export SLS_DEBUG=* >> ~/.bash_profile
 echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
@@ -198,7 +198,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 
 ## ローカル環境でデバッグを行う方法
 
-[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考にして下さい。
+[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Local-Debugging) を参考にして下さい。
 
 ## AWS services used
 

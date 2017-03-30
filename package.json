@@ -9,8 +9,10 @@
     "coverage:report:html": "nyc report --reporter=html",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "webpack",
+    "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
     "server": "serverless offline --location .webpack",
+    "debug": "node-debug sls offline --location .webpack",
     "deploy": "serverless deploy"
   },
   "author": "keita-nishimoto",
