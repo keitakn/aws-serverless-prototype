@@ -13,7 +13,7 @@ export interface AuthorizationRepositoryInterface {
    * 認可コードを発行する
    *
    * @param request
-   * @returns {Promise<AuthorizationCodeEntity>}
+   * @returns {Promise<AuthorizationCodeEntity.Entity>}
    */
-  issueAuthorizationCode(request:  AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity>;
+  issueAuthorizationCode(request:  AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity>;
 }
