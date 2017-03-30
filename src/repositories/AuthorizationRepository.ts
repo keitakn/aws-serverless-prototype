@@ -29,9 +29,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
    * 認可コードを発行する
    *
    * @param request
-   * @returns {Promise<AuthorizationCodeEntity>}
+   * @returns {Promise<AuthorizationCodeEntity.Entity>}
    */
-  async issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity> {
+  async issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity> {
     try {
       const authorizationResponse = await this.issueAuthorizationTicket(request);
 
@@ -57,7 +57,9 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
 
       switch (action) {
         case AuthleteAPIConstant.AuthorizationIssueActions.LOCATION:
-          return new AuthorizationCodeEntity(authorizationIssueResponse);
+          const builder = new AuthorizationCodeEntity.Builder();
+          builder.authorizationIssueResponse = authorizationIssueResponse;
+          return new AuthorizationCodeEntity.Entity(builder);
         case AuthleteAPIConstant.AuthorizationIssueActions.BAD_REQUEST:
           return Promise.reject(
             new BadRequestError(authorizationIssueResponse.resultMessage)

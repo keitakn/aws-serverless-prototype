@@ -2,90 +2,125 @@ import * as querystring from "querystring";
 import {AuthleteAPI} from "../../types/authlete/types";
 
 /**
- * AuthorizationCodeEntityInterface
- *
- * @author keita-nishimoto
- * @since 2017-02-16
- */
-interface AuthorizationCodeEntityInterface {
-  authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse;
-  code: string;
-  state: string;
-  responseContent: string;
-}
-
-/**
  * AuthorizationCodeEntity
  *
  * @author keita-nishimoto
- * @since 2017-02-16
+ * @since 2017-03-30
  */
-export class AuthorizationCodeEntity implements AuthorizationCodeEntityInterface {
+export namespace AuthorizationCodeEntity {
 
   /**
-   * 認可コード
-   */
-  private _code: string;
-
-  /**
-   * リダイレクトURI + 認可コード等のqueryパラメータが付与されたURI
-   */
-  private _responseContent: string;
-
-  /**
-   * state
-   */
-  private _state: string;
-
-  /**
-   * constructor
+   * Builder
    *
-   * @param _authorizationIssueResponse
+   * @author keita-nishimoto
+   * @since 2017-03-30
    */
-  constructor(private _authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse) {
-    this._code = _authorizationIssueResponse.authorizationCode;
-    this._responseContent = _authorizationIssueResponse.responseContent;
-    this.extractState();
+  export class Builder {
+    /**
+     * /auth/authorization/issue APIのレスポンス
+     */
+    private _authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse;
+
+    /**
+     * @returns {AuthleteAPI.AuthorizationIssueResponse}
+     */
+    get authorizationIssueResponse(): AuthleteAPI.AuthorizationIssueResponse {
+      return this._authorizationIssueResponse;
+    }
+
+    /**
+     * @param value
+     */
+    set authorizationIssueResponse(value: AuthleteAPI.AuthorizationIssueResponse) {
+      this._authorizationIssueResponse = value;
+    }
+
+    /**
+     * @returns {AuthorizationCodeEntity.Entity}
+     */
+    build(): Entity {
+      return new Entity(this);
+    }
   }
 
   /**
-   * @returns {AuthleteAPI.AuthorizationIssueResponse}
+   * Entity
+   *
+   * @author keita-nishimoto
+   * @since 2017-03-30
    */
-  get authorizationIssueResponse(): AuthleteAPI.AuthorizationIssueResponse {
-    return this._authorizationIssueResponse;
-  }
+  export class Entity {
+    /**
+     * /auth/authorization/issue APIのレスポンス
+     */
+    private _authorizationIssueResponse: AuthleteAPI.AuthorizationIssueResponse;
 
-  /**
-   * @returns {string}
-   */
-  get code(): string {
-    return this._code;
-  }
+    /**
+     * 認可コード
+     */
+    private _code: string;
 
-  /**
-   * @returns {string}
-   */
-  get responseContent(): string {
-    return this._responseContent;
-  }
+    /**
+     * リダイレクトURI + 認可コード等のqueryパラメータが付与されたURI
+     */
+    private _responseContent: string;
 
-  /**
-   * @returns {string}
-   */
-  get state(): string {
-    return this._state;
-  }
+    /**
+     * state
+     */
+    private _state: string;
 
-  /**
-   * responseContentからstateを取り出す
-   */
-  private extractState() {
-    const query = this.responseContent.substr(
-      this.responseContent.indexOf("?") + 1
-    );
+    /**
+     * constructor
+     *
+     * @param builder
+     */
+    constructor(builder: Builder) {
+      this._code = builder.authorizationIssueResponse.authorizationCode;
+      this._responseContent = builder.authorizationIssueResponse.responseContent;
+      this.extractState();
+    }
 
-    const queries = querystring.parse(query);
+    /**
+     * @returns {AuthleteAPI.AuthorizationIssueResponse}
+     */
+    get authorizationIssueResponse(): AuthleteAPI.AuthorizationIssueResponse {
+      return this._authorizationIssueResponse;
+    }
 
-    this._state = queries.state;
+    /**
+     * @returns {string}
+     */
+    get code(): string {
+      return this._code;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get responseContent(): string {
+      return this._responseContent;
+    }
+
+    /**
+     * @returns {string}
+     */
+    get state(): string {
+      return this._state;
+    }
+
+    /**
+     * responseContentからstateを取り出す
+     */
+    private extractState() {
+      const query = this.responseContent.substr(
+        this.responseContent.indexOf("?") + 1
+      );
+
+      const queries = querystring.parse(query);
+
+      this._state = queries.state;
+    }
   }
 }
+
