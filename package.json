@@ -12,7 +12,7 @@
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
     "server": "serverless offline --location .webpack",
-    "debug": "node-inspector",
+    "debug": "node-debug sls offline --location .webpack",
     "deploy": "serverless deploy"
   },
   "author": "keita-nishimoto",

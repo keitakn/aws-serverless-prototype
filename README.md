@@ -198,7 +198,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 
 ## ローカル環境でデバッグを行う方法
 
-[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Run-In-Local-Environment) を参考にして下さい。
+[こちらのページ](https://github.com/keita-nishimoto/aws-serverless-prototype/wiki/Local-Debugging) を参考にして下さい。
 
 ## AWS services used
 
