@@ -17,6 +17,14 @@
     "strictNullChecks": true,
     // 未使用なローカル変数はエラーにする
     "noUnusedLocals": true,
+    // 到達しえないコードがある場合はエラーにする
+    "allowUnreachableCode": false,
+    // 到達しえないラベルがある場合はエラーにする
+    "allowUnusedLabels": false,
+    // use strict; を自動で追加
+    "alwaysStrict": true,
+    // 暗黙的な undefined を返す事を禁止する
+    "noImplicitReturns": true,
     "lib": [
       "es2017"
     ],
