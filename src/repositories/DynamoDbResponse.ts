@@ -3,6 +3,7 @@
  *
  * @author keita-nishimoto
  * @since 2017-02-03
+ * @todo 20170421 response形式が変わっているので見直す
  */
 export namespace DynamoDbResponse {
 
