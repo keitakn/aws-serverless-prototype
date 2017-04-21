@@ -46,7 +46,7 @@ describe("Fetch", () => {
     return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(
         accessTokenEntity.extractIntrospectionAction(),
-        AuthleteAPIConstant.IntrospectionActions.BAD_REQUEST
+        AuthleteAPIConstant.IntrospectionActions.UNAUTHORIZED
       );
     });
   });

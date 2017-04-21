@@ -112,6 +112,7 @@ functions:
           path: auth/authorization/code
           method: post
           cors: true
+    timeout: 100
   authorization:
     handler: auth.authorization
 
