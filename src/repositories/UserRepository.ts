@@ -42,6 +42,12 @@ export default class UserRepository implements UserRepositoryInterface {
         .get(params)
         .promise()
         .then((dbResponse: DynamoDbResponse.User) => {
+
+          // TODO response形式が変わった為の暫定的な対応、恒久対応は後で行う
+          if (dbResponse.Item == null) {
+            return reject(new NotFoundError());
+          }
+
           if (Object.keys(dbResponse).length === 0) {
             return reject(new NotFoundError());
           }
