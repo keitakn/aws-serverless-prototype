@@ -26,7 +26,7 @@ export class ValidationErrorResponse {
    *
    * @returns {{statusCode: number, headers: {Access-Control-Allow-Origin: string}, body: string}}
    */
-  getResponse(): Object {
+  public getResponse(): Object {
     const responseCode = 422;
 
     const responseBody = {

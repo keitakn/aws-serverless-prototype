@@ -16,7 +16,7 @@ export default class AuthleteHttpClientFactory {
    *
    * @returns {AxiosInstance}
    */
-  static create(): AxiosInstance {
+  public static create(): AxiosInstance {
     const headers = {
       "Content-Type": "application/json"
     };
