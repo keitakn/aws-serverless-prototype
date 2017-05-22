@@ -19,17 +19,17 @@ export class ClientValidationService {
     const scheme = {
       type: "object",
       required: [
-        "client_id"
+        "client_id",
       ],
       properties: {
         client_id: {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 9999999999999,
-          "exclusiveMaximum": true
-        }
+          type: "number",
+          minimum: 1,
+          maximum: 9999999999999,
+          exclusiveMaximum: true,
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);

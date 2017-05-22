@@ -37,16 +37,16 @@ export class TestUtil {
    */
   static createMockAxiosInstance(mockAdapter: AxiosAdapter): AxiosInstance {
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
 
     const requestConfig = {
-      headers: headers,
+      headers,
       auth: {
         username: Authlete.getApiKey(),
-        password: Authlete.getApiSecret()
+        password: Authlete.getApiSecret(),
       },
-      adapter: mockAdapter
+      adapter: mockAdapter,
     };
 
     return axios.create(requestConfig);

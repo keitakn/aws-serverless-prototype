@@ -274,7 +274,7 @@ export namespace AuthleteAPI {
      */
     extension?: {
       // リクエスト可能なscope一覧
-      requestableScopes: [string]
+      requestableScopes: [string],
     };
   }
 }

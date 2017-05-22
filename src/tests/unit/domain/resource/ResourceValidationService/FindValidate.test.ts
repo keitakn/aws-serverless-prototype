@@ -12,20 +12,20 @@ describe("FindValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = ResourceValidationService.findValidate(request);
 
     assert.property(
       validateResultObject,
-      "resource_id"
+      "resource_id",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -58,7 +58,7 @@ describe("FindValidate", () => {
       {
         // リソースパス部分に/が含まれている
         resource_id: "GET.users/{user_id}",
-      }
+      },
     ];
 
     requests.map((request) => {
@@ -66,7 +66,7 @@ describe("FindValidate", () => {
 
       assert.property(
         validateResultObject,
-        "resource_id"
+        "resource_id",
       );
     });
   });
@@ -104,7 +104,7 @@ describe("FindValidate", () => {
       // 空のオブジェクトである事はエラーが1つもない事を示す
       assert.equal(
         Object.keys(validateResultObject).length,
-        0
+        0,
       );
     });
   });

@@ -1,12 +1,12 @@
-import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import ErrorResponse from "../domain/ErrorResponse";
-import ClientRepository from "../repositories/ClientRepository";
-import {SuccessResponse} from "../domain/SuccessResponse";
+import * as sourceMapSupport from "source-map-support";
 import {ClientValidationService} from "../domain/client/ClientValidationService";
-import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import {ClientRequest} from "../domain/client/request/ClientRequest";
+import ErrorResponse from "../domain/ErrorResponse";
+import {SuccessResponse} from "../domain/SuccessResponse";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
 import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
+import ClientRepository from "../repositories/ClientRepository";
 
 sourceMapSupport.install();
 
@@ -23,7 +23,7 @@ const axiosInstance = AuthleteHttpClientFactory.create();
 export const find = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const request = extractRequest(event);
@@ -50,7 +50,7 @@ export const find = async (
       grant_types: clientEntity.grantTypes,
       scopes: clientEntity.scopes,
       created_at: clientEntity.createdAt,
-      updated_at: clientEntity.updatedAt
+      updated_at: clientEntity.updatedAt,
     };
 
     const successResponse = new SuccessResponse(responseBody);
@@ -73,12 +73,12 @@ export const find = async (
 const extractRequest = (event: lambda.APIGatewayEvent): ClientRequest.FindRequest => {
   if (event.pathParameters != null) {
     return {
-      client_id: parseInt(event.pathParameters.id)
+      client_id: parseInt(event.pathParameters.id),
     };
   }
 
   return {
-    client_id: 0
+    client_id: 0,
   };
 };
 

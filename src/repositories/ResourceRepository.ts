@@ -1,10 +1,10 @@
 import {DynamoDB} from "aws-sdk";
-import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepositoryInterface";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
-import {DynamoDbResponse} from "./DynamoDbResponse";
-import NotFoundError from "../errors/NotFoundError";
+import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepositoryInterface";
 import InternalServerError from "../errors/InternalServerError";
+import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
+import {DynamoDbResponse} from "./DynamoDbResponse";
 
 /**
  * ResourceRepository
@@ -33,8 +33,8 @@ export class ResourceRepository implements ResourceRepositoryInterface {
       const params = {
         TableName: this.getResourcesTableName(),
         Key: {
-          id: resourceId
-        }
+          id: resourceId,
+        },
       };
 
       this.dynamoDbDocumentClient
@@ -67,7 +67,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         .catch((error: Error) => {
           Logger.critical(error);
           return reject(
-            new InternalServerError(error.message)
+            new InternalServerError(error.message),
           );
         });
     });
@@ -88,12 +88,12 @@ export class ResourceRepository implements ResourceRepositoryInterface {
         name: resourceEntity.name,
         scopes: resourceEntity.scopes,
         created_at: resourceEntity.createdAt,
-        updated_at: resourceEntity.updatedAt
+        updated_at: resourceEntity.updatedAt,
       };
 
       const params = {
         TableName: this.getResourcesTableName(),
-        Item: resourceCreateParams
+        Item: resourceCreateParams,
       };
 
       await this.dynamoDbDocumentClient.put(params).promise();
@@ -102,7 +102,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
     } catch (error) {
       Logger.critical(error);
       return Promise.reject(
-        new InternalServerError(error.message)
+        new InternalServerError(error.message),
       );
     }
   }
@@ -118,8 +118,8 @@ export class ResourceRepository implements ResourceRepositoryInterface {
       const params = {
         TableName: this.getResourcesTableName(),
         Key: {
-          id: resourceId
-        }
+          id: resourceId,
+        },
       };
 
       await this.dynamoDbDocumentClient.delete(params).promise();
@@ -128,7 +128,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
     } catch (error) {
       Logger.critical(error);
       return Promise.reject(
-        new InternalServerError(error.message)
+        new InternalServerError(error.message),
       );
     }
   }

@@ -48,7 +48,7 @@ export default class AwsSdkFactory {
       // DocumentClientOptionsというInterfaceで渡さないとダメみたい
       const documentClientOptions = {
         region: "localhost",
-        endpoint: "http://localhost:8000"
+        endpoint: "http://localhost:8000",
       };
 
       return new AWS.DynamoDB.DocumentClient(documentClientOptions);

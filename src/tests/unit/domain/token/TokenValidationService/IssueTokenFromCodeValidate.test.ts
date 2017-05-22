@@ -12,25 +12,25 @@ describe("IssueTokenFromCodeValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);
 
     assert.property(
       validateResultObject,
-      "code"
+      "code",
     );
 
     assert.property(
       validateResultObject,
-      "redirect_uri"
+      "redirect_uri",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -44,19 +44,19 @@ describe("IssueTokenFromCodeValidate", () => {
         // 許可されている最小値より小さい値を指定
         code: "CUQHYd7FAvWaz6ErRwcGRjk_LgJFUQpEyNW1jjW8yz",
         // 不正なURLフォーマットを指定
-        redirect_uri: "http"
+        redirect_uri: "http",
       },
       {
         // 許可されている最大値より大きい値を指定
         code: "CUQHYd7FAvWaz6ErRwcGRjk_LgJFUQpEyNW1jjW8yzo1",
         // 不正なURLフォーマットを指定
-        redirect_uri: "https"
+        redirect_uri: "https",
       },
       {
         // 数値を指定
         code: 1234567890123456789012345678901234567890123,
         // 数値を指定
-        redirect_uri: 1234567890
+        redirect_uri: 1234567890,
       },
       {
         // nullを指定
@@ -67,7 +67,7 @@ describe("IssueTokenFromCodeValidate", () => {
         // 空文字を指定
         code: "",
         redirect_uri: "",
-      }
+      },
     ];
 
     requests.map((request) => {
@@ -75,12 +75,12 @@ describe("IssueTokenFromCodeValidate", () => {
 
       assert.property(
         validateResultObject,
-        "code"
+        "code",
       );
 
       assert.property(
         validateResultObject,
-        "redirect_uri"
+        "redirect_uri",
       );
     });
   });
@@ -92,19 +92,19 @@ describe("IssueTokenFromCodeValidate", () => {
   it("testValidationNotContainsPartError", () => {
     const request = {
       code: "CUQHYd7FAvWaz6ErRwcGRjk_LgJFUQpEyNW1jjW8yzo",
-      redirect_uri: "http"
+      redirect_uri: "http",
     };
 
     const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);
 
     assert.notProperty(
       validateResultObject,
-      "code"
+      "code",
     );
 
     assert.property(
       validateResultObject,
-      "redirect_uri"
+      "redirect_uri",
     );
   });
 
@@ -115,7 +115,7 @@ describe("IssueTokenFromCodeValidate", () => {
   it("testValidationNotContainsError", () => {
     const request = {
       code: "CUQHYd7FAvWaz6ErRwcGRjk_LgJFUQpEyNW1jjW8yzo",
-      redirect_uri: "https://google.co.jp"
+      redirect_uri: "https://google.co.jp",
     };
 
     const validateResultObject = TokenValidationService.issueTokenFromCodeValidate(request);
@@ -123,7 +123,7 @@ describe("IssueTokenFromCodeValidate", () => {
     // 空のオブジェクトである事はエラーが1つもない事を示す
     assert.equal(
       Object.keys(validateResultObject).length,
-      0
+      0,
     );
   });
 });

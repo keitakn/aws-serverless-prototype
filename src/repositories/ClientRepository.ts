@@ -41,7 +41,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
   private async fetchFromAPi(clientId: number): Promise<ClientEntity.Entity> {
     try {
       const axiosResponse: AxiosResponse = await this.axiosInstance.get(
-        `https://api.authlete.com/api/client/get/${clientId}`
+        `https://api.authlete.com/api/client/get/${clientId}`,
       );
 
       const clientResponse: AuthleteAPI.ClientResponse = axiosResponse.data;

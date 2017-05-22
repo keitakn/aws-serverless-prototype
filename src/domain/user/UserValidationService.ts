@@ -23,39 +23,39 @@ export class UserValidationService {
         "password",
         "name",
         "gender",
-        "birthdate"
+        "birthdate",
       ],
       properties: {
         email: {
-          "type": "string",
-          "format": "email",
-          "maxLength": 128
+          type: "string",
+          format: "email",
+          maxLength: 128,
         },
         password: {
-          "type": "string",
-          "pattern": "^([a-zA-Z0-9])+$",
-          "minLength": 8,
-          "maxLength": 16
+          type: "string",
+          pattern: "^([a-zA-Z0-9])+$",
+          minLength: 8,
+          maxLength: 16,
         },
         name: {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 50
+          type: "string",
+          minLength: 2,
+          maxLength: 50,
         },
         gender: {
-          "type": "string",
-          "pattern": "^(male|female)+$",
-          "minLength": 4,
-          "maxLength": 6
+          type: "string",
+          pattern: "^(male|female)+$",
+          minLength: 4,
+          maxLength: 6,
         },
         birthdate: {
-          "type": "string",
-          "pattern": "^([0-9]{4})([-]{1})([0-9]{2})([-]{1})([0-9]{2})+$",
-          "minLength": 10,
-          "maxLength": 10
+          type: "string",
+          pattern: "^([0-9]{4})([-]{1})([0-9]{2})([-]{1})([0-9]{2})+$",
+          minLength: 10,
+          maxLength: 10,
         },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);
@@ -74,16 +74,16 @@ export class UserValidationService {
     const scheme = {
       type: "object",
       required: [
-        "subject"
+        "subject",
       ],
       properties: {
         subject: {
-          "type": "string",
-          "minLength": 36,
-          "maxLength": 36
-        }
+          type: "string",
+          minLength: 36,
+          maxLength: 36,
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);

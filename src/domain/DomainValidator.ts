@@ -50,7 +50,7 @@ export class DomainValidator {
    * @returns {Object}
    */
   public doValidate(request: Object): Object {
-    let validateResultObject: any = {};
+    const validateResultObject: any = {};
     const validatorResult = this.validator.validate(request, this.scheme);
     if (validatorResult.errors.length === 0) {
       return validateResultObject;

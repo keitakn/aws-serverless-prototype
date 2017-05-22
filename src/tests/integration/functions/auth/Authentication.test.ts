@@ -1,11 +1,11 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest";
-import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
-import {UserTest} from "../../../lib/UserTest";
-import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
+import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthTest} from "../../../lib/AuthTest";
+import {UserTest} from "../../../lib/UserTest";
 
 /**
  * 認証のテスト
@@ -29,7 +29,7 @@ describe("Authentication", () => {
     const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
-      scopes: ["prototype_users", "prototype_clients"]
+      scopes: ["prototype_users", "prototype_clients"],
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
@@ -44,7 +44,7 @@ describe("Authentication", () => {
         password: "password1234",
         name: "keita",
         gender: "male",
-        birthdate: "1990-01-01"
+        birthdate: "1990-01-01",
       };
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
@@ -60,8 +60,8 @@ describe("Authentication", () => {
     const password = "password1234";
 
     const request = {
-      subject: subject,
-      password: password
+      subject,
+      password,
     };
 
     return AuthTest.ApiClient.authentication(request).then((response) => {
@@ -84,7 +84,7 @@ describe("Authentication", () => {
 
     const request = {
       subject: failSubject,
-      password: password
+      password,
     };
 
     return AuthTest.ApiClient.authentication(request).catch((error) => {
@@ -101,8 +101,8 @@ describe("Authentication", () => {
     const password = "FailPassword";
 
     const request = {
-      subject: subject,
-      password: password
+      subject,
+      password,
     };
 
     return AuthTest.ApiClient.authentication(request).catch((error) => {
@@ -118,7 +118,7 @@ describe("Authentication", () => {
   it("testFailValidation", () => {
     const request: AuthRequest.AuthenticationRequest = {
       subject: "98f46ad0-09e2-4324-910c-011df62e73071",
-      password: "pass@wd"
+      password: "pass@wd",
     };
 
     return AuthTest.ApiClient.authentication(request).catch((error) => {
@@ -127,12 +127,12 @@ describe("Authentication", () => {
 
       assert.property(
         error.response.data.errors,
-        "subject"
+        "subject",
       );
 
       assert.property(
         error.response.data.errors,
-        "password"
+        "password",
       );
     });
   });

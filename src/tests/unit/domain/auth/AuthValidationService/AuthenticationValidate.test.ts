@@ -12,25 +12,25 @@ describe("AuthenticationValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = AuthValidationService.authenticationValidate(request);
 
     assert.property(
       validateResultObject,
-      "subject"
+      "subject",
     );
 
     assert.property(
       validateResultObject,
-      "password"
+      "password",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -56,13 +56,13 @@ describe("AuthenticationValidate", () => {
         // nullを指定
         subject: null,
         // 禁止されている文字列を含む
-        password: "password@;"
+        password: "password@;",
       },
       {
         // 空文字を指定
         subject: "",
-        password: ""
-      }
+        password: "",
+      },
     ];
 
     requests.map((request) => {
@@ -70,12 +70,12 @@ describe("AuthenticationValidate", () => {
 
       assert.property(
         validateResultObject,
-        "subject"
+        "subject",
       );
 
       assert.property(
         validateResultObject,
-        "password"
+        "password",
       );
     });
   });
@@ -94,12 +94,12 @@ describe("AuthenticationValidate", () => {
 
     assert.notProperty(
       validateResultObject,
-      "subject"
+      "subject",
     );
 
     assert.property(
       validateResultObject,
-      "password"
+      "password",
     );
   });
 
@@ -118,7 +118,7 @@ describe("AuthenticationValidate", () => {
     // 空のオブジェクトである事はエラーが1つもない事を示す
     assert.equal(
       Object.keys(validateResultObject).length,
-      0
+      0,
     );
   });
 });

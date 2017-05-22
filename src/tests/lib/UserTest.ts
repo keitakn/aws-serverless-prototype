@@ -1,8 +1,8 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AxiosError} from "axios";
-import {TestUtil} from "./TestUtil";
 import {UserRequest} from "../../domain/user/request/UserRequest";
+import {TestUtil} from "./TestUtil";
 
 /**
  * User系APIのテスト用ライブラリ
@@ -27,11 +27,11 @@ export namespace UserTest {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessToken}`,
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
         const baseUri = TestUtil.createGatewayUri();
         const requestUri = `${baseUri}/users`;
@@ -39,7 +39,7 @@ export namespace UserTest {
         axios.post(
           requestUri,
           request,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error: AxiosError) => {
@@ -59,11 +59,11 @@ export namespace UserTest {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessToken}`,
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -71,7 +71,7 @@ export namespace UserTest {
 
         axios.get(
           requestUri,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error: AxiosError) => {

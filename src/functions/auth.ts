@@ -1,26 +1,26 @@
-import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
-import AwsSdkFactory from "../factories/AwsSdkFactory";
-import AccessTokenRepository from "../repositories/AccessTokenRepository";
+import * as sourceMapSupport from "source-map-support";
 import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
-import Statement from "../domain/auth/aws/iam/Statement";
-import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
-import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
-import ErrorResponse from "../domain/ErrorResponse";
-import UserRepository from "../repositories/UserRepository";
-import PasswordService from "../domain/auth/PasswordService";
-import UnauthorizedError from "../errors/UnauthorizedError";
-import {ResourceRepository} from "../repositories/ResourceRepository";
-import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
-import {SuccessResponse} from "../domain/SuccessResponse";
-import {Logger} from "../infrastructures/Logger";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
-import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
-import {RequestFactory} from "../factories/RequestFactory";
-import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
+import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
+import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
+import Statement from "../domain/auth/aws/iam/Statement";
+import PasswordService from "../domain/auth/PasswordService";
 import {AuthRequest} from "../domain/auth/request/AuthRequest";
+import ErrorResponse from "../domain/ErrorResponse";
+import {SuccessResponse} from "../domain/SuccessResponse";
+import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import UnauthorizedError from "../errors/UnauthorizedError";
 import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
+import AwsSdkFactory from "../factories/AwsSdkFactory";
+import {RequestFactory} from "../factories/RequestFactory";
+import {Logger} from "../infrastructures/Logger";
+import AccessTokenRepository from "../repositories/AccessTokenRepository";
+import {AuthorizationRepository} from "../repositories/AuthorizationRepository";
+import {ResourceRepository} from "../repositories/ResourceRepository";
+import UserRepository from "../repositories/UserRepository";
+import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
+import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 
 sourceMapSupport.install();
 
@@ -40,7 +40,7 @@ const axiosInstance = AuthleteHttpClientFactory.create();
 export const authentication = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const requestFactory = new RequestFactory(event);
@@ -65,14 +65,14 @@ export const authentication = async (
 
     const responseBody = {
       authenticated: true,
-      subject: subject,
+      subject,
       claims: {
         name: userEntity.name,
         email: userEntity.email,
         email_verified: userEntity.emailVerified,
         gender: userEntity.gender,
-        birthdate: userEntity.birthdate
-      }
+        birthdate: userEntity.birthdate,
+      },
     };
 
     const successResponse = new SuccessResponse(responseBody);
@@ -97,7 +97,7 @@ export const authentication = async (
 export const issueAuthorizationCode = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const requestFactory = new RequestFactory(event);
@@ -116,7 +116,7 @@ export const issueAuthorizationCode = async (
 
     const responseBody = {
       code: authorizationCodeEntity.code,
-      state: authorizationCodeEntity.state
+      state: authorizationCodeEntity.state,
     };
     const successResponse = new SuccessResponse(responseBody, 201);
 
@@ -141,7 +141,7 @@ export const issueAuthorizationCode = async (
 export const authorization = async (
   event: LambdaApiGatewayCustomAuthorizerEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const authorizationHeader = event.authorizationToken;
@@ -190,7 +190,7 @@ export const authorization = async (
     const authorizationResponse = generatePolicy(
       principalId,
       effect,
-      [event.methodArn]
+      [event.methodArn],
     );
 
     callback(undefined, authorizationResponse);
@@ -246,7 +246,7 @@ const introspect = async (accessToken: string): Promise<AccessTokenEntity.Entity
  */
 const hasRequiredScope = async (
   arn: string,
-  accessTokenEntity: AccessTokenEntity.Entity
+  accessTokenEntity: AccessTokenEntity.Entity,
 ): Promise<boolean> => {
   try {
     const resource = extractMethodAndPath(arn);
@@ -292,8 +292,8 @@ const extractMethodAndPath = (arn: string): {httpMethod: string, resourcePath: s
   const resourcePath     = resourceElements[3];
 
   return {
-    httpMethod: httpMethod,
-    resourcePath: resourcePath
+    httpMethod,
+    resourcePath,
   };
 };
 
@@ -310,17 +310,17 @@ const generatePolicy = (principalId: string, effect: string, resource: [string])
   const statement = new Statement(
     "execute-api:Invoke",
     effect,
-    resource
+    resource,
   );
 
   const policyDocument = new PolicyDocument(
     "2012-10-17",
-    [statement]
+    [statement],
   );
 
   const authorizationResponse = new AuthorizationResponse(
     principalId,
-    policyDocument
+    policyDocument,
   );
 
   return authorizationResponse.toObject();

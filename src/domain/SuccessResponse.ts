@@ -35,7 +35,7 @@ export class SuccessResponse {
     const response = {
       statusCode: this.statusCode,
       headers: this.headers,
-      body: responseBody
+      body: responseBody,
     };
 
     return response;

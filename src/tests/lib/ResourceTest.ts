@@ -1,7 +1,7 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
-import {TestUtil} from "./TestUtil";
 import {ResourceRequest} from "../../domain/resource/request/ResourceRequest";
+import {TestUtil} from "./TestUtil";
 
 /**
  * Resource系APIのテスト用ライブラリ
@@ -24,11 +24,11 @@ export namespace ResourceTest {
     static create(request: ResourceRequest.CreateRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -37,7 +37,7 @@ export namespace ResourceTest {
         axios.post(
           requestUri,
           request,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -55,11 +55,11 @@ export namespace ResourceTest {
     static find(resourceId: string): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -67,7 +67,7 @@ export namespace ResourceTest {
 
         axios.get(
           requestUri,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -85,11 +85,11 @@ export namespace ResourceTest {
     static destroy(resourceId: string): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -97,7 +97,7 @@ export namespace ResourceTest {
 
         axios.delete(
           requestUri,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {

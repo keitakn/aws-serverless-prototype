@@ -32,15 +32,15 @@ export class ValidationErrorResponse {
     const responseBody = {
       code: responseCode,
       message: "Unprocessable Entity",
-      errors: this.validateResultObject
+      errors: this.validateResultObject,
     };
 
     return {
       statusCode: responseCode,
       headers: {
-        "Access-Control-Allow-Origin" : "*"
+        "Access-Control-Allow-Origin" : "*",
       },
-      body: JSON.stringify(responseBody)
+      body: JSON.stringify(responseBody),
     };
   }
 }

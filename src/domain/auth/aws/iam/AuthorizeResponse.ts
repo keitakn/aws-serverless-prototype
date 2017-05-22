@@ -42,15 +42,15 @@ export default class AuthorizeResponse {
     const firstStatementObject = {
       Action: firstStatement.action,
       Effect: firstStatement.effect,
-      Resource: firstStatement.resource
+      Resource: firstStatement.resource,
     };
 
     return {
       principalId: this.principalId,
       policyDocument: {
         Version: this.policyDocument.version,
-        Statement: [firstStatementObject]
-      }
+        Statement: [firstStatementObject],
+      },
     };
   }
 }

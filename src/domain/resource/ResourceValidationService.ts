@@ -22,34 +22,34 @@ export class ResourceValidationService {
         "http_method",
         "resource_path",
         "name",
-        "scopes"
+        "scopes",
       ],
       properties: {
         http_method: {
-          "type": "string",
-          "pattern": "^(GET|HEAD|POST|PUT|PATCH|DELETE|ANY)+$"
+          type: "string",
+          pattern: "^(GET|HEAD|POST|PUT|PATCH|DELETE|ANY)+$",
         },
         resource_path: {
-          "type": "string",
-          "pattern": "^([a-z/{}_-])+$",
-          "minLength": 2,
-          "maxLength": 50
+          type: "string",
+          pattern: "^([a-z/{}_-])+$",
+          minLength: 2,
+          maxLength: 50,
         },
         name: {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 50
+          type: "string",
+          minLength: 2,
+          maxLength: 50,
         },
         scopes: {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 5,
-            "maxLength": 32
-          }
-        }
+          type: "array",
+          items: {
+            type: "string",
+            minLength: 5,
+            maxLength: 32,
+          },
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);
@@ -72,13 +72,13 @@ export class ResourceValidationService {
       ],
       properties: {
         resource_id: {
-          "type": "string",
-          "pattern": "^(GET|HEAD|POST|PUT|PATCH|DELETE|ANY)([.]{1})([a-z{}._-])+$",
-          "minLength": 5,
-          "maxLength": 128
-        }
+          type: "string",
+          pattern: "^(GET|HEAD|POST|PUT|PATCH|DELETE|ANY)([.]{1})([a-z{}._-])+$",
+          minLength: 5,
+          maxLength: 128,
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);

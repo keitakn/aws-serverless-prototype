@@ -12,40 +12,40 @@ describe("IssueAuthorizationCodeValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
 
     assert.property(
       validateResultObject,
-      "client_id"
+      "client_id",
     );
 
     assert.property(
       validateResultObject,
-      "state"
+      "state",
     );
 
     assert.property(
       validateResultObject,
-      "redirect_uri"
+      "redirect_uri",
     );
 
     assert.property(
       validateResultObject,
-      "subject"
+      "subject",
     );
 
     assert.property(
       validateResultObject,
-      "scopes"
+      "scopes",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -65,7 +65,7 @@ describe("IssueAuthorizationCodeValidate", () => {
         // 許可されている最大値より大きい値を指定
         subject: "98f46ad0-09e2-4324-910c-011df62e73071",
         // 許可されている最小値より小さい値を指定
-        scopes: ["food"]
+        scopes: ["food"],
       },
       {
         // 許可されている最大値より大きい値を指定
@@ -77,7 +77,7 @@ describe("IssueAuthorizationCodeValidate", () => {
         // 許可されている最小値より小さい値を指定
         subject: "98f46ad0-09e2-4324-910c-011df62e730",
         // 許可されている最大値より大きい値を指定
-        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
+        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"],
       },
       {
         // nullを指定
@@ -85,7 +85,7 @@ describe("IssueAuthorizationCodeValidate", () => {
         state: null,
         redirect_uri: null,
         subject: null,
-        scopes: [null]
+        scopes: [null],
       },
       {
         // 空文字を指定
@@ -93,35 +93,35 @@ describe("IssueAuthorizationCodeValidate", () => {
         state: "",
         redirect_uri: "",
         subject: "",
-        scopes: [""]
-      }
+        scopes: [""],
+      },
     ];
 
     requests.map((request) => {
       const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
       assert.property(
         validateResultObject,
-        "client_id"
+        "client_id",
       );
 
       assert.property(
         validateResultObject,
-        "state"
+        "state",
       );
 
       assert.property(
         validateResultObject,
-        "redirect_uri"
+        "redirect_uri",
       );
 
       assert.property(
         validateResultObject,
-        "subject"
+        "subject",
       );
 
       assert.property(
         validateResultObject,
-        "scopes[0]"
+        "scopes[0]",
       );
     });
   });
@@ -134,34 +134,34 @@ describe("IssueAuthorizationCodeValidate", () => {
     const request = {
       client_id: 0,
       redirect_uri: "https://example.com/oauth2/callback",
-      scopes: [""]
+      scopes: [""],
     };
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
 
     assert.property(
       validateResultObject,
-      "client_id"
+      "client_id",
     );
 
     assert.property(
       validateResultObject,
-      "state"
+      "state",
     );
 
     assert.notProperty(
       validateResultObject,
-      "redirect_uri"
+      "redirect_uri",
     );
 
     assert.property(
       validateResultObject,
-      "subject"
+      "subject",
     );
 
     assert.property(
       validateResultObject,
-      "scopes[0]"
+      "scopes[0]",
     );
   });
 
@@ -175,7 +175,7 @@ describe("IssueAuthorizationCodeValidate", () => {
       state: "12345678",
       redirect_uri: "https://example.com/oauth2/callback",
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["email", "openid"]
+      scopes: ["email", "openid"],
     };
 
     const validateResultObject = AuthValidationService.issueAuthorizationCodeValidate(request);
@@ -183,7 +183,7 @@ describe("IssueAuthorizationCodeValidate", () => {
     // 空のオブジェクトである事はエラーが1つもない事を示す
     assert.equal(
       Object.keys(validateResultObject).length,
-      0
+      0,
     );
   });
 });

@@ -1,11 +1,11 @@
 import axios from "axios";
 import {AxiosResponse} from "axios";
 import {AxiosError} from "axios";
-import {TestUtil} from "./TestUtil";
 import {Authlete} from "../../config/Authlete";
-import {AuthleteAPI} from "../../types/authlete/types";
 import {AuthRequest} from "../../domain/auth/request/AuthRequest";
 import {TokenRequest} from "../../domain/token/request/TokenRequest";
+import {AuthleteAPI} from "../../types/authlete/types";
+import {TestUtil} from "./TestUtil";
 
 /**
  * Auth系APIのテスト用ライブラリ
@@ -62,11 +62,11 @@ export namespace AuthTest {
     static authentication(request: AuthRequest.AuthenticationRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -75,7 +75,7 @@ export namespace AuthTest {
         axios.post(
           requestUri,
           request,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -93,11 +93,11 @@ export namespace AuthTest {
     static issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -106,7 +106,7 @@ export namespace AuthTest {
         axios.post(
           requestUri,
           request,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -124,11 +124,11 @@ export namespace AuthTest {
     static issueTokenFromCode(request: TokenRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
       return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -137,7 +137,7 @@ export namespace AuthTest {
         axios.post(
           requestUri,
           request,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {
@@ -157,15 +157,15 @@ export namespace AuthTest {
 
       return new Promise<IssueAccessTokenInCheatApiResponse>((resolve: Function, reject: Function) => {
         const headers = {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         };
 
         const requestConfig = {
-          headers: headers,
+          headers,
           auth: {
             username: Authlete.getApiKey(),
-            password: Authlete.getApiSecret()
-          }
+            password: Authlete.getApiSecret(),
+          },
         };
 
         axios.post("https://api.authlete.com/api/auth/token/create", request, requestConfig)
