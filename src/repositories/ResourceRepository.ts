@@ -28,8 +28,8 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * @param resourceId
    * @returns {Promise<ResourceEntity.Entity>}
    */
-  find(resourceId: string): Promise<ResourceEntity.Entity> {
-    return new Promise<ResourceEntity.Entity>((resolve: Function, reject: Function) => {
+  public find(resourceId: string): Promise<ResourceEntity.Entity> {
+    return new Promise<ResourceEntity.Entity>((resolve, reject) => {
       const params = {
         TableName: this.getResourcesTableName(),
         Key: {
@@ -79,7 +79,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * @param resourceEntity
    * @returns {Promise<ResourceEntity.Entity>}
    */
-  async save(resourceEntity: ResourceEntity.Entity): Promise<ResourceEntity.Entity> {
+  public async save(resourceEntity: ResourceEntity.Entity): Promise<ResourceEntity.Entity> {
     try {
       const resourceCreateParams = {
         id: resourceEntity.resourceId,
@@ -113,7 +113,7 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    * @param resourceId
    * @returns {Promise<void>}
    */
-  async destroy(resourceId: string): Promise<void> {
+  public async destroy(resourceId: string): Promise<void> {
     try {
       const params = {
         TableName: this.getResourcesTableName(),

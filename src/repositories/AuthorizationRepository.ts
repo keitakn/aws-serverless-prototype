@@ -31,7 +31,7 @@ export class AuthorizationRepository implements AuthorizationRepositoryInterface
    * @param request
    * @returns {Promise<AuthorizationCodeEntity.Entity>}
    */
-  async issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity> {
+  public async issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity> {
     try {
       const authorizationResponse = await this.issueAuthorizationTicket(request);
 

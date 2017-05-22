@@ -14,9 +14,9 @@ export class SuccessResponse {
    * @param _headers
    */
   constructor(
-    private _responseBody: Object,
+    private _responseBody: any,
     private _statusCode: number = 200,
-    private _headers: Object = {"Access-Control-Allow-Origin": "*"}) {
+    private _headers = {"Access-Control-Allow-Origin": "*"}) {
   }
 
   /**
@@ -25,7 +25,7 @@ export class SuccessResponse {
    * @param isConvertJson
    * @returns {{statusCode: number, headers: Object, body: Object}}
    */
-  getResponse(isConvertJson: boolean = true) {
+  public getResponse(isConvertJson: boolean = true) {
 
     let responseBody = this.responseBody;
     if (isConvertJson === true) {
@@ -44,7 +44,7 @@ export class SuccessResponse {
   /**
    * @returns {Object}
    */
-  get responseBody(): Object {
+  get responseBody(): any {
     return this._responseBody;
   }
 
@@ -56,9 +56,9 @@ export class SuccessResponse {
   }
 
   /**
-   * @returns {Object}
+   * @returns {{Access-Control-Allow-Origin: string}}
    */
-  get headers(): Object {
+  get headers(): { [header: string]: boolean | number | string } {
     return this._headers;
   }
 }

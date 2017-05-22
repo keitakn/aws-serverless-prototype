@@ -1,3 +1,5 @@
+import * as lambda from "aws-lambda";
+
 /**
  * ValidationErrorResponse
  *
@@ -11,13 +13,13 @@ export class ValidationErrorResponse {
    *
    * @param _validateResultObject
    */
-  constructor(private _validateResultObject: Object) {
+  constructor(private _validateResultObject: {[name: string]: string}) {
   }
 
   /**
    * @returns {Object}
    */
-  get validateResultObject(): Object {
+  get validateResultObject(): {[name: string]: string} {
     return this._validateResultObject;
   }
 
@@ -26,7 +28,7 @@ export class ValidationErrorResponse {
    *
    * @returns {{statusCode: number, headers: {Access-Control-Allow-Origin: string}, body: string}}
    */
-  public getResponse(): Object {
+  public getResponse(): lambda.ProxyResult {
     const responseCode = 422;
 
     const responseBody = {

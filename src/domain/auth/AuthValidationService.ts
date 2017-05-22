@@ -14,7 +14,7 @@ export class AuthValidationService {
    * @param request
    * @returns {Object}
    */
-  static authenticationValidate(request: Object): Object {
+  static authenticationValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
@@ -49,7 +49,7 @@ export class AuthValidationService {
    * @param request
    * @returns {Object}
    */
-  static issueAuthorizationCodeValidate(request: Object): Object {
+  static issueAuthorizationCodeValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",

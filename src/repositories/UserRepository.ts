@@ -29,8 +29,8 @@ export default class UserRepository implements UserRepositoryInterface {
    * @param subject
    * @returns {Promise<UserEntity.Entity>}
    */
-  find(subject: string): Promise<UserEntity.Entity> {
-    return new Promise<UserEntity.Entity>((resolve: Function, reject: Function) => {
+  public find(subject: string): Promise<UserEntity.Entity> {
+    return new Promise<UserEntity.Entity>((resolve, reject) => {
       const params = {
         TableName: this.getUsersTableName(),
         Key: {
@@ -83,7 +83,7 @@ export default class UserRepository implements UserRepositoryInterface {
    * @param userEntity
    * @returns {Promise<UserEntity.Entity>}
    */
-  async save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity> {
+  public async save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity> {
     try {
       const userCreateParams = {
         id: userEntity.subject,

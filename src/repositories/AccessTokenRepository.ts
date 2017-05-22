@@ -31,7 +31,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @param accessToken
    * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
+  public async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
     try {
       const requestData = {
         token: accessToken,
@@ -67,7 +67,7 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @param redirectUri
    * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
+  public async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
     try {
       const requestData = {
         parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`,

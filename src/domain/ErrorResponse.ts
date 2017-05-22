@@ -1,3 +1,4 @@
+import * as lambda from "aws-lambda";
 import {isUndefined} from "util";
 
 /**
@@ -100,7 +101,7 @@ export default class ErrorResponse {
    *
    * @returns {{statusCode: number, headers: {Access-Control-Allow-Origin: string}, body: string}}
    */
-  getResponse(): any {
+  public getResponse(): lambda.ProxyResult {
     // このメソッドでObjectを整形して返すよりも呼出元でこのObjectを作ったほうが良いかも
     const defaultStatusCode = 500;
     const defaultErrorCode  = defaultStatusCode;

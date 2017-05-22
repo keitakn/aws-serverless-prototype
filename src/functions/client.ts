@@ -73,7 +73,7 @@ export const find = async (
 const extractRequest = (event: lambda.APIGatewayEvent): ClientRequest.FindRequest => {
   if (event.pathParameters != null) {
     return {
-      client_id: parseInt(event.pathParameters.id),
+      client_id: parseInt(event.pathParameters.id, 10),
     };
   }
 

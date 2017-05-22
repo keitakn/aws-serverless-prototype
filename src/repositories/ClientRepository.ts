@@ -28,7 +28,7 @@ export default class ClientRepository implements ClientRepositoryInterface {
    * @param clientId
    * @returns {Promise<ClientEntity.Entity>}
    */
-  async find(clientId: number): Promise<ClientEntity.Entity> {
+  public async find(clientId: number): Promise<ClientEntity.Entity> {
     return await this.fetchFromAPi(clientId);
   }
 

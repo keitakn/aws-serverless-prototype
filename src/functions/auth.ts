@@ -2,9 +2,6 @@ import * as lambda from "aws-lambda";
 import * as sourceMapSupport from "source-map-support";
 import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
 import {AuthValidationService} from "../domain/auth/AuthValidationService";
-import AuthorizationResponse from "../domain/auth/aws/iam/AuthorizeResponse";
-import PolicyDocument from "../domain/auth/aws/iam/PolicyDocument";
-import Statement from "../domain/auth/aws/iam/Statement";
 import PasswordService from "../domain/auth/PasswordService";
 import {AuthRequest} from "../domain/auth/request/AuthRequest";
 import ErrorResponse from "../domain/ErrorResponse";
@@ -24,7 +21,7 @@ import {LambdaApiGatewayCustomAuthorizerEvent} from "../types/aws/types";
 
 sourceMapSupport.install();
 
-const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.createDynamoDbDocumentClient();
 const axiosInstance = AuthleteHttpClientFactory.create();
 
 /**
@@ -303,25 +300,25 @@ const extractMethodAndPath = (arn: string): {httpMethod: string, resourcePath: s
  * @param principalId
  * @param effect
  * @param resource
- * @returns {{principalId: string, policyDocument: {Version: string, Statement: {Action: string, Effect: string, Resource: string[]}[]}}}
+ * @returns {lambda.AuthResponse}
  */
-const generatePolicy = (principalId: string, effect: string, resource: [string]): Object => {
+const generatePolicy = (principalId: string, effect: string, resource: [string]): lambda.AuthResponse => {
 
-  const statement = new Statement(
-    "execute-api:Invoke",
-    effect,
-    resource,
-  );
+  const statement: lambda.Statement = {
+    Action: "execute-api:Invoke",
+    Effect: effect,
+    Resource: resource,
+  };
 
-  const policyDocument = new PolicyDocument(
-    "2012-10-17",
-    [statement],
-  );
+  const policyDocument: lambda.PolicyDocument = {
+    Version: "2012-10-17",
+    Statement: [statement],
+  };
 
-  const authorizationResponse = new AuthorizationResponse(
+  const authorizationResponse: lambda.AuthResponse = {
     principalId,
     policyDocument,
-  );
+  };
 
-  return authorizationResponse.toObject();
+  return authorizationResponse;
 };
