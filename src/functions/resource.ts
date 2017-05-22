@@ -12,7 +12,7 @@ import {ResourceRepository} from "../repositories/ResourceRepository";
 
 sourceMapSupport.install();
 
-const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.createDynamoDbDocumentClient();
 
 /**
  * リソースを作成する

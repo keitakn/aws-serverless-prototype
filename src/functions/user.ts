@@ -14,7 +14,7 @@ import UserRepository from "../repositories/UserRepository";
 
 sourceMapSupport.install();
 
-const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.createDynamoDbDocumentClient();
 
 /**
  * ユーザーを作成する
