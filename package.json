@@ -8,6 +8,7 @@
     "test:coverage": "IS_LOCAL=true nyc --extension .ts mocha -t 30000 --compilers ts:ts-node/register",
     "coverage:report:html": "nyc report --reporter=html",
     "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint:fix": "tslint -c tslint.json --fix src/**/*.ts",
     "build": "webpack",
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
