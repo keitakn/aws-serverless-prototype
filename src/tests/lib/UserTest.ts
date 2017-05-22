@@ -23,8 +23,8 @@ export namespace UserTest {
      * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: UserRequest.CreateRequest, accessToken: string): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static create(request: UserRequest.CreateRequest, accessToken: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
           "Authorization": `Bearer ${accessToken}`,
@@ -55,8 +55,8 @@ export namespace UserTest {
      * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
-    static find(userId: string, accessToken: string): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static find(userId: string, accessToken: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
           "Authorization": `Bearer ${accessToken}`,

@@ -21,8 +21,8 @@ export namespace ResourceTest {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static create(request: ResourceRequest.CreateRequest): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static create(request: ResourceRequest.CreateRequest): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
@@ -52,8 +52,8 @@ export namespace ResourceTest {
      * @param resourceId
      * @returns {Promise<AxiosResponse>}
      */
-    static find(resourceId: string): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static find(resourceId: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
@@ -82,8 +82,8 @@ export namespace ResourceTest {
      * @param resourceId
      * @returns {Promise<AxiosResponse>}
      */
-    static destroy(resourceId: string): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static destroy(resourceId: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
