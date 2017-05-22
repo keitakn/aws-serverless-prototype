@@ -38,7 +38,7 @@ export namespace AuthorizationCodeEntity {
     /**
      * @returns {AuthorizationCodeEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }

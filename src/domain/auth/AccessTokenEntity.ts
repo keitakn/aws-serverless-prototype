@@ -75,7 +75,7 @@ export namespace AccessTokenEntity {
     /**
      * @returns {AccessTokenEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }
@@ -139,7 +139,7 @@ export namespace AccessTokenEntity {
      *
      * @returns {AuthleteAPI.IntrospectionActions}
      */
-    extractIntrospectionAction(): AuthleteAPI.IntrospectionActions {
+    public extractIntrospectionAction(): AuthleteAPI.IntrospectionActions {
       return this.introspectionResponse.action;
     }
 
@@ -148,7 +148,7 @@ export namespace AccessTokenEntity {
      *
      * @returns {AuthleteAPI.TokenResponseActions}
      */
-    extractTokenAction(): AuthleteAPI.TokenResponseActions {
+    public extractTokenAction(): AuthleteAPI.TokenResponseActions {
       return this.tokenResponse.action;
     }
   }

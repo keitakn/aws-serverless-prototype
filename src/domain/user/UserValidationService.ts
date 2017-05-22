@@ -14,7 +14,7 @@ export class UserValidationService {
    * @param request
    * @returns {Object}
    */
-  static createValidate(request: any): {[name: string]: string} {
+  public static createValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
@@ -69,7 +69,7 @@ export class UserValidationService {
    * @param request
    * @returns {Object}
    */
-  static findValidate(request: any): {[name: string]: string} {
+  public static findValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
