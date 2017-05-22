@@ -59,8 +59,8 @@ export namespace AuthTest {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static authentication(request: AuthRequest.AuthenticationRequest): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static authentication(request: AuthRequest.AuthenticationRequest): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
@@ -90,8 +90,8 @@ export namespace AuthTest {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
@@ -121,8 +121,8 @@ export namespace AuthTest {
      * @param request
      * @returns {Promise<AxiosResponse>}
      */
-    static issueTokenFromCode(request: TokenRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static issueTokenFromCode(request: TokenRequest.IssueTokenFromCodeRequest): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };
@@ -153,9 +153,9 @@ export namespace AuthTest {
      * @param request
      * @link https://www.authlete.com/documents/apis/reference#auth_token_create
      */
-    static issueAccessTokenInCheatApi(request: IssueAccessTokenInCheatApiRequest): Promise<IssueAccessTokenInCheatApiResponse> {
+    public static issueAccessTokenInCheatApi(request: IssueAccessTokenInCheatApiRequest): Promise<IssueAccessTokenInCheatApiResponse> {
 
-      return new Promise<IssueAccessTokenInCheatApiResponse>((resolve: Function, reject: Function) => {
+      return new Promise<IssueAccessTokenInCheatApiResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
         };

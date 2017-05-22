@@ -21,7 +21,7 @@ describe("Issue", () => {
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
@@ -53,7 +53,7 @@ describe("Issue", () => {
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
@@ -86,7 +86,7 @@ describe("Issue", () => {
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
@@ -116,7 +116,7 @@ describe("Issue", () => {
   it("testFailInternalServerError", () => {
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: {message: "InternalServerError"},
           status: 500,
@@ -149,7 +149,7 @@ describe("Issue", () => {
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
