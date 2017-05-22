@@ -1,6 +1,6 @@
 import {assert} from "chai";
-import {ResourceTest} from "../../../lib/ResourceTest";
 import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
+import {ResourceTest} from "../../../lib/ResourceTest";
 
 /**
  * リソース削除のテスト
@@ -15,7 +15,7 @@ describe("DestroyResource", () => {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",
-      scopes: ["tests"]
+      scopes: ["tests"],
     };
 
     return ResourceTest.ApiClient.create(request).then(() => {});
@@ -70,7 +70,7 @@ describe("DestroyResource", () => {
 
       assert.property(
         error.response.data.errors,
-        "resource_id"
+        "resource_id",
       );
     });
   });

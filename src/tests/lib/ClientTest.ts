@@ -21,15 +21,15 @@ export namespace ClientTest {
      * @param accessToken
      * @returns {Promise<AxiosResponse>}
      */
-    static find(clientId: number, accessToken: string): Promise<AxiosResponse> {
-      return new Promise<AxiosResponse>((resolve: Function, reject: Function) => {
+    public static find(clientId: number, accessToken: string): Promise<AxiosResponse> {
+      return new Promise<AxiosResponse>((resolve, reject) => {
         const headers = {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          "Authorization": `Bearer ${accessToken}`,
         };
 
         const requestConfig = {
-          headers: headers
+          headers,
         };
 
         const baseUri = TestUtil.createGatewayUri();
@@ -37,7 +37,7 @@ export namespace ClientTest {
 
         axios.get(
           requestUri,
-          requestConfig
+          requestConfig,
         ).then((response: AxiosResponse) => {
           resolve(response);
         }).catch((error) => {

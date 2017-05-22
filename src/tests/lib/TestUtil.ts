@@ -17,7 +17,7 @@ export class TestUtil {
    *
    * @returns {string}
    */
-  static createGatewayUri() {
+  public static createGatewayUri() {
     const baseUri    = process.env.GATEWAY_BASE_URI;
     const stage      = process.env.DEPLOY_STAGE;
     let gatewayUri = `${baseUri}/${stage}`;
@@ -35,18 +35,18 @@ export class TestUtil {
    * @param mockAdapter
    * @returns {AxiosInstance}
    */
-  static createMockAxiosInstance(mockAdapter: AxiosAdapter): AxiosInstance {
+  public static createMockAxiosInstance(mockAdapter: AxiosAdapter): AxiosInstance {
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
 
     const requestConfig = {
-      headers: headers,
+      headers,
       auth: {
         username: Authlete.getApiKey(),
-        password: Authlete.getApiSecret()
+        password: Authlete.getApiSecret(),
       },
-      adapter: mockAdapter
+      adapter: mockAdapter,
     };
 
     return axios.create(requestConfig);

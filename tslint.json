@@ -2,7 +2,7 @@
   "extends": "tslint:recommended",
   "rules": {
     "max-line-length": {
-      "options": [120]
+      "options": [160]
     },
     "new-parens": true,
     "no-arg": true,
@@ -12,10 +12,26 @@
     "object-literal-sort-keys": false,
     "no-console": {
       "options": [
+        "debug",
+        "info",
+        "log",
         "time",
         "timeEnd"
       ]
-    }
+    },
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ],
+    "max-classes-per-file": [
+      true,
+      2
+    ],
+    "no-namespace": false,
+    "no-string-literal": false,
+    "interface-name": [true, "never-prefix"]
   },
   "jsRules": {
     "max-line-length": {

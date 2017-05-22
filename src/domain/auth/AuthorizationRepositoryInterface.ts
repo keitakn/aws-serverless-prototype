@@ -15,5 +15,5 @@ export interface AuthorizationRepositoryInterface {
    * @param request
    * @returns {Promise<AuthorizationCodeEntity.Entity>}
    */
-  issueAuthorizationCode(request:  AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity>;
+  issueAuthorizationCode(request: AuthRequest.IssueAuthorizationCodeRequest): Promise<AuthorizationCodeEntity.Entity>;
 }

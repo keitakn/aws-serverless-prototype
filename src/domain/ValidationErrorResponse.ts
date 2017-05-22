@@ -1,3 +1,5 @@
+import * as lambda from "aws-lambda";
+
 /**
  * ValidationErrorResponse
  *
@@ -11,13 +13,13 @@ export class ValidationErrorResponse {
    *
    * @param _validateResultObject
    */
-  constructor(private _validateResultObject: Object) {
+  constructor(private _validateResultObject: {[name: string]: string}) {
   }
 
   /**
    * @returns {Object}
    */
-  get validateResultObject(): Object {
+  get validateResultObject(): {[name: string]: string} {
     return this._validateResultObject;
   }
 
@@ -26,21 +28,21 @@ export class ValidationErrorResponse {
    *
    * @returns {{statusCode: number, headers: {Access-Control-Allow-Origin: string}, body: string}}
    */
-  getResponse(): Object {
+  public getResponse(): lambda.ProxyResult {
     const responseCode = 422;
 
     const responseBody = {
       code: responseCode,
       message: "Unprocessable Entity",
-      errors: this.validateResultObject
+      errors: this.validateResultObject,
     };
 
     return {
       statusCode: responseCode,
       headers: {
-        "Access-Control-Allow-Origin" : "*"
+        "Access-Control-Allow-Origin" : "*",
       },
-      body: JSON.stringify(responseBody)
+      body: JSON.stringify(responseBody),
     };
   }
 }

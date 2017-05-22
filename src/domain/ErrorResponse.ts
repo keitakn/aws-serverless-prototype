@@ -1,3 +1,4 @@
+import * as lambda from "aws-lambda";
 import {isUndefined} from "util";
 
 /**
@@ -16,24 +17,24 @@ export default class ErrorResponse {
   private _errorConstant: any = {
     NotFoundError: {
       statusCode: 404,
-      errorCode: 404
+      errorCode: 404,
     },
     UnauthorizedError: {
       statusCode: 401,
-      errorCode: 401
+      errorCode: 401,
     },
     BadRequestError: {
       statusCode: 400,
-      errorCode: 400
+      errorCode: 400,
     },
     ForbiddenError: {
       statusCode: 403,
-      errorCode: 403
+      errorCode: 403,
     },
     InternalServerError : {
       statusCode: 500,
-      errorCode: 500
-    }
+      errorCode: 500,
+    },
   };
 
   /**
@@ -100,7 +101,7 @@ export default class ErrorResponse {
    *
    * @returns {{statusCode: number, headers: {Access-Control-Allow-Origin: string}, body: string}}
    */
-  getResponse(): any {
+  public getResponse(): lambda.ProxyResult {
     // このメソッドでObjectを整形して返すよりも呼出元でこのObjectを作ったほうが良いかも
     const defaultStatusCode = 500;
     const defaultErrorCode  = defaultStatusCode;
@@ -118,16 +119,16 @@ export default class ErrorResponse {
     }
 
     const responseBody = {
-      "code": this.errorCode,
-      "message": `${this.errorMessage}`
+      code: this.errorCode,
+      message: `${this.errorMessage}`,
     };
 
     const response = {
       statusCode: this.statusCode,
       headers: {
-        "Access-Control-Allow-Origin" : "*"
+        "Access-Control-Allow-Origin" : "*",
       },
-      body: JSON.stringify(responseBody)
+      body: JSON.stringify(responseBody),
     };
 
     return response;

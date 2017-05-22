@@ -1,11 +1,11 @@
+import {DynamoDB} from "aws-sdk";
+import PasswordHash from "../domain/auth/PasswordHash";
 import {UserEntity} from "../domain/user/UserEntity";
 import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
-import NotFoundError from "../errors/NotFoundError";
-import {DynamoDB} from "aws-sdk";
-import {DynamoDbResponse} from "./DynamoDbResponse";
-import PasswordHash from "../domain/auth/PasswordHash";
 import InternalServerError from "../errors/InternalServerError";
+import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
+import {DynamoDbResponse} from "./DynamoDbResponse";
 
 /**
  * UserRepository
@@ -29,13 +29,13 @@ export default class UserRepository implements UserRepositoryInterface {
    * @param subject
    * @returns {Promise<UserEntity.Entity>}
    */
-  find(subject: string): Promise<UserEntity.Entity> {
-    return new Promise<UserEntity.Entity>((resolve: Function, reject: Function) => {
+  public find(subject: string): Promise<UserEntity.Entity> {
+    return new Promise<UserEntity.Entity>((resolve, reject) => {
       const params = {
         TableName: this.getUsersTableName(),
         Key: {
-          id: subject
-        }
+          id: subject,
+        },
       };
 
       this.dynamoDbDocumentClient
@@ -71,7 +71,7 @@ export default class UserRepository implements UserRepositoryInterface {
         .catch((error) => {
           Logger.critical(error);
           return reject(
-            new InternalServerError(error.message)
+            new InternalServerError(error.message),
           );
         });
     });
@@ -83,7 +83,7 @@ export default class UserRepository implements UserRepositoryInterface {
    * @param userEntity
    * @returns {Promise<UserEntity.Entity>}
    */
-  async save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity> {
+  public async save(userEntity: UserEntity.Entity): Promise<UserEntity.Entity> {
     try {
       const userCreateParams = {
         id: userEntity.subject,
@@ -94,12 +94,12 @@ export default class UserRepository implements UserRepositoryInterface {
         gender: userEntity.gender,
         birthdate: userEntity.birthdate,
         created_at: userEntity.createdAt,
-        updated_at: userEntity.updatedAt
+        updated_at: userEntity.updatedAt,
       };
 
       const params = {
         TableName: this.getUsersTableName(),
-        Item: userCreateParams
+        Item: userCreateParams,
       };
 
       await this.dynamoDbDocumentClient.put(params).promise();
@@ -108,7 +108,7 @@ export default class UserRepository implements UserRepositoryInterface {
     } catch (error) {
       Logger.critical(error);
       return Promise.reject(
-        new InternalServerError(error.message)
+        new InternalServerError(error.message),
       );
     }
   }

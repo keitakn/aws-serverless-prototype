@@ -13,7 +13,7 @@ export class Authlete {
    *
    * @returns {string}
    */
-  static getApiKey(): string {
+  public static getApiKey(): string {
     return process.env.AUTHLETE_API_KEY;
   }
 
@@ -22,7 +22,7 @@ export class Authlete {
    *
    * @returns {string}
    */
-  static getApiSecret(): string {
+  public static getApiSecret(): string {
     return process.env.AUTHLETE_API_SECRET;
   }
 }

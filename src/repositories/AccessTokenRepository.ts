@@ -1,12 +1,12 @@
 import {AxiosInstance} from "axios";
 import {AxiosResponse} from "axios";
-import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import {AccessTokenEntity} from "../domain/auth/AccessTokenEntity";
+import {AccessTokenRepositoryInterface} from "../domain/auth/AccessTokenRepositoryInterface";
 import BadRequestError from "../errors/BadRequestError";
 import InternalServerError from "../errors/InternalServerError";
 import {Logger} from "../infrastructures/Logger";
-import {AuthleteAPI} from "../types/authlete/types";
 import {AuthleteAPIConstant} from "../types/authlete/AuthleteAPIConstant";
+import {AuthleteAPI} from "../types/authlete/types";
 
 /**
  * AccessTokenRepository
@@ -31,15 +31,15 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @param accessToken
    * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
+  public async fetch(accessToken: string): Promise<AccessTokenEntity.Entity> {
     try {
       const requestData = {
-        token: accessToken
+        token: accessToken,
       };
 
       const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/introspection",
-        requestData
+        requestData,
       );
 
       if (response.status !== 200) {
@@ -67,15 +67,15 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
    * @param redirectUri
    * @returns {Promise<AccessTokenEntity.Entity>}
    */
-  async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
+  public async issue(authorizationCode: string, redirectUri: string): Promise<AccessTokenEntity.Entity> {
     try {
       const requestData = {
-        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
+        parameters: `code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`,
       };
 
       const response: AxiosResponse = await this.axiosInstance.post(
         "https://api.authlete.com/api/auth/token",
-        requestData
+        requestData,
       );
 
       if (response.status !== 200) {
@@ -95,12 +95,12 @@ export default class AccessTokenRepository implements AccessTokenRepositoryInter
           case AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST:
           case AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT:
             return Promise.reject(
-              new BadRequestError(accessTokenEntity.tokenResponse.resultMessage)
+              new BadRequestError(accessTokenEntity.tokenResponse.resultMessage),
             );
           default:
             Logger.critical(accessTokenEntity.tokenResponse);
             return Promise.reject(
-              new InternalServerError(accessTokenEntity.tokenResponse.resultMessage)
+              new InternalServerError(accessTokenEntity.tokenResponse.resultMessage),
             );
         }
       }

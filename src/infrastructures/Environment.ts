@@ -11,7 +11,7 @@ export default class Environment {
    *
    * @returns {boolean}
    */
-  static isLocal(): boolean {
+  public static isLocal(): boolean {
 
     if (process.env.IS_OFFLINE) {
       return true;

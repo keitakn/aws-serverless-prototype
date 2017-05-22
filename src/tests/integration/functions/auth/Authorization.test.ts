@@ -1,9 +1,9 @@
 import {assert} from "chai";
+import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {AuthTest} from "../../../lib/AuthTest";
 import {ClientTest} from "../../../lib/ClientTest";
 import {ResourceTest} from "../../../lib/ResourceTest";
-import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
-import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 
 /**
  * 認可のテスト
@@ -26,7 +26,7 @@ describe("Authorization", () => {
       http_method: "GET",
       resource_path: "clients",
       name: "Find Client.",
-      scopes: ["prototype_clients", "prototype_clients_find"]
+      scopes: ["prototype_clients", "prototype_clients_find"],
     };
 
     return ResourceTest.ApiClient.create(createRequest);
@@ -40,7 +40,7 @@ describe("Authorization", () => {
     const tokenRequest: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
-      scopes: ["prototype_clients"]
+      scopes: ["prototype_clients"],
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
@@ -60,7 +60,7 @@ describe("Authorization", () => {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
-      scopes: ["prototype_clients_find"]
+      scopes: ["prototype_clients_find"],
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
@@ -81,7 +81,7 @@ describe("Authorization", () => {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
-      scopes: ["email"]
+      scopes: ["email"],
     };
 
     return (async () => {
@@ -120,7 +120,7 @@ describe("Authorization", () => {
       grantType: AuthleteAPIConstant.GrantTypes.AUTHORIZATION_CODE,
       clientId: 1957483863470,
       subject: "796c6536-5e55-4da6-adf1-9a6badfb2e3c",
-      scopes: ["email"]
+      scopes: ["email"],
     };
 
     return (async () => {

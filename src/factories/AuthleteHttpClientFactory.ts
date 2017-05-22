@@ -16,17 +16,17 @@ export default class AuthleteHttpClientFactory {
    *
    * @returns {AxiosInstance}
    */
-  static create(): AxiosInstance {
+  public static create(): AxiosInstance {
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
 
     const requestConfig = {
-      headers: headers,
+      headers,
       auth: {
         username: Authlete.getApiKey(),
-        password: Authlete.getApiSecret()
-      }
+        password: Authlete.getApiSecret(),
+      },
     };
 
     return axios.create(requestConfig);

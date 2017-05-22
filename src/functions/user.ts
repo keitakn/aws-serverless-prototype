@@ -1,20 +1,20 @@
-import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
+import * as sourceMapSupport from "source-map-support";
 import * as uuid from "uuid";
-import ErrorResponse from "../domain/ErrorResponse";
-import AwsSdkFactory from "../factories/AwsSdkFactory";
-import UserRepository from "../repositories/UserRepository";
-import {UserEntity} from "../domain/user/UserEntity";
 import PasswordService from "../domain/auth/PasswordService";
+import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {UserRequest} from "../domain/user/request/UserRequest";
+import {UserEntity} from "../domain/user/UserEntity";
 import {UserValidationService} from "../domain/user/UserValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {RequestFactory} from "../factories/RequestFactory";
-import {UserRequest} from "../domain/user/request/UserRequest";
+import UserRepository from "../repositories/UserRepository";
 
 sourceMapSupport.install();
 
-const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.createDynamoDbDocumentClient();
 
 /**
  * ユーザーを作成する
@@ -26,7 +26,7 @@ const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumen
 export const create = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const requestFactory = new RequestFactory(event);
@@ -67,7 +67,7 @@ export const create = async (
       gender: userEntity.gender,
       birthdate: userEntity.birthdate,
       created_at: userEntity.createdAt,
-      updated_at: userEntity.updatedAt
+      updated_at: userEntity.updatedAt,
     };
 
     const successResponse = new SuccessResponse(responseBody, 201);
@@ -91,7 +91,7 @@ export const create = async (
 export const find = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const request = extractRequest(event);
@@ -116,7 +116,7 @@ export const find = async (
       gender: userEntity.gender,
       birthdate: userEntity.birthdate,
       created_at: userEntity.createdAt,
-      updated_at: userEntity.updatedAt
+      updated_at: userEntity.updatedAt,
     };
 
     const successResponse = new SuccessResponse(responseBody);
@@ -139,11 +139,11 @@ export const find = async (
 const extractRequest = (event: lambda.APIGatewayEvent): UserRequest.FindRequest => {
   if (event.pathParameters != null) {
     return {
-      subject: event.pathParameters.id
+      subject: event.pathParameters.id,
     };
   }
 
   return {
-    subject: ""
+    subject: "",
   };
 };

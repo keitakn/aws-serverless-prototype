@@ -14,7 +14,7 @@ export class RequestFactory {
    *
    * @param _event
    */
-  constructor(private _event: LambdaEvent) {
+  constructor(private _event: LambdaEvent, private _isLocal: boolean = false) {
   }
 
   /**
@@ -25,11 +25,18 @@ export class RequestFactory {
   }
 
   /**
+   * @returns {boolean}
+   */
+  get isLocal(): boolean {
+    return this._isLocal;
+  }
+
+  /**
    * リクエストオブジェクトを生成する
    *
    * @returns {any}
    */
-  create(): any {
+  public create(): any {
     const eventBody: any = this.event.body;
 
     return JSON.parse(eventBody);

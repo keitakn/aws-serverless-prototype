@@ -15,7 +15,7 @@ export default class PasswordService {
    * @param password
    * @returns {PasswordHash}
    */
-  static generatePasswordHash(password: string): PasswordHash {
+  public static generatePasswordHash(password: string): PasswordHash {
 
     const sha512 = crypto.createHash("sha512");
     sha512.update(password);

@@ -1,6 +1,6 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
+import {AuthTest} from "../../../lib/AuthTest";
 
 /**
  * アクセストークン発行（認可コード）のテスト
@@ -17,13 +17,13 @@ describe("IssueTokenFromCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "offline_access", "prototype_users"]
+      scopes: ["openid", "email", "offline_access", "prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
-        redirect_uri: request.redirect_uri
+        redirect_uri: request.redirect_uri,
       };
 
       return AuthTest.ApiClient.issueTokenFromCode(tokenRequest);
@@ -49,13 +49,13 @@ describe("IssueTokenFromCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "offline_access", "prototype_users"]
+      scopes: ["openid", "email", "offline_access", "prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
       const tokenRequest = {
         code: response.data.code,
-        redirect_uri: "https://api.authlete.com/api/mock/redirection"
+        redirect_uri: "https://api.authlete.com/api/mock/redirection",
       };
       return AuthTest.ApiClient.issueTokenFromCode(tokenRequest);
     }).catch((error) => {
@@ -72,7 +72,7 @@ describe("IssueTokenFromCode", () => {
     const authleteApiKey = process.env.AUTHLETE_API_KEY;
     const tokenRequest = {
       code: "vPHtD8zkhYOPUwcQmwt4WGEHs8qv5XSvyMYbOWFq4kU",
-      redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`
+      redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
     };
 
     return AuthTest.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
@@ -88,7 +88,7 @@ describe("IssueTokenFromCode", () => {
   it("testFailValidation", () => {
     const tokenRequest = {
       code: "vPHtD8zkhYOPUwcQmwt4WGEHs8qv5XSvyMYbOWFq4kU2",
-      redirect_uri: `http`
+      redirect_uri: `http`,
     };
 
     return AuthTest.ApiClient.issueTokenFromCode(tokenRequest).catch((error) => {
@@ -97,12 +97,12 @@ describe("IssueTokenFromCode", () => {
 
       assert.property(
         error.response.data.errors,
-        "code"
+        "code",
       );
 
       assert.property(
         error.response.data.errors,
-        "redirect_uri"
+        "redirect_uri",
       );
     });
   });

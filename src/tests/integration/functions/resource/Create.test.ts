@@ -1,6 +1,6 @@
 import {assert} from "chai";
-import {ResourceTest} from "../../../lib/ResourceTest";
 import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
+import {ResourceTest} from "../../../lib/ResourceTest";
 
 /**
  * リソース作成のテスト
@@ -27,7 +27,7 @@ describe("CreateResource", () => {
       http_method: "POST",
       resource_path: "tests",
       name: "テストに利用するリソース",
-      scopes: ["tests"]
+      scopes: ["tests"],
     };
 
     return (async () => {
@@ -54,7 +54,7 @@ describe("CreateResource", () => {
       http_method: "TRACE",
       resource_path: "test/test.test/[1]",
       name: "",
-      scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
+      scopes: ["98f46ad0-09e2-4324-910c-011df62e7"],
     };
 
     return ResourceTest.ApiClient.create(request).catch((error) => {
@@ -63,22 +63,22 @@ describe("CreateResource", () => {
 
       assert.property(
         error.response.data.errors,
-        "http_method"
+        "http_method",
       );
 
       assert.property(
         error.response.data.errors,
-        "resource_path"
+        "resource_path",
       );
 
       assert.property(
         error.response.data.errors,
-        "name"
+        "name",
       );
 
       assert.property(
         error.response.data.errors,
-        "scopes[0]"
+        "scopes[0]",
       );
     });
   });

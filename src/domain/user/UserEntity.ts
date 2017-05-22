@@ -189,7 +189,7 @@ export namespace UserEntity {
     /**
      * @returns {UserEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }
@@ -339,7 +339,7 @@ export namespace UserEntity {
      * @param passwordHash
      * @returns {boolean}
      */
-    verifyPassword(passwordHash: PasswordHash) {
+    public verifyPassword(passwordHash: PasswordHash) {
       const userPasswordHash = this.passwordHash.passwordHash;
 
       if (userPasswordHash === passwordHash.passwordHash) {

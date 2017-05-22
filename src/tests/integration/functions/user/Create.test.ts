@@ -1,8 +1,8 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest"
-import {UserTest} from "../../../lib/UserTest";
-import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {UserRequest} from "../../../../domain/user/request/UserRequest";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthTest} from "../../../lib/AuthTest";
+import {UserTest} from "../../../lib/UserTest";
 
 /**
  * ユーザー作成のテスト
@@ -21,7 +21,7 @@ describe("CreateUser", () => {
     const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
-      scopes: ["prototype_users"]
+      scopes: ["prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
@@ -38,7 +38,7 @@ describe("CreateUser", () => {
       password: "password1234",
       name: "keita",
       gender: "male",
-      birthdate: "1990-01-01"
+      birthdate: "1990-01-01",
     };
 
     return UserTest.ApiClient.create(request, accessToken).then((response) => {
@@ -47,7 +47,7 @@ describe("CreateUser", () => {
       assert.equal(response.data.email_verified, 0);
       assert.equal(
         response.data.password_hash,
-        "8c7c9d16278ac60a19776f204f3109b1c2fc782ff8b671f42426a85cf72b1021887dd9e4febe420dcd215ba499ff12e230daf67afffde8bf84befe867a8822c4"
+        "8c7c9d16278ac60a19776f204f3109b1c2fc782ff8b671f42426a85cf72b1021887dd9e4febe420dcd215ba499ff12e230daf67afffde8bf84befe867a8822c4",
       );
       assert.equal(response.data.name, "keita");
       assert.equal(response.data.gender, "male");
@@ -69,7 +69,7 @@ describe("CreateUser", () => {
       password: "passwd",
       name: "a",
       gender: "0",
-      birthdate: "1990/01/01"
+      birthdate: "1990/01/01",
     };
 
     return UserTest.ApiClient.create(request, accessToken).catch((error) => {
@@ -78,27 +78,27 @@ describe("CreateUser", () => {
 
       assert.property(
         error.response.data.errors,
-        "email"
+        "email",
       );
 
       assert.property(
         error.response.data.errors,
-        "password"
+        "password",
       );
 
       assert.property(
         error.response.data.errors,
-        "name"
+        "name",
       );
 
       assert.property(
         error.response.data.errors,
-        "gender"
+        "gender",
       );
 
       assert.property(
         error.response.data.errors,
-        "birthdate"
+        "birthdate",
       );
     });
   });

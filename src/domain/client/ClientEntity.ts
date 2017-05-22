@@ -208,7 +208,7 @@ export namespace ClientEntity {
     /**
      * @returns {ClientEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }

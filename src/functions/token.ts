@@ -1,13 +1,13 @@
-import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import AccessTokenRepository from "../repositories/AccessTokenRepository";
+import * as sourceMapSupport from "source-map-support";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
+import {TokenRequest} from "../domain/token/request/TokenRequest";
 import {TokenValidationService} from "../domain/token/TokenValidationService";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
-import {RequestFactory} from "../factories/RequestFactory";
-import {TokenRequest} from "../domain/token/request/TokenRequest";
 import AuthleteHttpClientFactory from "../factories/AuthleteHttpClientFactory";
+import {RequestFactory} from "../factories/RequestFactory";
+import AccessTokenRepository from "../repositories/AccessTokenRepository";
 
 sourceMapSupport.install();
 
@@ -24,7 +24,7 @@ const axiosInstance = AuthleteHttpClientFactory.create();
 export const issueTokenFromCode = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const requestFactory = new RequestFactory(event);
@@ -46,7 +46,7 @@ export const issueTokenFromCode = async (
 
     const successResponse = new SuccessResponse(
       accessTokenEntity.tokenResponse.responseContent,
-      201
+      201,
     );
 
     callback(undefined, successResponse.getResponse(false));

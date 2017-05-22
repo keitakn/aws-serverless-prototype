@@ -12,40 +12,40 @@ describe("CreateValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = UserValidationService.createValidate(request);
 
     assert.property(
       validateResultObject,
-      "email"
+      "email",
     );
 
     assert.property(
       validateResultObject,
-      "password"
+      "password",
     );
 
     assert.property(
       validateResultObject,
-      "name"
+      "name",
     );
 
     assert.property(
       validateResultObject,
-      "gender"
+      "gender",
     );
 
     assert.property(
       validateResultObject,
-      "birthdate"
+      "birthdate",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -98,7 +98,7 @@ describe("CreateValidate", () => {
         gender: "",
         // フォーマット不正
         birthdate: "1991-01-01 00:00:00",
-      }
+      },
     ];
 
     requests.map((request) => {
@@ -106,27 +106,27 @@ describe("CreateValidate", () => {
 
       assert.property(
         validateResultObject,
-        "email"
+        "email",
       );
 
       assert.property(
         validateResultObject,
-        "password"
+        "password",
       );
 
       assert.property(
         validateResultObject,
-        "name"
+        "name",
       );
 
       assert.property(
         validateResultObject,
-        "gender"
+        "gender",
       );
 
       assert.property(
         validateResultObject,
-        "birthdate"
+        "birthdate",
       );
     });
   });
@@ -137,11 +137,11 @@ describe("CreateValidate", () => {
    */
   it("testValidationNotContainsError", () => {
     const request = {
-      email:"keita@gmail.com",
+      email: "keita@gmail.com",
       password: "password1234",
       name: "keita",
       gender: "male",
-      birthdate: "1998-01-01"
+      birthdate: "1998-01-01",
     };
 
     const validateResultObject = UserValidationService.createValidate(request);
@@ -149,7 +149,7 @@ describe("CreateValidate", () => {
     // 空のオブジェクトである事はエラーが1つもない事を示す
     assert.equal(
       Object.keys(validateResultObject).length,
-      0
+      0,
     );
   });
 });

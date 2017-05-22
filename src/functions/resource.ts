@@ -1,18 +1,18 @@
-import * as sourceMapSupport from "source-map-support";
 import * as lambda from "aws-lambda";
-import AwsSdkFactory from "../factories/AwsSdkFactory";
+import * as sourceMapSupport from "source-map-support";
+import ErrorResponse from "../domain/ErrorResponse";
+import {ResourceRequest} from "../domain/resource/request/ResourceRequest";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceValidationService} from "../domain/resource/ResourceValidationService";
-import {ResourceRepository} from "../repositories/ResourceRepository";
-import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
 import {ValidationErrorResponse} from "../domain/ValidationErrorResponse";
+import AwsSdkFactory from "../factories/AwsSdkFactory";
 import {RequestFactory} from "../factories/RequestFactory";
-import {ResourceRequest} from "../domain/resource/request/ResourceRequest";
+import {ResourceRepository} from "../repositories/ResourceRepository";
 
 sourceMapSupport.install();
 
-const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumentClient();
+const dynamoDbDocumentClient = AwsSdkFactory.createDynamoDbDocumentClient();
 
 /**
  * リソースを作成する
@@ -25,7 +25,7 @@ const dynamoDbDocumentClient = AwsSdkFactory.getInstance().createDynamoDbDocumen
 export const create = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const requestFactory = new RequestFactory(event);
@@ -68,7 +68,7 @@ export const create = async (
       name: resourceEntity.name,
       scopes: resourceEntity.scopes,
       created_at: resourceEntity.createdAt,
-      updated_at: resourceEntity.updatedAt
+      updated_at: resourceEntity.updatedAt,
     };
 
     const successResponse = new SuccessResponse(responseBody, 201);
@@ -93,7 +93,7 @@ export const create = async (
 export const find = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const request = extractRequest(event);
@@ -116,7 +116,7 @@ export const find = async (
       name: resourceEntity.name,
       scopes: resourceEntity.scopes,
       created_at: resourceEntity.createdAt,
-      updated_at: resourceEntity.updatedAt
+      updated_at: resourceEntity.updatedAt,
     };
 
     const successResponse = new SuccessResponse(responseBody);
@@ -141,7 +141,7 @@ export const find = async (
 export const destroy = async (
   event: lambda.APIGatewayEvent,
   context: lambda.Context,
-  callback: lambda.Callback
+  callback: lambda.Callback,
 ): Promise<void> => {
   try {
     const request = extractRequest(event);
@@ -178,11 +178,11 @@ export const destroy = async (
 const extractRequest = (event: lambda.APIGatewayEvent): ResourceRequest.FindRequest => {
   if (event.pathParameters != null) {
     return {
-      resource_id: event.pathParameters.id
+      resource_id: event.pathParameters.id,
     };
   }
 
   return {
-    resource_id: ""
+    resource_id: "",
   };
 };

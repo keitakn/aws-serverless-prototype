@@ -1,10 +1,10 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest";
-import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
-import {UserTest} from "../../../lib/UserTest";
-import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
+import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthTest} from "../../../lib/AuthTest";
+import {UserTest} from "../../../lib/UserTest";
 
 /**
  * ユーザー取得のテスト
@@ -28,7 +28,7 @@ describe("FindUser", () => {
     const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
-      scopes: ["prototype_users"]
+      scopes: ["prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(request).then((response) => {
@@ -43,7 +43,7 @@ describe("FindUser", () => {
         password: "password1234",
         name: "keita",
         gender: "male",
-        birthdate: "1990-01-01"
+        birthdate: "1990-01-01",
       };
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
@@ -92,7 +92,7 @@ describe("FindUser", () => {
 
       assert.property(
         error.response.data.errors,
-        "subject"
+        "subject",
       );
     });
   });

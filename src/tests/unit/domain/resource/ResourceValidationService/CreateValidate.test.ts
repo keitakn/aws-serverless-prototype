@@ -12,35 +12,35 @@ describe("CreateValidate", () => {
    */
   it("testValidationUnsetRequiredParams", () => {
     const request = {
-      foo: "bar"
+      foo: "bar",
     };
 
     const validateResultObject = ResourceValidationService.createValidate(request);
 
     assert.property(
       validateResultObject,
-      "http_method"
+      "http_method",
     );
 
     assert.property(
       validateResultObject,
-      "resource_path"
+      "resource_path",
     );
 
     assert.property(
       validateResultObject,
-      "name"
+      "name",
     );
 
     assert.property(
       validateResultObject,
-      "scopes"
+      "scopes",
     );
 
     // 許可していないキーが指定された場合もエラー情報としてレスポンスに含まれる
     assert.property(
       validateResultObject,
-      "foo"
+      "foo",
     );
   });
 
@@ -58,7 +58,7 @@ describe("CreateValidate", () => {
         // 許可されている最小値より小さい値を指定
         name: "N",
         // 許可されている最小値より小さい値を指定
-        scopes: ["food"]
+        scopes: ["food"],
       },
       {
         // 許可されていないHTTPメソッドを設定
@@ -68,7 +68,7 @@ describe("CreateValidate", () => {
         // 許可されている最大値より大きい値を指定
         name: "あああああああああああああああああああああああああああああああああああああああああああああああああああ",
         // 許可されている最大値より大きい値を指定
-        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
+        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"],
       },
       {
         // 許可されていないHTTPメソッドを設定
@@ -78,22 +78,22 @@ describe("CreateValidate", () => {
         // 数値を指定
         name: 12345678,
         // 許可されている最大値より小さい値を指定
-        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"]
+        scopes: ["98f46ad0-09e2-4324-910c-011df62e7"],
       },
       {
         // nullを指定
         http_method: null,
         resource_path: null,
         name: null,
-        scopes: [null]
+        scopes: [null],
       },
       {
         // 空文字を指定
         http_method: "",
         resource_path: "",
         name: "",
-        scopes: [""]
-      }
+        scopes: [""],
+      },
     ];
 
     requests.map((request) => {
@@ -101,22 +101,22 @@ describe("CreateValidate", () => {
 
       assert.property(
         validateResultObject,
-        "http_method"
+        "http_method",
       );
 
       assert.property(
         validateResultObject,
-        "resource_path"
+        "resource_path",
       );
 
       assert.property(
         validateResultObject,
-        "name"
+        "name",
       );
 
       assert.property(
         validateResultObject,
-        "scopes[0]"
+        "scopes[0]",
       );
     });
   });
@@ -130,29 +130,29 @@ describe("CreateValidate", () => {
       http_method: "POST",
       resource_path: "tests/{id}",
       name: "クライアントの検索を行う",
-      scopes: [null]
+      scopes: [null],
     };
 
     const validateResultObject = ResourceValidationService.createValidate(request);
 
     assert.notProperty(
       validateResultObject,
-      "http_method"
+      "http_method",
     );
 
     assert.notProperty(
       validateResultObject,
-      "resource_path"
+      "resource_path",
     );
 
     assert.notProperty(
       validateResultObject,
-      "name"
+      "name",
     );
 
     assert.property(
       validateResultObject,
-      "scopes[0]"
+      "scopes[0]",
     );
   });
 
@@ -165,7 +165,7 @@ describe("CreateValidate", () => {
       http_method: "DELETE",
       resource_path: "users/{user_id}/phone-numbers/{phone_number_id}",
       name: "名前",
-      scopes: ["prototype_clients", "prototype_clients_find"]
+      scopes: ["prototype_clients", "prototype_clients_find"],
     };
 
     const validateResultObject = ResourceValidationService.createValidate(request);
@@ -173,7 +173,7 @@ describe("CreateValidate", () => {
     // 空のオブジェクトである事はエラーが1つもない事を示す
     assert.equal(
       Object.keys(validateResultObject).length,
-      0
+      0,
     );
   });
 });

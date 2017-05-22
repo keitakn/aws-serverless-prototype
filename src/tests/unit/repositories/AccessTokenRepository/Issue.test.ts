@@ -1,7 +1,7 @@
 import {assert} from "chai";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
-import {TestUtil} from "../../../lib/TestUtil";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {TestUtil} from "../../../lib/TestUtil";
 
 /**
  * AccessTokenRepository.issueのテスト
@@ -17,16 +17,16 @@ describe("Issue", () => {
       accessToken: "9999999999AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
       accessTokenDuration: 86400,
       accessTokenExpiresAt: 1490335510238,
-      action: AuthleteAPIConstant.TokenResponseActions.OK
+      action: AuthleteAPIConstant.TokenResponseActions.OK,
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
-          status: 200
+          status: 200,
         });
-      })
+      });
     };
 
     const axiosInstance = TestUtil.createMockAxiosInstance(mockAdapter);
@@ -36,7 +36,7 @@ describe("Issue", () => {
       // モックでリクエストを行っているので適当な値を設定すれば良い
       const accessTokenEntity = await accessTokenRepository.issue(
         "authorizationCode",
-        "https://google.co.jp/oauth2/callback"
+        "https://google.co.jp/oauth2/callback",
       );
 
       assert.equal(accessTokenEntity.accessToken, mockResponse.accessToken);
@@ -49,16 +49,16 @@ describe("Issue", () => {
    */
   it("testFailBadRequest", () => {
     const mockResponse = {
-      action: AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST
+      action: AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST,
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
-          status: 200
+          status: 200,
         });
-      })
+      });
     };
 
     const axiosInstance = TestUtil.createMockAxiosInstance(mockAdapter);
@@ -68,7 +68,7 @@ describe("Issue", () => {
       // モックでリクエストを行っているので適当な値を設定すれば良い
       await accessTokenRepository.issue(
         "authorizationCode",
-        "https://google.co.jp/oauth2/callback"
+        "https://google.co.jp/oauth2/callback",
       );
 
     })().catch((error) => {
@@ -82,16 +82,16 @@ describe("Issue", () => {
    */
   it("testFailInvalidClient", () => {
     const mockResponse = {
-      action: AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT
+      action: AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT,
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
-          status: 200
+          status: 200,
         });
-      })
+      });
     };
 
     const axiosInstance = TestUtil.createMockAxiosInstance(mockAdapter);
@@ -101,7 +101,7 @@ describe("Issue", () => {
       // モックでリクエストを行っているので適当な値を設定すれば良い
       await accessTokenRepository.issue(
         "authorizationCode",
-        "https://google.co.jp/oauth2/callback"
+        "https://google.co.jp/oauth2/callback",
       );
 
     })().catch((error) => {
@@ -116,12 +116,12 @@ describe("Issue", () => {
   it("testFailInternalServerError", () => {
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: {message: "InternalServerError"},
-          status: 500
+          status: 500,
         });
-      })
+      });
     };
 
     const axiosInstance = TestUtil.createMockAxiosInstance(mockAdapter);
@@ -131,7 +131,7 @@ describe("Issue", () => {
       // モックでリクエストを行っているので適当な値を設定すれば良い
       await accessTokenRepository.issue(
         "authorizationCode",
-        "https://google.co.jp/oauth2/callback"
+        "https://google.co.jp/oauth2/callback",
       );
 
     })().catch((error) => {
@@ -145,16 +145,16 @@ describe("Issue", () => {
    */
   it("testFailActionInternalServerError", () => {
     const mockResponse = {
-      action: AuthleteAPIConstant.TokenResponseActions.INTERNAL_SERVER_ERROR
+      action: AuthleteAPIConstant.TokenResponseActions.INTERNAL_SERVER_ERROR,
     };
 
     const mockAdapter = () => {
-      return new Promise((resolve: Function, reject: Function) => {
+      return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
-          status: 200
+          status: 200,
         });
-      })
+      });
     };
 
     const axiosInstance = TestUtil.createMockAxiosInstance(mockAdapter);
@@ -164,7 +164,7 @@ describe("Issue", () => {
       // モックでリクエストを行っているので適当な値を設定すれば良い
       await accessTokenRepository.issue(
         "authorizationCode",
-        "https://google.co.jp/oauth2/callback"
+        "https://google.co.jp/oauth2/callback",
       );
 
     })().catch((error) => {

@@ -14,22 +14,22 @@ export class ClientValidationService {
    * @param request
    * @returns {Object}
    */
-  static findValidate(request: Object): Object {
+  public static findValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
       required: [
-        "client_id"
+        "client_id",
       ],
       properties: {
         client_id: {
-          "type": "number",
-          "minimum": 1,
-          "maximum": 9999999999999,
-          "exclusiveMaximum": true
-        }
+          type: "number",
+          minimum: 1,
+          maximum: 9999999999999,
+          exclusiveMaximum: true,
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);

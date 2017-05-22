@@ -1,9 +1,9 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest";
-import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
-import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
+import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
+import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
+import {AuthTest} from "../../../lib/AuthTest";
 
 /**
  * AccessTokenRepository.fetchのテスト
@@ -17,7 +17,7 @@ describe("Fetch", () => {
     const request: AuthTest.IssueAccessTokenInCheatApiRequest = {
       grantType: AuthleteAPIConstant.GrantTypes.CLIENT_CREDENTIALS,
       clientId: 1957483863470,
-      scopes: ["email"]
+      scopes: ["email"],
     };
 
     const axiosInstance = AuthleteHttpClientFactory.create();
@@ -27,7 +27,7 @@ describe("Fetch", () => {
     }).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(
         accessTokenEntity.introspectionResponse.clientId,
-        1957483863470
+        1957483863470,
       );
 
       assert.equal(accessTokenEntity.accessToken.length, 43);
@@ -46,7 +46,7 @@ describe("Fetch", () => {
     return accessTokenRepository.fetch(accessToken).then((accessTokenEntity: AccessTokenEntity.Entity) => {
       assert.equal(
         accessTokenEntity.extractIntrospectionAction(),
-        AuthleteAPIConstant.IntrospectionActions.UNAUTHORIZED
+        AuthleteAPIConstant.IntrospectionActions.UNAUTHORIZED,
       );
     });
   });

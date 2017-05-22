@@ -150,7 +150,7 @@ export namespace ResourceEntity {
     /**
      * @returns {ResourceEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }

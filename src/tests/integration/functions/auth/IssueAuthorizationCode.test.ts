@@ -1,6 +1,6 @@
 import {assert} from "chai";
-import {AuthTest} from "../../../lib/AuthTest";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
+import {AuthTest} from "../../../lib/AuthTest";
 
 /**
  * 認可コード発行のテスト
@@ -16,7 +16,7 @@ describe("IssueAuthorizationCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "prototype_clients"]
+      scopes: ["openid", "email", "prototype_clients"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
@@ -37,7 +37,7 @@ describe("IssueAuthorizationCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection/${authleteApiKey}`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "prototype_users"]
+      scopes: ["openid", "email", "prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
@@ -56,7 +56,7 @@ describe("IssueAuthorizationCode", () => {
       state: "neko123456789",
       redirect_uri: `https://api.authlete.com/api/mock/redirection`,
       subject: "98f46ad0-09e2-4324-910c-011df62e7307",
-      scopes: ["openid", "email", "prototype_users"]
+      scopes: ["openid", "email", "prototype_users"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
@@ -75,7 +75,7 @@ describe("IssueAuthorizationCode", () => {
       state: "1234567",
       redirect_uri: "url",
       subject: "98f46ad0-09e2-4324-910c-011df62e73071",
-      scopes: ["food", "98f46ad0-09e2-4324-910c-011df62e73071"]
+      scopes: ["food", "98f46ad0-09e2-4324-910c-011df62e73071"],
     };
 
     return AuthTest.ApiClient.issueAuthorizationCode(request).catch((error) => {
@@ -84,32 +84,32 @@ describe("IssueAuthorizationCode", () => {
 
       assert.property(
         error.response.data.errors,
-        "client_id"
+        "client_id",
       );
 
       assert.property(
         error.response.data.errors,
-        "state"
+        "state",
       );
 
       assert.property(
         error.response.data.errors,
-        "redirect_uri"
+        "redirect_uri",
       );
 
       assert.property(
         error.response.data.errors,
-        "subject"
+        "subject",
       );
 
       assert.property(
         error.response.data.errors,
-        "scopes[0]"
+        "scopes[0]",
       );
 
       assert.property(
         error.response.data.errors,
-        "scopes[1]"
+        "scopes[1]",
       );
     });
   });

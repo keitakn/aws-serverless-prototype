@@ -38,7 +38,7 @@ export namespace AuthorizationCodeEntity {
     /**
      * @returns {AuthorizationCodeEntity.Entity}
      */
-    build(): Entity {
+    public build(): Entity {
       return new Entity(this);
     }
   }
@@ -114,7 +114,7 @@ export namespace AuthorizationCodeEntity {
      */
     private extractState() {
       const query = this.responseContent.substr(
-        this.responseContent.indexOf("?") + 1
+        this.responseContent.indexOf("?") + 1,
       );
 
       const queries = querystring.parse(query);

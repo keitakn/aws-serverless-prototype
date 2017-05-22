@@ -14,26 +14,26 @@ export class TokenValidationService {
    * @param request
    * @returns {Object}
    */
-  static issueTokenFromCodeValidate(request: Object): Object {
+  public static issueTokenFromCodeValidate(request: any): {[name: string]: string} {
     // TODO schemeはどこか別ファイル等に定義してまとめる
     const scheme = {
       type: "object",
       required: [
         "code",
-        "redirect_uri"
+        "redirect_uri",
       ],
       properties: {
         code: {
-          "type": "string",
-          "minLength": 43,
-          "maxLength": 43
+          type: "string",
+          minLength: 43,
+          maxLength: 43,
         },
         redirect_uri: {
-          "type": "string",
-          "format": "uri"
-        }
+          type: "string",
+          format: "uri",
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     };
 
     const domainValidator = new DomainValidator(scheme);
