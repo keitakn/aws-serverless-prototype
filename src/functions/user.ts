@@ -1,6 +1,6 @@
 import * as lambda from "aws-lambda";
 import * as sourceMapSupport from "source-map-support";
-import * as uuid from "uuid";
+import * as uuidV4 from "uuid/v4";
 import PasswordService from "../domain/auth/PasswordService";
 import ErrorResponse from "../domain/ErrorResponse";
 import {SuccessResponse} from "../domain/SuccessResponse";
@@ -43,7 +43,7 @@ export const create = async (
 
     const userBuilder = new UserEntity.Builder();
 
-    userBuilder.subject = uuid.v4();
+    userBuilder.subject = uuidV4();
     userBuilder.email = request.email;
     userBuilder.emailVerified = 0;
     userBuilder.passwordHash = PasswordService.generatePasswordHash(request.password);
