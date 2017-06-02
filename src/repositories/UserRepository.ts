@@ -5,7 +5,8 @@ import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
 import InternalServerError from "../errors/InternalServerError";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
-import {DynamoDbResponse} from "./DynamoDbResponse";
+import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
+import GetItemOutput = DocumentClient.GetItemOutput;
 
 /**
  * UserRepository
@@ -41,14 +42,9 @@ export default class UserRepository implements UserRepositoryInterface {
       this.dynamoDbDocumentClient
         .get(params)
         .promise()
-        .then((dbResponse: DynamoDbResponse.User) => {
+        .then((dbResponse: GetItemOutput) => {
 
-          // TODO response形式が変わった為の暫定的な対応、恒久対応は後で行う
           if (dbResponse.Item == null) {
-            return reject(new NotFoundError());
-          }
-
-          if (Object.keys(dbResponse).length === 0) {
             return reject(new NotFoundError());
           }
 
@@ -68,7 +64,7 @@ export default class UserRepository implements UserRepositoryInterface {
 
           return resolve(userEntity);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           Logger.critical(error);
           return reject(
             new InternalServerError(error.message),

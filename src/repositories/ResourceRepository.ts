@@ -4,7 +4,8 @@ import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepository
 import InternalServerError from "../errors/InternalServerError";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
-import {DynamoDbResponse} from "./DynamoDbResponse";
+import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
+import GetItemOutput = DocumentClient.GetItemOutput;
 
 /**
  * ResourceRepository
@@ -40,14 +41,9 @@ export class ResourceRepository implements ResourceRepositoryInterface {
       this.dynamoDbDocumentClient
         .get(params)
         .promise()
-        .then((dbResponse: DynamoDbResponse.Resource) => {
+        .then((dbResponse: GetItemOutput) => {
 
-          // TODO response形式が変わった為の暫定的な対応、恒久対応は後で行う
           if (dbResponse.Item == null) {
-            return reject(new NotFoundError());
-          }
-
-          if (Object.keys(dbResponse).length === 0) {
             return reject(new NotFoundError());
           }
 
