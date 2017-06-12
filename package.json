@@ -10,11 +10,12 @@
     "lint": "tslint -c tslint.json src/**/*.ts",
     "lint:fix": "tslint -c tslint.json --fix src/**/*.ts",
     "build": "tsc",
+    "build:watch": "tsc -w",
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
-    "server": "serverless offline --location build",
-    "debug": "node-debug sls offline --location build",
-    "deploy": "serverless deploy"
+    "server": "serverless offline",
+    "debug": "node-debug sls offline",
+    "deploy": "yarn run build && serverless deploy"
   },
   "author": "keita-nishimoto",
   "license": "MIT",
