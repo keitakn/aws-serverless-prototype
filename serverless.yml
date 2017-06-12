@@ -34,8 +34,6 @@ custom:
     type: 'TOKEN'
     identitySource: method.request.header.Authorization
     resultTtlInSeconds: 0
-  webpack: webpack.config.js
-  webpackIncludeModules: true
   dynamodb:
     start:
       port: 8000
@@ -46,7 +44,7 @@ custom:
 
 functions:
   findClient:
-    handler: client.find
+    handler: build/functions/client.find
     events:
       - http:
           path: clients/{id}
@@ -54,7 +52,7 @@ functions:
           authorizer: ${self:custom.authorizer}
           cors: true
   createUser:
-    handler: user.create
+    handler: build/functions/user.create
     events:
       - http:
           path: users
@@ -62,7 +60,7 @@ functions:
           authorizer: ${self:custom.authorizer}
           cors: true
   findUser:
-    handler: user.find
+    handler: build/functions/user.find
     events:
       - http:
           path: users/{id}
@@ -70,42 +68,42 @@ functions:
           authorizer: ${self:custom.authorizer}
           cors: true
   createResource:
-    handler: resource.create
+    handler: build/functions/resource.create
     events:
       - http:
           path: resources
           method: post
           cors: true
   findResource:
-    handler: resource.find
+    handler: build/functions/resource.find
     events:
       - http:
           path: resources/{id}
           method: get
           cors: true
   destroyResource:
-    handler: resource.destroy
+    handler: build/functions/resource.destroy
     events:
       - http:
           path: resources/{id}
           method: delete
           cors: true
   issueTokenFromCode:
-    handler: token.issueTokenFromCode
+    handler: build/functions/token.issueTokenFromCode
     events:
       - http:
           path: tokens/code
           method: post
           cors: true
   authentication:
-    handler: auth.authentication
+    handler: build/functions/auth.authentication
     events:
       - http:
           path: auth/authentication
           method: post
           cors: true
   issueAuthorizationCode:
-    handler: auth.issueAuthorizationCode
+    handler: build/functions/auth.issueAuthorizationCode
     events:
       - http:
           path: auth/authorization/code
@@ -113,7 +111,7 @@ functions:
           cors: true
     timeout: 100
   authorization:
-    handler: auth.authorization
+    handler: build/functions/auth.authorization
 
 resources:
   Resources:
