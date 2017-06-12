@@ -1,7 +1,6 @@
 service: prototype
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-dynamodb-local
 
