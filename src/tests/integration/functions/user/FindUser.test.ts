@@ -1,4 +1,4 @@
-import {assert} from "chai";
+import assert from "chai";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";

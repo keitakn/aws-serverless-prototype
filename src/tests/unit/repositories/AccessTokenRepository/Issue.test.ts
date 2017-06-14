@@ -1,4 +1,4 @@
-import {assert} from "chai";
+import assert from "chai";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {TestUtil} from "../../../lib/TestUtil";

@@ -1,4 +1,4 @@
-import {assert} from "chai";
+import assert from "chai";
 import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 import {ResourceTest} from "../../../lib/ResourceTest";
 

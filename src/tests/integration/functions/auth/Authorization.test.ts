@@ -1,4 +1,4 @@
-import {assert} from "chai";
+import assert from "chai";
 import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {AuthTest} from "../../../lib/AuthTest";

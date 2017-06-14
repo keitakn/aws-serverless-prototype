@@ -1,4 +1,4 @@
-import {assert} from "chai";
+import assert from "chai";
 import {ResourceValidationService} from "../../../../../domain/resource/ResourceValidationService";
 
 /**
