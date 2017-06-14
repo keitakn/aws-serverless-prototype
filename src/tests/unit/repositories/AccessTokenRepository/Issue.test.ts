@@ -1,8 +1,8 @@
+import {AxiosPromise, AxiosRequestConfig} from "axios";
 import assert from "chai";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {TestUtil} from "../../../lib/TestUtil";
-import {AxiosPromise, AxiosRequestConfig} from "axios";
 
 /**
  * AccessTokenRepository.issueのテスト

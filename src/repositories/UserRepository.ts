@@ -1,11 +1,11 @@
 import {DynamoDB} from "aws-sdk";
+import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 import PasswordHash from "../domain/auth/PasswordHash";
 import {UserEntity} from "../domain/user/UserEntity";
 import {UserRepositoryInterface} from "../domain/user/UserRepositoryInterface";
 import InternalServerError from "../errors/InternalServerError";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
-import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 import GetItemOutput = DocumentClient.GetItemOutput;
 
 /**
@@ -50,15 +50,15 @@ export default class UserRepository implements UserRepositoryInterface {
 
           const builder = new UserEntity.Builder();
 
-          builder.subject = dbResponse.Item.id;
-          builder.email = dbResponse.Item.email;
-          builder.emailVerified = dbResponse.Item.email_verified;
-          builder.passwordHash = new PasswordHash(dbResponse.Item.password_hash);
-          builder.name = dbResponse.Item.name;
-          builder.gender = dbResponse.Item.gender;
-          builder.birthdate = dbResponse.Item.birthdate;
-          builder.createdAt = dbResponse.Item.created_at;
-          builder.updatedAt = dbResponse.Item.updated_at;
+          builder.subject       = dbResponse.Item["id"];
+          builder.email         = dbResponse.Item["email"];
+          builder.emailVerified = dbResponse.Item["email_verified"];
+          builder.passwordHash  = new PasswordHash(dbResponse.Item["password_hash"]);
+          builder.name          = dbResponse.Item["name"];
+          builder.gender        = dbResponse.Item["gender"];
+          builder.birthdate     = dbResponse.Item["birthdate"];
+          builder.createdAt     = dbResponse.Item["created_at"];
+          builder.updatedAt     = dbResponse.Item["updated_at"];
 
           const userEntity = builder.build();
 

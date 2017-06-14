@@ -18,7 +18,7 @@ describe("DestroyResource", () => {
       scopes: ["tests"],
     };
 
-    return ResourceTest.ApiClient.create(request).then(() => {});
+    return ResourceTest.ApiClient.create(request);
   });
 
   /**

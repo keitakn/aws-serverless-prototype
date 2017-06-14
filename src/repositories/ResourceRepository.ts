@@ -1,10 +1,10 @@
 import {DynamoDB} from "aws-sdk";
+import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 import {ResourceEntity} from "../domain/resource/ResourceEntity";
 import {ResourceRepositoryInterface} from "../domain/resource/ResourceRepositoryInterface";
 import InternalServerError from "../errors/InternalServerError";
 import NotFoundError from "../errors/NotFoundError";
 import {Logger} from "../infrastructures/Logger";
-import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 import GetItemOutput = DocumentClient.GetItemOutput;
 
 /**
@@ -48,13 +48,13 @@ export class ResourceRepository implements ResourceRepositoryInterface {
           }
 
           const builder = new ResourceEntity.Builder();
-          builder.resourceId   = dbResponse.Item.id;
-          builder.httpMethod   = dbResponse.Item.http_method;
-          builder.resourcePath = dbResponse.Item.resource_path;
-          builder.name         = dbResponse.Item.name;
-          builder.scopes       = dbResponse.Item.scopes;
-          builder.createdAt    = dbResponse.Item.created_at;
-          builder.updatedAt    = dbResponse.Item.updated_at;
+          builder.resourceId   = dbResponse.Item["id"];
+          builder.httpMethod   = dbResponse.Item["http_method"];
+          builder.resourcePath = dbResponse.Item["resource_path"];
+          builder.name         = dbResponse.Item["name"];
+          builder.scopes       = dbResponse.Item["scopes"];
+          builder.createdAt    = dbResponse.Item["created_at"];
+          builder.updatedAt    = dbResponse.Item["updated_at"];
 
           const resourceEntity = builder.build();
 

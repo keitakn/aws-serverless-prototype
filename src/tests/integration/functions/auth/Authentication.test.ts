@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import assert from "chai";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
@@ -48,7 +49,7 @@ describe("Authentication", () => {
       };
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       subject = response.data.subject;
     });
   });
@@ -64,7 +65,7 @@ describe("Authentication", () => {
       password,
     };
 
-    return AuthTest.ApiClient.authentication(request).then((response) => {
+    return AuthTest.ApiClient.authentication(request).then((response: AxiosResponse) => {
       assert.equal(response.data.authenticated, true);
       assert.equal(response.data.subject, subject);
       assert.equal(response.data.claims.email, "keita@gmail.com");
