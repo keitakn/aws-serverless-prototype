@@ -9,6 +9,8 @@
     "target": "es2015",
     // SourceMapを出力する
     "sourceMap": true,
+    // 出力先のディレクトリ
+    "outDir": "build",
     // コンパイル時にコメントを削除する
     "removeComments": true,
     // 暗黙のany型を禁止する
@@ -33,6 +35,9 @@
       "mocha"
     ]
   },
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

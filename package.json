@@ -9,12 +9,13 @@
     "coverage:report:html": "nyc report --reporter=html",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "lint:fix": "tslint -c tslint.json --fix src/**/*.ts",
-    "build": "webpack",
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
-    "server": "serverless offline --location .webpack",
-    "debug": "node-debug sls offline --location .webpack",
-    "deploy": "serverless deploy"
+    "server": "yarn run build && serverless offline",
+    "debug": "node-debug sls offline",
+    "deploy": "yarn run build && serverless deploy"
   },
   "author": "keita-nishimoto",
   "license": "MIT",
@@ -34,17 +35,14 @@
     "mocha": "^3.4.2",
     "node-inspector": "^1.1.1",
     "nyc": "^11.0.1",
-    "serverless": "^1.14.0",
+    "serverless": "^1.15.3",
     "serverless-dynamodb-local": "^0.2.22",
     "serverless-offline": "^3.14.0",
-    "serverless-webpack": "^1.0.0-rc.4",
     "source-map-support": "^0.4.15",
     "ts-loader": "^2.1.0",
     "ts-node": "^3.0.4",
     "tslint": "^5.4.2",
     "typescript": "^2.3.4",
-    "uuid": "^3.0.1",
-    "webpack": "^1.14.0",
-    "webpack-node-externals": "^1.6.0"
+    "uuid": "^3.0.1"
   }
 }

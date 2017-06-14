@@ -2,6 +2,7 @@ import {assert} from "chai";
 import AccessTokenRepository from "../../../../repositories/AccessTokenRepository";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
 import {TestUtil} from "../../../lib/TestUtil";
+import {AxiosPromise, AxiosRequestConfig} from "axios";
 
 /**
  * AccessTokenRepository.issueのテスト
@@ -20,11 +21,18 @@ describe("Issue", () => {
       action: AuthleteAPIConstant.TokenResponseActions.OK,
     };
 
-    const mockAdapter = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const mockAdapter = (requestConfig: AxiosRequestConfig): AxiosPromise => {
       return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
+          statusText: "OK",
+          headers,
+          config: requestConfig,
         });
       });
     };
@@ -52,11 +60,18 @@ describe("Issue", () => {
       action: AuthleteAPIConstant.TokenResponseActions.BAD_REQUEST,
     };
 
-    const mockAdapter = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const mockAdapter = (requestConfig: AxiosRequestConfig): AxiosPromise => {
       return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
+          statusText: "OK",
+          headers,
+          config: requestConfig,
         });
       });
     };
@@ -85,11 +100,18 @@ describe("Issue", () => {
       action: AuthleteAPIConstant.TokenResponseActions.INVALID_CLIENT,
     };
 
-    const mockAdapter = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const mockAdapter = (requestConfig: AxiosRequestConfig): AxiosPromise => {
       return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
+          statusText: "OK",
+          headers,
+          config: requestConfig,
         });
       });
     };
@@ -115,11 +137,18 @@ describe("Issue", () => {
    */
   it("testFailInternalServerError", () => {
 
-    const mockAdapter = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const mockAdapter = (requestConfig: AxiosRequestConfig): AxiosPromise => {
       return new Promise((resolve, reject) => {
         resolve({
           data: {message: "InternalServerError"},
           status: 500,
+          statusText: "Internal Server Error",
+          headers,
+          config: requestConfig,
         });
       });
     };
@@ -148,11 +177,18 @@ describe("Issue", () => {
       action: AuthleteAPIConstant.TokenResponseActions.INTERNAL_SERVER_ERROR,
     };
 
-    const mockAdapter = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const mockAdapter = (requestConfig: AxiosRequestConfig): AxiosPromise => {
       return new Promise((resolve, reject) => {
         resolve({
           data: mockResponse,
           status: 200,
+          statusText: "OK",
+          headers,
+          config: requestConfig,
         });
       });
     };
