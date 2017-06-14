@@ -28,6 +28,29 @@ provider:
     AUTHLETE_API_KEY: ${env:AUTHLETE_API_KEY}
     AUTHLETE_API_SECRET: ${env:AUTHLETE_API_SECRET}
 
+package:
+  exclude:
+    - .git/**
+    - .nyc_output/**
+    - coverage/**
+    - .idea/**
+    - src/**
+    - config/**
+    - node_modules/aws-sdk/**
+    - node_modules/.bin/**
+    - node_modules/.cache/**
+    - node_modules/@types/**
+    - node_modules/chai/**
+    - node_modules/json-loader/**
+    - node_modules/node-inspector/**
+    - node_modules/serverless/**
+    - node_modules/serverless-dynamodb-local/**
+    - node_modules/serverless-offline/**
+    - node_modules/ts-loader/**
+    - node_modules/ts-node/**
+    - node_modules/tslint/**
+    - node_modules/typescript/**
+
 custom:
   authorizer:
     name: authorization
