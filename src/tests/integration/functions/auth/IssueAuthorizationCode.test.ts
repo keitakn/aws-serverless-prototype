@@ -1,5 +1,5 @@
 import {AxiosResponse} from "axios";
-import assert from "chai";
+import {assert} from "chai";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 import {AuthTest} from "../../../lib/AuthTest";
 

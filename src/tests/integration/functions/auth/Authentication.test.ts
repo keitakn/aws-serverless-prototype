@@ -1,5 +1,5 @@
 import {AxiosResponse} from "axios";
-import assert from "chai";
+import {assert} from "chai";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
