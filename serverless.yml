@@ -7,7 +7,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs6.10
-  region: ap-northeast-1
+  region: us-east-1
   stage: ${env:DEPLOY_STAGE}
   iamRoleStatements:
     - Effect: Allow
@@ -19,7 +19,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: 'arn:aws:dynamodb:ap-northeast-1:*:*'
+      Resource: 'arn:aws:dynamodb:us-east-1:*:*'
   environment:
     DEPLOY_STAGE: ${env:DEPLOY_STAGE}
     CLIENTS_TABLE_NAME: ${env:DEPLOY_STAGE}_Clients
