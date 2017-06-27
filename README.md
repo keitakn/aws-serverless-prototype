@@ -41,6 +41,8 @@ echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
 echo export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com >> ~/.bash_profile
+echo export RESOURCES_TABLE_NAME=dev_Resources >> ~/.bash_profile
+echo export USERS_TABLE_NAME=dev_Users >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
@@ -49,6 +51,8 @@ source ~/.bash_profile
 - AUTHLETE_API_KEYにはAuthleteのAPIキーを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - AUTHLETE_API_SECRETにはAuthleteのAPIシークレットを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - GATEWAY_BASE_URIはデプロイ後のエンドポイントURIを指定して下さい。（この変数はテストの実行時のみに利用されます。）
+- RESOURCES_TABLE_NAMEは固定値 "dev_Resources" を指定して下さい。（この変数はテストの実行時のみに利用されます。）
+- USERS_TABLE_NAMEは固定値 "dev_Users" を指定して下さい。（この変数はテストの実行時のみに利用されます。）
 
 ### Authleteのアクセストークン発行方法
 
