@@ -14,7 +14,9 @@ export class Authlete {
    * @returns {string}
    */
   public static getApiKey(): string {
-    return process.env.AUTHLETE_API_KEY;
+    const apiKey = process.env.AUTHLETE_API_KEY;
+
+    return typeof apiKey === "string" ? apiKey : "";
   }
 
   /**
@@ -23,6 +25,8 @@ export class Authlete {
    * @returns {string}
    */
   public static getApiSecret(): string {
-    return process.env.AUTHLETE_API_SECRET;
+    const apiSecret = process.env.AUTHLETE_API_SECRET;
+
+    return typeof apiSecret === "string" ? apiSecret : "";
   }
 }
