@@ -134,7 +134,9 @@ export class ResourceRepository implements ResourceRepositoryInterface {
    *
    * @returns {string}
    */
-  private getResourcesTableName() {
-    return process.env.RESOURCES_TABLE_NAME;
+  private getResourcesTableName(): string {
+    const resourcesTableName = process.env.RESOURCES_TABLE_NAME;
+
+    return typeof resourcesTableName === "string" ? resourcesTableName : "";
   }
 }

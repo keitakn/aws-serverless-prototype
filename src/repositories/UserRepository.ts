@@ -115,6 +115,8 @@ export default class UserRepository implements UserRepositoryInterface {
    * @returns {string}
    */
   private getUsersTableName(): string {
-    return process.env.USERS_TABLE_NAME;
+    const userTableName = process.env.USERS_TABLE_NAME;
+
+    return typeof userTableName === "string" ? userTableName : "";
   }
 }
