@@ -41,6 +41,8 @@ echo export DEPLOY_STAGE=dev >> ~/.bash_profile
 echo export AUTHLETE_API_KEY=YOUR API KEY >> ~/.bash_profile
 echo export AUTHLETE_API_SECRET=YOUR API SECRET >> ~/.bash_profile
 echo export GATEWAY_BASE_URI=https://XXXX.execute-api.ap-northeast-1.amazonaws.com >> ~/.bash_profile
+echo export RESOURCES_TABLE_NAME=dev_Resources >> ~/.bash_profile
+echo export USERS_TABLE_NAME=dev_Users >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
@@ -49,6 +51,8 @@ source ~/.bash_profile
 - AUTHLETE_API_KEYにはAuthleteのAPIキーを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - AUTHLETE_API_SECRETにはAuthleteのAPIシークレットを設定して下さい。これはLambdaの環境変数として設定され、アクセストークンの検証時に利用されます。
 - GATEWAY_BASE_URIはデプロイ後のエンドポイントURIを指定して下さい。（この変数はテストの実行時のみに利用されます。）
+- RESOURCES_TABLE_NAMEは固定値 "dev_Resources" を指定して下さい。（この変数はテストの実行時のみに利用されます。）
+- USERS_TABLE_NAMEは固定値 "dev_Users" を指定して下さい。（この変数はテストの実行時のみに利用されます。）
 
 ### Authleteのアクセストークン発行方法
 
@@ -81,7 +85,7 @@ AuthorizationHeaderにアクセストークンを設定して下さい。
 ```bash
 curl -kv \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/clients/{id}
 ```
 
 ### userCreate
@@ -100,7 +104,7 @@ curl -X POST -kv \
   "birthdate": "1990-01-01"
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/users
 ```
 
 ### findUser
@@ -108,7 +112,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
 ```bash
 curl -kv \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/users/{id}
 ```
 
 ### authentication
@@ -124,7 +128,7 @@ curl -kv \
   "password": "{userPassword}"
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authentication
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/auth/authentication
 ```
 
 ### issueAuthorizationCode
@@ -143,7 +147,7 @@ curl -kv \
   "scopes": ["openid", "email"]
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authorization/code
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/auth/authorization/code
 ```
 
 ### issueTokenFromCode
@@ -159,7 +163,7 @@ curl -kv \
   "redirect_uri": "https://your-redirect-uri"
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/tokens/code
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/tokens/code
 ```
 
 ### createResource
@@ -177,14 +181,14 @@ curl -kv \
   "scopes": ["email"]
 }
 ' \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources
 ```
 
 ### findResource
 
 ```bash
 curl -kv \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources/{id}
 ```
 
 ### destroyResource
@@ -193,7 +197,7 @@ https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 curl -kv \
 -X DELETE \
 -H "Content-type: application/json" \
-https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
+https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources/{id}
 ```
 
 ## ローカル環境でデバッグを行う方法

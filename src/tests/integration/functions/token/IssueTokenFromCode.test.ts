@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {assert} from "chai";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 import {AuthTest} from "../../../lib/AuthTest";
@@ -27,7 +28,7 @@ describe("IssueTokenFromCode", () => {
       };
 
       return AuthTest.ApiClient.issueTokenFromCode(tokenRequest);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       // 要求を許可してあるスコープ以外は含まれていない事を確認する
       // テストに使うクライアントはoffline_accessの要求権限を持っていない
       assert.equal("email openid prototype_users", response.data.scope);
@@ -52,7 +53,7 @@ describe("IssueTokenFromCode", () => {
       scopes: ["openid", "email", "offline_access", "prototype_users"],
     };
 
-    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response: AxiosResponse) => {
       const tokenRequest = {
         code: response.data.code,
         redirect_uri: "https://api.authlete.com/api/mock/redirection",

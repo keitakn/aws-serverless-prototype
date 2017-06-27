@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {assert} from "chai";
 import {UserRequest} from "../../../../domain/user/request/UserRequest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
@@ -54,7 +55,7 @@ describe("CreateUser", () => {
       assert.equal(response.data.birthdate, "1990-01-01");
 
       return UserTest.ApiClient.find(response.data.subject, accessToken);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       assert.equal(response.status, 200);
     });
   });

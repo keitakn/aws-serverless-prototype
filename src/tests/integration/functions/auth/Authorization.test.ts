@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {assert} from "chai";
 import {ResourceRequest} from "../../../../domain/resource/request/ResourceRequest";
 import {AuthleteAPIConstant} from "../../../../types/authlete/AuthleteAPIConstant";
@@ -45,7 +46,7 @@ describe("Authorization", () => {
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
       return ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
     });
@@ -65,7 +66,7 @@ describe("Authorization", () => {
 
     return AuthTest.ApiClient.issueAccessTokenInCheatApi(tokenRequest).then((tokenCreateResponse) => {
       return ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
     });
@@ -92,7 +93,7 @@ describe("Authorization", () => {
       assert.equal(destroyResourceResponse.status, 204);
 
       return await ClientTest.ApiClient.find(tokenRequest.clientId, tokenCreateResponse.accessToken);
-    })().then((response) => {
+    })().then((response: AxiosResponse) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.client_id, tokenRequest.clientId);
     });

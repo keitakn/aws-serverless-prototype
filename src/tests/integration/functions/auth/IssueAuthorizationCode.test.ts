@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {assert} from "chai";
 import {AuthRequest} from "../../../../domain/auth/request/AuthRequest";
 import {AuthTest} from "../../../lib/AuthTest";
@@ -19,7 +20,7 @@ describe("IssueAuthorizationCode", () => {
       scopes: ["openid", "email", "prototype_clients"],
     };
 
-    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response) => {
+    return AuthTest.ApiClient.issueAuthorizationCode(request).then((response: AxiosResponse) => {
       assert.equal(response.status, 201);
       assert.equal(response.data.code.length, 43);
       assert.equal(response.data.state, request.state);

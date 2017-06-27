@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {assert} from "chai";
 import {AccessTokenEntity} from "../../../../domain/auth/AccessTokenEntity";
 import AuthleteHttpClientFactory from "../../../../factories/AuthleteHttpClientFactory";
@@ -47,7 +48,7 @@ describe("FindUser", () => {
       };
 
       return UserTest.ApiClient.create(createUserRequest, accessToken);
-    }).then((response) => {
+    }).then((response: AxiosResponse) => {
       subject = response.data.subject;
     });
   });
@@ -56,7 +57,7 @@ describe("FindUser", () => {
    * 正常系のテストケース
    */
   it("testSuccess", () => {
-    return UserTest.ApiClient.find(subject, accessToken).then((response) => {
+    return UserTest.ApiClient.find(subject, accessToken).then((response: AxiosResponse) => {
       assert.equal(response.status, 200);
       assert.equal(response.data.email, "keita@gmail.com");
       assert.equal(response.data.email_verified, 0);
