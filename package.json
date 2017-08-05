@@ -4,6 +4,7 @@
   "description": "Serverless CRUD Prototype",
   "scripts": {
     "test": "mocha -t 30000 -R nyan --compilers ts:ts-node/register",
+    "test:all": "yarn run test -- src/tests/**/*.test.ts",
     "test:local": "IS_LOCAL=true mocha -t 30000 --compilers ts:ts-node/register",
     "test:all:local": "yarn run test:local -- src/tests/**/*.test.ts",
     "test:coverage": "IS_LOCAL=true nyc --extension .ts mocha -t 30000 --compilers ts:ts-node/register",
