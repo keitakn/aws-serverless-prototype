@@ -21,7 +21,7 @@
   },
   "author": "keita-nishimoto",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@types/aws-lambda": "^0.0.16",
     "@types/chai": "^4.0.2",
     "@types/mocha": "^2.2.41",
@@ -29,23 +29,23 @@
     "@types/source-map": "^0.5.1",
     "@types/source-map-support": "^0.4.0",
     "@types/uuid": "^3.4.0",
-    "@types/uuidjs": "^3.3.1",
     "aws-sdk": "^2.94.0",
-    "axios": "^0.16.1",
     "chai": "^4.1.1",
-    "json-loader": "^0.5.7",
-    "jsonschema": "^1.1.1",
     "mocha": "^3.5.0",
     "node-inspector": "^1.1.1",
     "nyc": "^11.1.0",
     "serverless": "^1.19.0",
     "serverless-dynamodb-local": "^0.2.22",
     "serverless-offline": "^3.15.3",
-    "source-map-support": "^0.4.15",
     "ts-loader": "^2.3.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.5.0",
-    "typescript": "^2.4.2",
+    "typescript": "^2.4.2"
+  },
+  "dependencies": {
+    "axios": "^0.16.1",
+    "jsonschema": "^1.1.1",
+    "source-map-support": "^0.4.15",
     "uuid": "^3.0.1"
   }
 }
