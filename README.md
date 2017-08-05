@@ -85,7 +85,7 @@ AuthorizationHeaderにアクセストークンを設定して下さい。
 ```bash
 curl -kv \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/clients/{id}
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/clients/{id}
 ```
 
 ### userCreate
@@ -104,7 +104,7 @@ curl -X POST -kv \
   "birthdate": "1990-01-01"
 }
 ' \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/users
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users
 ```
 
 ### findUser
@@ -112,7 +112,7 @@ https://XXXX.execute-api.us-east-1.amazonaws.com/dev/users
 ```bash
 curl -kv \
 -H "Authorization: Bearer YOUR ACCESS TOKEN" \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/users/{id}
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/users/{id}
 ```
 
 ### authentication
@@ -128,7 +128,7 @@ curl -kv \
   "password": "{userPassword}"
 }
 ' \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/auth/authentication
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authentication
 ```
 
 ### issueAuthorizationCode
@@ -147,7 +147,7 @@ curl -kv \
   "scopes": ["openid", "email"]
 }
 ' \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/auth/authorization/code
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/auth/authorization/code
 ```
 
 ### issueTokenFromCode
@@ -163,7 +163,7 @@ curl -kv \
   "redirect_uri": "https://your-redirect-uri"
 }
 ' \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/tokens/code
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/tokens/code
 ```
 
 ### createResource
@@ -181,14 +181,14 @@ curl -kv \
   "scopes": ["email"]
 }
 ' \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources
 ```
 
 ### findResource
 
 ```bash
 curl -kv \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources/{id}
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 ```
 
 ### destroyResource
@@ -197,7 +197,7 @@ https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources/{id}
 curl -kv \
 -X DELETE \
 -H "Content-type: application/json" \
-https://XXXX.execute-api.us-east-1.amazonaws.com/dev/resources/{id}
+https://XXXX.execute-api.ap-northeast-1.amazonaws.com/dev/resources/{id}
 ```
 
 ## ローカル環境でデバッグを行う方法
