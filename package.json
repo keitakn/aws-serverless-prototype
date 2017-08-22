@@ -16,7 +16,7 @@
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
     "server": "yarn run build && serverless offline",
-    "debug": "node-debug sls offline",
+    "debug": "tsc && node --inspect node_modules/.bin/serverless offline start",
     "deploy": "yarn run build && serverless deploy -v"
   },
   "author": "keita-nishimoto",
