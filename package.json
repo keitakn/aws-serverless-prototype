@@ -16,7 +16,7 @@
     "dynamodb": "serverless dynamodb start",
     "migrate": "serverless dynamodb migrate",
     "server": "yarn run build && serverless offline",
-    "debug": "node-debug sls offline",
+    "debug": "tsc && node --inspect node_modules/.bin/serverless offline start",
     "deploy": "yarn run build && serverless deploy -v"
   },
   "author": "keita-nishimoto",
@@ -32,7 +32,6 @@
     "aws-sdk": "^2.94.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "node-inspector": "^1.1.1",
     "nyc": "^11.1.0",
     "serverless": "^1.19.0",
     "serverless-dynamodb-local": "^0.2.22",
