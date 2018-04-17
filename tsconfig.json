@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     // コンパイル後のターゲット（'es3', 'es5', 'es2015', 'es2016', 'es2017'）
     // 何も指定しない場合のデフォルト値は'es3'の模様
-    "target": "es2015",
+    "target": "es2017",
     // SourceMapを出力する
     "sourceMap": true,
     // 出力先のディレクトリ
@@ -28,6 +28,8 @@
     // 暗黙的な undefined を返す事を禁止する
     "noImplicitReturns": true,
     "lib": [
+      "es2015",
+      "es2016",
       "es2017"
     ],
     "types": [
